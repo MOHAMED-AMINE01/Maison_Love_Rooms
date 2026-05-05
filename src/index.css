@@ -98,7 +98,7 @@
   }
 
   .luxury-card {
-    @apply bg-creme border border-noir/[0.03] shadow-[0_10px_50px_-20px_rgba(0, 0, 0, 0.03)] transition-all duration-1000;
+    @apply bg-creme border border-noir/[0.03] shadow-[0_10px_50px_-20px_rgba(0,0,0,0.03)] transition-all duration-1000;
   }
 
   .glass {

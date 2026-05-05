@@ -42,7 +42,7 @@ export default function Boutique() {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="bg-[#FAF9F6] min-h-screen overflow-x-hidden"
+      className="bg-[#0A0A0A] min-h-screen overflow-x-hidden selection:bg-gold/30"
     >
       {/* Cinematic Full-Width Hero */}
       <section className="relative min-h-[90vh] flex items-center pt-32 px-4 md:px-10 bg-noir overflow-hidden">
@@ -99,11 +99,8 @@ export default function Boutique() {
         </div>
 
         {/* Bottom Cinematic Fade */}
-        <div className="absolute bottom-0 left-0 w-full h-64 bg-gradient-to-t from-noir to-transparent" />
+        <div className="absolute bottom-0 left-0 w-full h-64 bg-gradient-to-t from-[#0A0A0A] to-transparent pointer-events-none" />
       </section>
-
-      {/* Transition Overlay */}
-      <div className="h-32 bg-gradient-to-b from-noir to-[#FAF9F6]" />
 
       {/* Product Catalog */}
       <div className="container-wide px-4 md:px-10 pb-48">
@@ -146,10 +143,10 @@ export default function Boutique() {
                 </button>
               </div>
 
-              <div className="mt-12 flex justify-between items-start border-t border-noir/[0.05] pt-8">
+              <div className="mt-12 flex justify-between items-start border-t border-white/5 pt-8">
                 <div className="space-y-4">
-                  <h3 className="text-4xl font-serif text-noir">{product.name}</h3>
-                  <p className="text-xl font-serif italic text-noir/40 max-w-sm leading-relaxed">
+                  <h3 className="text-3xl md:text-4xl font-serif text-white group-hover:text-gold transition-colors duration-500">{product.name}</h3>
+                  <p className="text-lg md:text-xl font-serif italic text-white/40 max-w-sm leading-relaxed">
                     {product.description}
                   </p>
                 </div>
