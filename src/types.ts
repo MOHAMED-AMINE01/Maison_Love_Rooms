@@ -1,6 +1,7 @@
 export interface Suite {
   id: string;
   name: string;
+  tagline?: string;
   description: string;
   price: number;
   image: string;

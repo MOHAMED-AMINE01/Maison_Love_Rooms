@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { ArrowLeft, ArrowRight, CreditCard, ShieldCheck, Mail, User, Phone, CheckCircle2 } from 'lucide-react';
 import CustomDatePicker from '../components/ui/CustomDatePicker';
 
@@ -8,11 +8,21 @@ export default function Checkout() {
    const [step, setStep] = useState(1);
    const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
    const navigate = useNavigate();
+   const location = useLocation();
+
+   // Get state from navigation
+   const bookingData = location.state || {
+      suiteName: "Suite Love Room",
+      suiteImage: "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?q=80&w=2600&auto=format&fit=crop",
+      nights: 1,
+      formula: "essentielle",
+      price: 189
+   };
 
    const optionsList = [
-      { name: "Pack Romantique", price: 45, desc: "Pétales de roses, bougies et musique d'ambiance à l'arrivée." },
-      { name: "Plateau Gourmand Duo", price: 60, desc: "Sélection de produits fins et bouteille de vin." },
-      { name: "Check-in Anticipé (14h)", price: 50, desc: "Installez-vous plus tôt pour prolonger le plaisir." }
+      { name: "Pack Romantique Plus", price: 45, desc: "Bouquet de fleurs fraîches et mot personnalisé." },
+      { name: "Départ Tardif (13h)", price: 40, desc: "Prolongez votre grâce matinée." },
+      { name: "Ambiance Musique Live", price: 80, desc: "Sélection musicale premium pré-configurée." }
    ];
 
    const toggleOption = (name: string) => {
@@ -20,7 +30,7 @@ export default function Checkout() {
    };
 
    const calculateTotal = () => {
-      let total = 205; // 190 base + 15 taxes
+      let total = bookingData.price * bookingData.nights;
       selectedOptions.forEach(optName => {
          const option = optionsList.find(o => o.name === optName);
          if (option) total += option.price;
@@ -66,7 +76,7 @@ export default function Checkout() {
                      ))}
                   </div>
 
-                  <div className="bg-[#121212] border border-white/5 p-6 sm:p-10 md:p-16 rounded-2xl shadow-2xl relative">
+                  <div className="bg-[#121212] border border-white/5 p-6 sm:p-10 md:p-16 rounded-[2.5rem] shadow-2xl relative">
                      {/* Decorative Gradient Wrapper */}
                      <div className="absolute inset-0 overflow-hidden rounded-2xl pointer-events-none">
                         <div className="absolute top-0 right-0 w-64 h-64 bg-gold/5 blur-[100px] rounded-full" />
@@ -161,7 +171,7 @@ export default function Checkout() {
                               exit={{ opacity: 0, x: -20 }}
                               className="space-y-10 relative z-10"
                            >
-                              <div className="p-8 bg-[#0A0A0A] border border-white/10 text-white rounded-2xl flex items-center justify-between">
+                              <div className="p-8 bg-[#0A0A0A] border border-white/10 text-white rounded-[2rem] flex items-center justify-between">
                                  <div className="flex items-center gap-6">
                                     <div className="w-12 h-12 rounded-full bg-gold/10 flex items-center justify-center">
                                        <CreditCard size={24} className="text-gold" />
@@ -203,50 +213,53 @@ export default function Checkout() {
                </div>
 
                {/* Sidebar Resume */}
-               <div className="lg:col-span-4 flex flex-col justify-center">
-                  <div className="space-y-8 w-full">
-                     <div className="bg-[#121212] border border-white/5 p-8 sm:p-10 rounded-2xl relative shadow-2xl overflow-hidden">
+               <div className="lg:col-span-4 flex flex-col">
+                  <div className="space-y-8 w-full sticky top-32">
+                     <div className="bg-[#121212] border border-white/5 p-8 sm:p-10 rounded-[2.5rem] relative shadow-2xl overflow-hidden">
                         {/* Decorative Gradient */}
                         <div className="absolute -top-20 -right-20 w-40 h-40 bg-gold/10 blur-[80px] rounded-full pointer-events-none" />
 
                         <h3 className="text-xl sm:text-2xl font-serif mb-6 sm:mb-10 pb-4 border-b border-white/5 text-white relative z-10">Votre Évasion</h3>
                         <div className="space-y-8 relative z-10">
                            <div className="flex gap-6">
-                              <div className="w-24 h-24 bg-[#0A0A0A] relative overflow-hidden rounded-xl border border-white/10">
-                                 <img src="https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?q=80&w=2600&auto=format&fit=crop" alt="Suite" className="w-full h-full object-cover opacity-80 mix-blend-lighten" />
+                              <div className="w-24 h-24 bg-[#0A0A0A] relative overflow-hidden rounded-2xl border border-white/10">
+                                 <img src={bookingData.suiteImage} alt="Suite" className="w-full h-full object-cover" />
                               </div>
                               <div className="space-y-2">
-                                 <span className="text-[10px] uppercase tracking-widest font-bold text-gold">Suite Nomade</span>
-                                 <span className="block italic text-white/40 text-xs">Une nuitée d'exception</span>
-                                 <span className="block font-serif text-lg text-white">190€</span>
+                                 <span className="text-[10px] uppercase tracking-widest font-black text-gold">{bookingData.suiteName}</span>
+                                 <span className="block italic text-white/40 text-[10px] uppercase tracking-widest font-bold">Formule {bookingData.formula}</span>
+                                 <span className="block font-serif text-lg text-white">{bookingData.price}€ <span className="text-[10px] italic text-white/30">/ nuit</span></span>
                               </div>
                            </div>
 
                            <div className="space-y-4 pt-10 border-t border-white/5">
-                              <div className="flex justify-between text-xs italic text-white/50">
-                                 <span>Nuitée</span>
-                                 <span className="font-serif text-white/80">190€</span>
+                              <div className="flex justify-between text-xs italic text-white/40">
+                                 <span>Nuitée x {bookingData.nights}</span>
+                                 <span className="font-serif text-white/80">{bookingData.price * bookingData.nights}€</span>
                               </div>
-                              <div className="flex justify-between text-xs italic text-white/50">
-                                 <span>Taxes & Conciergerie</span>
-                                 <span className="font-serif text-white/80">15€</span>
-                              </div>
+                              
                               {selectedOptions.map(optName => {
                                  const option = optionsList.find(o => o.name === optName);
                                  if (!option) return null;
                                  return (
-                                    <div key={optName} className="flex justify-between text-xs italic text-white/50">
+                                    <div key={optName} className="flex justify-between text-xs italic text-white/40">
                                        <span>{option.name}</span>
                                        <span className="font-serif text-white/80">{option.price}€</span>
                                     </div>
                                  );
                               })}
-                              <div className="flex justify-between items-center pt-6 text-2xl font-serif">
+                              
+                              <div className="flex justify-between items-center pt-8 border-t border-white/10 text-3xl font-serif">
                                  <span className="text-white">Total</span>
                                  <span className="text-gold">{calculateTotal()}€</span>
                               </div>
                            </div>
                         </div>
+                     </div>
+
+                     <div className="flex items-center justify-center gap-4 text-white/20">
+                        <ShieldCheck size={16} />
+                        <span className="text-[9px] uppercase tracking-[0.3em] font-bold">Réservation 100% Confidentielle</span>
                      </div>
                   </div>
                </div>

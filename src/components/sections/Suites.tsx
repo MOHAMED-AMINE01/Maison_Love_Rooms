@@ -20,7 +20,7 @@ export default function Suites() {
           </p>
         </div>
 
-        <div className="space-y-32 md:space-y-64 mx-5">
+        <div className="space-y-32 md:space-y-48 mx-5">
           {SUITES.map((suite, index) => (
             <motion.div
               key={suite.id}
@@ -31,7 +31,7 @@ export default function Suites() {
               className={`flex flex-col ${index % 2 === 0 ? 'lg:flex-row' : 'lg:flex-row-reverse'} gap-12 lg:gap-24 items-center`}
             >
               {/* Image Side */}
-              <div className="w-full lg:w-[60%] relative group">
+              <div className="w-full lg:w-[55%] relative group">
                 <div className="overflow-hidden rounded-[2.5rem] md:rounded-[4rem] shadow-3xl bg-noir">
                   <motion.img
                     whileHover={{ scale: 1.05 }}
@@ -43,19 +43,28 @@ export default function Suites() {
                 </div>
                 {/* Floating Price Tag */}
                 <div className="absolute -bottom-6 right-8 md:right-16 bg-white px-8 py-4 rounded-full shadow-2xl border border-gold/10">
-                  <p className="text-2xl md:text-3xl font-serif text-noir">
-                    {suite.price}<span className="text-sm text-gold ml-1">€/nuit</span>
+                  <p className="text-xl md:text-2xl font-serif text-noir">
+                    À partir de <span className="text-2xl md:text-3xl text-gold">{suite.price}€</span>
                   </p>
                 </div>
               </div>
 
               {/* Text Side */}
-              <div className="w-full lg:w-[40%] space-y-8 md:space-y-12 px-4 md:px-0">
+              <div className="w-full lg:w-[45%] space-y-8 md:space-y-10 px-4 md:px-0">
                 <div className="space-y-4 md:space-y-6">
-                  <span className="text-[10px] uppercase tracking-[0.5em] text-gold font-black">Suite N°0{index + 1}</span>
-                  <h3 className="text-4xl md:text-6xl font-serif text-noir leading-none tracking-tight">
-                    {suite.name}
-                  </h3>
+                  <div className="space-y-2">
+                    <span className="text-[10px] uppercase tracking-[0.5em] text-gold font-black italic">L'Exceptionnel</span>
+                    <h3 className="text-5xl md:text-7xl font-serif text-noir leading-none tracking-tight">
+                      {suite.name}
+                    </h3>
+                  </div>
+                  
+                  {suite.tagline && (
+                    <p className="text-xl md:text-2xl font-serif italic text-gold/60 leading-tight">
+                      {suite.tagline}
+                    </p>
+                  )}
+
                   <p className="text-lg md:text-xl text-noir/50 leading-relaxed font-light">
                     {suite.description}
                   </p>
@@ -65,7 +74,7 @@ export default function Suites() {
                   {suite.features.map((feature) => (
                     <span
                       key={feature}
-                      className="px-5 py-2.5 rounded-full border border-noir/5 bg-white text-[9px] uppercase tracking-[0.2em] font-black text-noir/40 hover:text-gold hover:border-gold transition-colors"
+                      className="px-5 py-2.5 rounded-full border border-noir/5 bg-white text-[9px] uppercase tracking-[0.2em] font-bold text-noir/40 hover:text-gold hover:border-gold transition-colors"
                     >
                       {feature}
                     </span>
@@ -79,7 +88,7 @@ export default function Suites() {
                   <div className="w-14 h-14 rounded-full bg-noir flex items-center justify-center text-white group-hover:bg-gold transition-all duration-500 shadow-xl">
                     <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
                   </div>
-                  <span className="text-xs uppercase tracking-[0.4em] font-black text-noir border-b border-transparent group-hover:border-gold transition-all">
+                  <span className="text-[10px] uppercase tracking-[0.4em] font-black text-noir border-b border-transparent group-hover:border-gold transition-all">
                     Découvrir l'écrin
                   </span>
                 </Link>

@@ -4,11 +4,9 @@ import { Link, useLocation } from 'react-router-dom';
 import { ArrowRight, Menu, X } from 'lucide-react';
 
 const NAV_LINKS = [
-  { name: 'Collections', to: '/#suites', isHash: true },
-  { name: 'Boutique', to: '/boutique' },
-  { name: 'Prestations', to: '/prestations' },
-  { name: 'Le Concept', to: '/#ritual', isHash: true },
-  { name: 'FAQ', to: '/#faq', isHash: true },
+  { name: 'Nos Chambres', to: '/#suites', isHash: true },
+  { name: 'Expérience', to: '/experience' },
+  { name: 'Contact', to: '/#contact', isHash: true },
 ];
 
 export default function Navbar() {

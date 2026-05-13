@@ -1,6 +1,6 @@
 import { motion } from "motion/react";
 import { Link } from "react-router-dom";
-import { Instagram, Facebook, Crown, ArrowUpRight } from "lucide-react";
+import { Instagram, Crown, ArrowUpRight } from "lucide-react";
 
 export default function Footer() {
   return (
@@ -18,11 +18,8 @@ export default function Footer() {
               L'excellence de l'intimité au cœur de la ville. Une escale sensorielle unique pensée pour l'éveil des sens.
             </p>
             <div className="flex gap-6">
-              <a href="#" className="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center hover:border-gold hover:text-gold transition-all duration-500">
+              <a href="https://www.instagram.com/maisonloverooms/" className="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center hover:border-gold hover:text-gold transition-all duration-500">
                 <Instagram size={18} />
-              </a>
-              <a href="#" className="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center hover:border-gold hover:text-gold transition-all duration-500">
-                <Facebook size={18} />
               </a>
             </div>
           </div>

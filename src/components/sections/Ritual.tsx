@@ -1,5 +1,6 @@
 import { motion, useScroll, useTransform } from "motion/react";
 import { useRef } from "react";
+import { Link } from "react-router-dom";
 
 export default function Ritual() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -68,13 +69,13 @@ export default function Ritual() {
                 </div>
               </div>
 
-              <motion.button
-                whileHover={{ scale: 1.05, x: 10 }}
+              <Link
+                to="/experience"
                 className="group flex items-center gap-4 md:gap-6 text-gold pt-6 md:pt-8 mx-auto lg:mx-0"
               >
-                <span className="text-[9px] md:text-[10px] uppercase tracking-[0.4em] font-bold">Découvrir nos rituels</span>
+                <span className="text-[9px] md:text-[10px] uppercase tracking-[0.4em] font-bold">Découvrir l'expérience</span>
                 <div className="w-8 md:w-12 h-px bg-gold transition-all duration-500 group-hover:w-20" />
-              </motion.button>
+              </Link>
             </motion.div>
           </div>
 

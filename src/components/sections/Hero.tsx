@@ -60,10 +60,10 @@ export default function Hero() {
               </a>
 
               <a
-                href="#booking"
+                href="/experience"
                 className="group flex items-center justify-between gap-8 px-10 py-5 rounded-full border border-white/20 bg-white/5 text-white/80 hover:bg-white hover:text-noir transition-all duration-500"
               >
-                <span className="text-[11px] font-bold uppercase tracking-[0.2em]">Vérifier les disponibilités</span>
+                <span className="text-[11px] font-bold uppercase tracking-[0.2em]">Découvrir l'expérience</span>
                 <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
               </a>
             </motion.div>

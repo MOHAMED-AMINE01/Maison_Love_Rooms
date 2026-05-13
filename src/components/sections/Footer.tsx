@@ -1,10 +1,10 @@
 import React from 'react';
-import { Instagram, Facebook, Phone, Mail, MapPin } from "lucide-react";
+import { Instagram, Phone, Mail, MapPin } from "lucide-react";
 import { Link } from "react-router-dom";
 
 export default function Footer() {
   return (
-    <footer className="bg-[#0A0A0A] py-20 md:py-20 relative overflow-hidden border-t border-white/5 selection:bg-gold/30">
+    <footer id="footer" className="bg-[#0A0A0A] py-20 md:py-20 relative overflow-hidden border-t border-white/5 selection:bg-gold/30">
       {/* Decorative Branding Background */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] md:w-[800px] h-[600px] md:h-[800px] bg-gold/5 blur-[150px] rounded-full pointer-events-none z-0" />
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[40vw] font-serif italic text-white/[0.02] pointer-events-none select-none z-0">
@@ -25,13 +25,6 @@ export default function Footer() {
             <p className="text-white/40 font-serif italic text-lg md:text-xl max-w-md leading-relaxed">
               Une adresse confidentielle, un service d'excellence hôtelière et une discrétion absolue pour sublimer vos moments les plus précieux au cœur de Paris.
             </p>
-            <div className="flex gap-6">
-              {[Instagram, Facebook].map((Icon, idx) => (
-                <a key={idx} href="#" className="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center text-white/40 hover:text-[#0A0A0A] hover:bg-gold hover:border-gold transition-all duration-500">
-                  <Icon size={18} />
-                </a>
-              ))}
-            </div>
           </div>
 
           <div className="md:col-span-3 flex flex-col items-center md:items-start text-center md:text-left">
@@ -40,7 +33,7 @@ export default function Footer() {
               {[
                 { label: "Accueil", to: "/" },
                 { label: "Nos Suites", to: "/#suites" },
-                { label: "Boutique & Extras", to: "/boutique" },
+                { label: "L'Expérience", to: "/experience" },
                 { label: "Foire Aux Questions", to: "/#faq" }
               ].map((item) => (
                 <li key={item.label}>
@@ -58,7 +51,7 @@ export default function Footer() {
             <ul className="space-y-8">
               <li className="space-y-3 flex flex-col items-center md:items-start">
                 <span className="text-[9px] uppercase tracking-[0.3em] text-white/20 font-bold flex items-center gap-2"><Phone size={12} /> Réservations</span>
-                <p className="text-white/60 font-serif italic text-lg hover:text-white transition-colors cursor-pointer">+33 1 20 30 40 50</p>
+                <p className="text-white/60 font-serif italic text-lg hover:text-white transition-colors cursor-pointer">06 27 09 47 17</p>
               </li>
               <li className="space-y-3 flex flex-col items-center md:items-start">
                 <span className="text-[9px] uppercase tracking-[0.3em] text-white/20 font-bold flex items-center gap-2"><Mail size={12} /> Conciergerie</span>

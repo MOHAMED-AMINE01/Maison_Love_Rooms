@@ -5,7 +5,9 @@ import { SUITES } from '../constants';
 import {
    Plus, Minus,
    Waves, Music, Utensils, Bath, Wind, Coffee,
-   ShieldCheck, Sparkles
+   ShieldCheck, Sparkles,
+   Wine,
+   Heart
 } from 'lucide-react';
 
 export default function SuiteDetail() {
@@ -13,6 +15,7 @@ export default function SuiteDetail() {
    const navigate = useNavigate();
    const suite = SUITES.find(s => s.id === id);
    const [nights, setNights] = useState(1);
+   const [formula, setFormula] = useState<'essentielle' | 'complete'>('essentielle');
 
    if (!suite) {
       return (
@@ -159,28 +162,103 @@ export default function SuiteDetail() {
                            </div>
                         </div>
 
-                        <div className="w-full lg:w-96 space-y-8 md:space-y-12 bg-white/5 p-8 md:p-12 rounded-[2rem] md:rounded-[3rem] backdrop-blur-xl border border-white/10">
+                        <div className="w-full lg:w-96 space-y-8 md:space-y-10 bg-[#0A0A0A]/80 p-8 md:p-12 rounded-[2.5rem] md:rounded-[3rem] backdrop-blur-3xl border border-white/10 shadow-3xl">
+                           {/* Formula Selection */}
                            <div className="space-y-6">
-                              <label className="text-[9px] uppercase tracking-[0.5em] font-black text-white/20 text-center block w-full">Nombre de Nuits</label>
-                              <div className="flex items-center justify-between p-4 md:p-6 bg-[#050505]/50 border border-white/5 rounded-[1.5rem] md:rounded-[2rem]">
-                                 <button onClick={() => setNights(Math.max(1, nights - 1))} className="w-10 h-10 md:w-12 md:h-12 flex items-center justify-center border border-white/10 rounded-full hover:bg-white hover:text-[#050505] transition-all"><Minus size={14} /></button>
-                                 <div className="text-center">
-                                    <span className="text-3xl md:text-4xl font-serif block leading-none">{nights}</span>
+                              <label className="text-[9px] uppercase tracking-[0.5em] font-black text-white/20 text-center block w-full">Choisir votre expérience</label>
+                              <div className="flex flex-col gap-4">
+                                 {/* Formule Essentielle */}
+                                 <button
+                                    onClick={() => setFormula('essentielle')}
+                                    className={`relative group p-6 rounded-[2rem] border transition-all duration-500 text-left flex justify-between items-center ${formula === 'essentielle' ? 'border-gold/50 bg-gold/5 shadow-[0_0_30px_rgba(188,155,93,0.1)]' : 'border-white/5 bg-white/[0.02] hover:border-white/20'}`}
+                                 >
+                                    <div className="space-y-1">
+                                       <span className={`block text-lg font-serif transition-colors ${formula === 'essentielle' ? 'text-gold' : 'text-white/80'}`}>Essentielle</span>
+                                       <span className="flex items-center gap-2 text-[9px] text-white/30 uppercase tracking-widest font-black">
+                                          <Wine size={10} className="text-gold/50" />
+                                          Champagne inclus
+                                       </span>
+                                    </div>
+                                    <div className="text-right">
+                                       <span className={`block text-xl font-serif ${formula === 'essentielle' ? 'text-gold' : 'text-white'}`}>189€</span>
+                                    </div>
+                                 </button>
+
+                                 {/* Formule Complète with Hover Details */}
+                                 <div className="relative group/parent">
+                                    <button
+                                       onClick={() => setFormula('complete')}
+                                       className={`relative w-full p-6 rounded-[2rem] border transition-all duration-500 text-left flex justify-between items-center z-20 ${formula === 'complete' ? 'border-gold/50 bg-gold/5 shadow-[0_0_30px_rgba(188,155,93,0.1)]' : 'border-white/5 bg-white/[0.02] hover:border-white/20'}`}
+                                    >
+                                       <div className="space-y-1">
+                                          <div className="flex items-center gap-2">
+                                             <span className={`block text-lg font-serif transition-colors ${formula === 'complete' ? 'text-gold' : 'text-white/80'}`}>Complète</span>
+                                             <span className="bg-gold/20 text-gold text-[8px] px-2 py-0.5 rounded-full font-black uppercase tracking-tighter">Élu Coeur de Client</span>
+                                          </div>
+                                          <span className="flex items-center gap-2 text-[9px] text-white/30 uppercase tracking-widest font-black">
+                                             <Sparkles size={10} className="text-gold/50" />
+                                             Immersion Totale
+                                          </span>
+                                       </div>
+                                       <div className="text-right">
+                                          <span className={`block text-xl font-serif ${formula === 'complete' ? 'text-gold' : 'text-white'}`}>299€</span>
+                                       </div>
+                                    </button>
+
+                                    {/* Hover Detail Card */}
+                                    <div className="absolute top-full left-0 right-0 mt-4 opacity-0 invisible group-hover/parent:opacity-100 group-hover/parent:visible transition-all duration-500 z-50">
+                                       <div className="bg-[#121212] border border-gold/20 p-6 rounded-[2rem] shadow-3xl backdrop-blur-2xl space-y-4">
+                                          <p className="text-[10px] uppercase tracking-[0.2em] text-gold font-black border-b border-gold/10 pb-3">Détails de l'immersion :</p>
+                                          <ul className="space-y-3">
+                                             {[
+                                                { icon: <Utensils size={12} />, text: "Dîner de prestige (Salé & Sucré)" },
+                                                { icon: <Coffee size={12} />, text: "Petit-déjeuner gourmand complet" },
+                                                { icon: <Heart size={12} />, text: "Décoration Romantique (Pétales & Bougies)" },
+                                                { icon: <Music size={12} />, text: "Ambiance Sonore & Jeux de couple" }
+                                             ].map((item, i) => (
+                                                <li key={i} className="flex items-center gap-3 text-white/60 text-xs font-light">
+                                                   <span className="text-gold">{item.icon}</span>
+                                                   {item.text}
+                                                </li>
+                                             ))}
+                                          </ul>
+                                       </div>
+                                    </div>
                                  </div>
-                                 <button onClick={() => setNights(nights + 1)} className="w-10 h-10 md:w-12 md:h-12 flex items-center justify-center border border-white/10 rounded-full hover:bg-white hover:text-[#050505] transition-all"><Plus size={14} /></button>
+                              </div>
+                           </div>
+
+                           <div className="space-y-6 pt-4">
+                              <label className="text-[9px] uppercase tracking-[0.5em] font-black text-white/20 text-center block w-full">Nombre de Nuits (1-2 max)</label>
+                              <div className="flex items-center justify-between p-4 bg-[#050505]/50 border border-white/5 rounded-[2rem]">
+                                 <button onClick={() => setNights(Math.max(1, nights - 1))} className="w-12 h-12 flex items-center justify-center border border-white/10 rounded-full hover:bg-white hover:text-[#050505] transition-all"><Minus size={14} /></button>
+                                 <div className="text-center">
+                                    <span className="text-3xl font-serif block leading-none">{nights}</span>
+                                 </div>
+                                 <button onClick={() => setNights(Math.min(2, nights + 1))} className="w-12 h-12 flex items-center justify-center border border-white/10 rounded-full hover:bg-white hover:text-[#050505] transition-all"><Plus size={14} /></button>
                               </div>
                            </div>
 
                            <button
-                              onClick={() => navigate('/checkout')}
-                              className="w-full bg-amber-500 text-[#050505] py-6 md:py-8 rounded-[1.5rem] md:rounded-[2rem] text-[10px] md:text-[11px] uppercase tracking-[0.4em] md:tracking-[0.5em] font-black hover:bg-white transition-all shadow-3xl"
+                              onClick={() => navigate('/checkout', { 
+                                 state: { 
+                                    suiteId: suite.id,
+                                    suiteName: suite.name,
+                                    suiteImage: suite.image,
+                                    nights: nights,
+                                    formula: formula,
+                                    price: formula === 'complete' ? 299 : 189
+                                 } 
+                              })}
+                              className="relative w-full bg-gold text-[#0A0A0A] py-8 rounded-[2rem] text-[11px] uppercase tracking-[0.5em] font-black hover:bg-white transition-all duration-500 shadow-2xl overflow-hidden group"
                            >
-                              Confirmer ({suite.price * nights}€)
+                              <div className="absolute inset-0 bg-white/20 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000" />
+                              <span className="relative z-10">Confirmer ({(formula === 'complete' ? 299 : 189) * nights}€)</span>
                            </button>
 
-                           <div className="flex items-center justify-center gap-3 md:gap-4 text-white/20">
+                           <div className="flex items-center justify-center gap-3 text-white/20">
                               <ShieldCheck size={14} />
-                              <p className="text-[8px] md:text-[9px] uppercase tracking-widest font-bold italic">Confidentialité garantie</p>
+                              <p className="text-[9px] uppercase tracking-widest font-bold italic">Confidentialité garantie</p>
                            </div>
                         </div>
 

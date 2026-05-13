@@ -5,23 +5,23 @@ import { ChevronDown, HelpCircle, Sparkles } from 'lucide-react';
 const FAQS = [
   {
     question: "Comment se déroule l'arrivée dans la suite ?",
-    answer: "Pour une discrétion totale, l'accès se fait de manière 100% autonome. Le jour de votre réservation, vous recevrez un code unique par SMS et email vous permettant de déverrouiller la suite à l'heure convenue."
+    answer: "Pour une discrétion totale, l'accès se fait de manière 100% autonome. Le jour de votre réservation, vous recevrez un code unique par SMS et email vous permettant de déverrouiller votre suite (Love Story ou Baguerra) à l'heure convenue."
   },
   {
     question: "La confidentialité est-elle réellement garantie ?",
-    answer: "Absolument. Nous avons conçu l'expérience Maison ML pour qu'aucun contact physique ne soit nécessaire. L'entrée est privée, sans réception ni personnel visible, vous garantissant une intimité absolue."
+    answer: "Absolument. Nous avons conçu l'expérience Maison Love Rooms pour qu'aucun contact physique ne soit nécessaire. L'entrée est privée, sans réception ni personnel visible, vous garantissant une intimité absolue."
+  },
+  {
+    question: "Quels sont les tarifs et formules proposés ?",
+    answer: "Nos tarifs débutent à 189€ la nuit avec une bouteille de champagne offerte. Nous proposons également une formule complète à 299€ incluant champagne, softs, décoration romantique, plateau repas et petit-déjeuner gourmand."
   },
   {
     question: "Quels sont les équipements inclus dans les chambres ?",
-    answer: "Chaque suite dispose d'un espace balnéo privé (Jacuzzi® ou Baignoire îlot), d'un lit King Size d'exception, d'une cuisine équipée, et d'un système audio/vidéo immersif pour créer votre propre atmosphère."
+    answer: "Chaque suite dispose d'un espace bien-être privé (Balnéo pour Love Story, Spa pour Baguerra), d'un lit King Size, d'une cuisine équipée, et d'un système audio Bluetooth pour créer votre propre atmosphère."
   },
   {
-    question: "Pouvons-nous personnaliser la décoration pour une occasion ?",
-    answer: "Oui, nous proposons plusieurs 'Rituels' (pétales de soie, ambiances olfactives, champagne frais) que vous pouvez sélectionner lors de votre réservation pour sublimer votre accueil."
-  },
-  {
-    question: "Y a-t-il un parking à proximité ?",
-    answer: "Maison ML est située dans une rue calme du XVIIème arrondissement. Plusieurs parkings sécurisés et publics se trouvent à moins de 5 minutes à pied de l'établissement."
+    question: "Y a-t-il une durée minimum de réservation ?",
+    answer: "La durée de réservation est d'une nuit minimum et de deux nuits maximum, afin de préserver l'exclusivité et la qualité de préparation de nos écrins."
   }
 ];
 

@@ -70,11 +70,11 @@ export default function AdminSettings() {
                      <div className="grid grid-cols-2 gap-4">
                         <div className="flex items-center bg-white/[0.02] border border-white/[0.05] rounded-xl px-4 overflow-hidden">
                            <span className="text-[10px] text-white/20 font-bold mr-3">INSTAGRAM</span>
-                           <input type="text" defaultValue="@maisonloveroom" className="flex-1 bg-transparent border-none py-3 text-sm focus:ring-0 text-gold-light" />
+                           <a href="https://www.instagram.com/maisonloverooms/">@maisonloveroom</a>
                         </div>
                         <div className="flex items-center bg-white/[0.02] border border-white/[0.05] rounded-xl px-4 overflow-hidden">
                            <span className="text-[10px] text-white/20 font-bold mr-3">FACEBOOK</span>
-                           <input type="text" defaultValue="Maison Love Rooms Paris" className="flex-1 bg-transparent border-none py-3 text-sm focus:ring-0 text-gold-light" />
+                           <a href="https://www.facebook.com/maisonloverooms/">@Maison Love Rooms Paris</a>
                         </div>
                      </div>
                   </div>

@@ -3,11 +3,11 @@ import { BrowserRouter as Router, Routes, Route, useLocation } from "react-route
 import { AnimatePresence } from "motion/react";
 import Navbar from "./components/layout/Navbar";
 import Footer from "./components/sections/Footer";
+import FloatingSocials from "./components/layout/FloatingSocials";
 import Home from "./pages/Home";
 import SuiteDetail from "./pages/SuiteDetail";
 import Checkout from "./pages/Checkout";
-import Prestations from "./pages/Prestations";
-import Boutique from "./pages/Boutique";
+import Experience from "./pages/Experience";
 import Confirmation from "./pages/Confirmation";
 import Legal from "./pages/Legal";
 import AdminLayout from "./components/layout/AdminLayout";
@@ -61,8 +61,7 @@ function AppContent() {
             <Routes location={location}>
               <Route path="/" element={<Home />} />
               <Route path="/suite/:id" element={<SuiteDetail />} />
-              <Route path="/prestations" element={<Prestations />} />
-              <Route path="/boutique" element={<Boutique />} />
+              <Route path="/experience" element={<Experience />} />
               <Route path="/checkout" element={<Checkout />} />
               <Route path="/confirmation" element={<Confirmation />} />
               <Route path="/mentions-legales" element={<Legal />} />
@@ -84,6 +83,7 @@ function AppContent() {
         </main>
 
         {!isAdmin && <Footer />}
+        {!isAdmin && <FloatingSocials />}
       </div>
     </div>
   );
