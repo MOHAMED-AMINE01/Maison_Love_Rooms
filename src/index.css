@@ -120,4 +120,9 @@
   .admin-sidebar-item.active {
     @apply text-white bg-gold/10 border-l-2 border-gold;
   }
+
+  .vertical-text {
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+  }
 }

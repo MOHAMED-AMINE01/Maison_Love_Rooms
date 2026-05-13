@@ -9,13 +9,12 @@ export default function Suites() {
     <section id="suites" className="py-20 md:py-32 bg-[#FAF9F6] overflow-hidden">
       <div className="container-wide">
         <div className="flex flex-col md:flex-row items-center justify-between mb-16 md:mb-24 gap-8 px-4">
-          <div className="max-w-2xl space-y-6">
-
+          <div className="max-w-2xl space-y-6 text-center md:text-start">
             <h2 className="text-5xl md:text-8xl font-serif leading-[0.85] tracking-tighter text-noir">
-              Nos <span className="italic text-gold">Écrins</span> de Luxe
+              Nos <span className="italic text-gold">Chambres</span> Premium
             </h2>
           </div>
-          <p className="text-noir/40 font-serif italic text-lg md:text-xl max-w-sm border-l border-gold/30 pl-8">
+          <p className="text-noir/40 font-serif italic text-lg md:text-xl max-w-sm border-l border-gold/30 pl-8 text-center md:text-start">
             Chaque suite est une promesse de déconnexion totale et de raffinement absolu.
           </p>
         </div>
@@ -58,7 +57,7 @@ export default function Suites() {
                       {suite.name}
                     </h3>
                   </div>
-                  
+
                   {suite.tagline && (
                     <p className="text-xl md:text-2xl font-serif italic text-gold/60 leading-tight">
                       {suite.tagline}
@@ -89,7 +88,7 @@ export default function Suites() {
                     <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
                   </div>
                   <span className="text-[10px] uppercase tracking-[0.4em] font-black text-noir border-b border-transparent group-hover:border-gold transition-all">
-                    Découvrir l'écrin
+                    Découvrir la chambre
                   </span>
                 </Link>
               </div>

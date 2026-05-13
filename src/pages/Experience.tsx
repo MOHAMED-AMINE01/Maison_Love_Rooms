@@ -1,12 +1,12 @@
 import React from 'react';
 import { motion } from 'motion/react';
-import { Wine, Heart, Sparkles, Moon, Check, Clock, ShieldCheck, Star, Utensils, Zap, Key, EyeOff } from 'lucide-react';
+import { Wine, Heart, Sparkles, Moon, Check, Clock, ShieldCheck, Star, Utensils, Zap, Key, EyeOff, Instagram } from 'lucide-react';
 
 const FORMULES = [
   {
     name: "Formule Essentielle",
     price: "189€",
-    description: "Une parenthèse enchantée centrée sur l'essentiel du luxe et de l'intimité.",
+    description: "Une parenthèse enchantée centrée sur l'essentiel du prestige et de l'intimité.",
     features: [
       "Arrivée 18h / Départ 11h",
       "Accès Balnéo privatif illimité",
@@ -100,13 +100,13 @@ export default function Experience() {
             {[
               { icon: <ShieldCheck size={32} strokeWidth={1} />, title: "Discrétion Absolue", desc: "Confirmation par email crypté. Aucune mention 'Love Room' sur vos relevés bancaires." },
               { icon: <Key size={32} strokeWidth={1} />, title: "Check-in Autonome", desc: "Entrée privée avec code unique reçu par SMS. Pas de réception, pas de personnel." },
-              { icon: <EyeOff size={32} strokeWidth={1} />, title: "Insonorisation", desc: "Suites pensées comme des cocons, parfaitement insonorisées pour une intimité totale." }
+              { icon: <EyeOff size={32} strokeWidth={1} />, title: "Insonorisation", desc: "Chambres pensées comme des cocons, parfaitement insonorisées pour une intimité totale." }
             ].map((step, i) => (
               <motion.div
                 key={i}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                className="bg-[#FAF9F6] p-8 md:p-10 rounded-[2.5rem] space-y-4 text-center border border-noir/[0.02] shadow-sm"
+                className="bg-[#FAF9F6] p-10 md:p-12 rounded-[3.5rem] space-y-4 text-center border border-noir/[0.02] shadow-sm hover:shadow-lg transition-all duration-700"
               >
                 <div className="text-gold flex justify-center">{step.icon}</div>
                 <h3 className="text-xl font-serif text-noir">{step.title}</h3>

@@ -50,8 +50,8 @@ export default function CustomDatePicker() {
         onClick={() => setIsOpen(!isOpen)}
         className="relative group cursor-pointer"
       >
-        <CalendarIcon className={`absolute left-6 top-1/2 -translate-y-1/2 transition-colors z-10 ${isOpen || selectedDate ? 'text-gold' : 'text-white/20 group-hover:text-gold/50'}`} size={18} />
-        <div className={`w-full bg-[#0A0A0A] border rounded-2xl p-6 pl-16 italic outline-none transition-all select-none ${isOpen ? 'border-gold shadow-[0_0_15px_rgba(188,155,93,0.1)]' : 'border-white/10 hover:border-white/30'} ${selectedDate ? 'text-white' : 'text-white/30'}`}>
+        <CalendarIcon className={`absolute left-6 top-1/2 -translate-y-1/2 transition-colors z-10 ${isOpen || selectedDate ? 'text-gold' : 'text-white/40 group-hover:text-gold/50'}`} size={18} />
+        <div className={`w-full bg-[#0A0A0A] border rounded-2xl p-6 pl-16 italic outline-none transition-all select-none ${isOpen ? 'border-gold shadow-[0_0_15px_rgba(188,155,93,0.1)]' : 'border-white/10 hover:border-white/30'} ${selectedDate ? 'text-white' : 'text-white/50'}`}>
           {selectedDate ? formatDate(selectedDate) : "Sélectionner une date"}
         </div>
       </div>
@@ -81,7 +81,7 @@ export default function CustomDatePicker() {
             {/* Days Header */}
             <div className="grid grid-cols-7 gap-1 mb-4 text-center">
               {dayNames.map(day => (
-                <div key={day} className="text-[10px] uppercase tracking-widest text-white/30 font-bold">{day}</div>
+                <div key={day} className="text-[10px] uppercase tracking-widest text-white/50 font-bold">{day}</div>
               ))}
             </div>
 

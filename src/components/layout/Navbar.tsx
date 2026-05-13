@@ -45,8 +45,8 @@ export default function Navbar() {
             {NAV_LINKS.map((link) => (
               <NavLink key={link.name} link={link} scrolled={scrolled} />
             ))}
-            <div className="h-4 w-px bg-noir/10 mx-2" />
-            <Link to="/checkout" className={`${scrolled ? 'bg-noir text-white shadow-lg' : 'bg-white/10 backdrop-blur-md border border-white/20 text-white'} px-8 py-3 rounded-full text-[10px] uppercase tracking-[0.3em] font-bold hover:bg-gold hover:text-white transition-all duration-500`}>
+            <div className={`h-4 w-px mx-2 transition-colors duration-700 ${scrolled ? 'bg-noir/10' : 'bg-white/20'}`} />
+            <Link to="/checkout" className={`${scrolled ? 'bg-noir text-white shadow-lg' : 'bg-white/20 backdrop-blur-md border border-white/30 text-white'} px-8 py-3 rounded-full text-[11px] uppercase tracking-[0.3em] font-bold hover:bg-gold hover:text-white transition-all duration-500`}>
               Réserver
             </Link>
           </div>
@@ -139,7 +139,7 @@ function NavLink({ link, onClick, isMobile, scrolled }: { link: any, onClick?: (
     <Comp
       {...props}
       onClick={onClick}
-      className={`relative group inline-block overflow-hidden transition-colors ${isMobile ? 'text-4xl font-serif italic py-2 text-white' : `text-[11px] font-serif uppercase tracking-[0.2em] ${scrolled ? 'text-noir/60 hover:text-gold' : 'text-white/60 hover:text-white'}`}`}
+      className={`relative group inline-block overflow-hidden transition-colors ${isMobile ? 'text-4xl font-serif italic py-2 text-white' : `text-[12px] font-serif uppercase tracking-[0.2em] ${scrolled ? 'text-noir hover:text-gold' : 'text-white hover:text-gold'}`}`}
     >
       <span className="relative z-10">{link.name}</span>
       <span className="absolute bottom-0 left-0 w-0 h-[1px] bg-gold group-hover:w-full transition-all duration-500" />

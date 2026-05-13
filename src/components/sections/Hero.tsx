@@ -1,10 +1,21 @@
-import { motion } from "motion/react";
+import { motion, useScroll, useTransform } from "motion/react";
 import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 export default function Hero() {
   const [scrolled, setScrolled] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start start", "end start"]
+  });
+
+  const y1 = useTransform(scrollYProgress, [0, 1], [0, -100]);
+  const y2 = useTransform(scrollYProgress, [0, 1], [0, -50]);
+  const y3 = useTransform(scrollYProgress, [0, 1], [0, -150]);
+
   useEffect(() => {
     const handleScroll = () => {
       if (window.scrollY > 20) {
@@ -17,9 +28,11 @@ export default function Hero() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
   return (
-    <section id="hero" className="relative min-h-[100svh] bg-[#121212] flex items-center py-34 lg:pb-0 lg:pt-15 overflow-hidden">
-      {/* Background Decorative Gradients */}
-      <div className="absolute top-0 right-0 w-[50%] h-full bg-gradient-to-l from-noir/20 to-transparent z-0" />
+    <section ref={containerRef} id="hero" className="relative min-h-[100svh] bg-[#121212] flex items-center py-34 lg:pb-0 lg:pt-15 overflow-hidden">
+      {/* Background Decorative Gradients & Grain */}
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_50%,rgba(188,155,93,0.05),transparent_50%)] z-0" />
+      <div className="absolute top-0 right-0 w-[50%] h-full bg-gradient-to-l from-noir/40 to-transparent z-0" />
+      <div className="absolute inset-0 opacity-[0.03] pointer-events-none mix-blend-overlay z-0" style={{ backgroundImage: `url("https://grainy-gradients.vercel.app/noise.svg")` }} />
 
       <div className="container-wide relative z-10 px-6 lg:px-12 w-full">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center">
@@ -39,8 +52,8 @@ export default function Hero() {
                 <span className="italic text-white/40">en Héritage.</span>
               </h1>
 
-              <p className="max-w-md text-lg md:text-xl font-light text-white/30 leading-relaxed font-sans">
-                Une parenthèse suspendue au cœur de Paris. Redécouvrez la volupté dans nos écrins de prestige, pensés pour l'inoubliable.
+              <p className="max-w-md text-lg md:text-xl font-light text-white/40 leading-relaxed font-sans border-l border-white/10 pl-8">
+                Une adresse confidentielle au cœur de Paris. Redécouvrez la volupté dans nos chambres de prestige, pensés pour l'inoubliable.
               </p>
             </motion.div>
 
@@ -68,102 +81,70 @@ export default function Hero() {
               </a>
             </motion.div>
           </div>
-          {/* Right Column: Organic Image Composition */}
-          <div className="relative h-[450px] md:h-[550px] lg:h-[700px] xl:h-[650px] order-1 lg:order-2 flex items-center justify-center mb-12 lg:mb-0">
 
-            {/* Doodles (SVG Scribbles) - Hidden on mobile to keep it clean */}
-            <div className="absolute inset-0 pointer-events-none z-20 hidden md:block">
-              {/* Rays doodle (top right of main image) */}
-              <motion.svg
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 0.6 }}
-                transition={{ delay: 1 }}
-                className="absolute top-0 right-10 w-24 h-24 text-white" viewBox="0 0 100 100"
-              >
-                <path d="M50 10 L50 30 M80 20 L70 35 M90 50 L70 50 M80 80 L70 65" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-              </motion.svg>
+          {/* Right Column: Three Homogeneous Circles in Staircase Layout */}
+          <div className="relative h-[450px] md:h-[550px] lg:h-[600px] order-1 lg:order-2 flex items-center justify-center mb-12 lg:mb-0 w-full max-w-[500px] mx-auto">
 
-              {/* Rays doodle (bottom of middle image) */}
-              <motion.svg
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 0.6 }}
-                transition={{ delay: 1.2 }}
-                className="absolute bottom-1/4 left-1/4 w-16 h-16 text-white" viewBox="0 0 100 100"
-              >
-                <path d="M10 50 L30 50 M20 20 L35 35 M50 10 L50 30" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-              </motion.svg>
-
-              {/* Swirl doodle (bottom left) */}
-              <motion.svg
-                initial={{ pathLength: 0, opacity: 0 }}
-                animate={{ pathLength: 1, opacity: 0.4 }}
-                transition={{ duration: 2, delay: 1.5 }}
-                className="absolute bottom-10 left-0 w-32 h-32 text-white" viewBox="0 0 100 100"
-              >
-                <path d="M20,80 Q40,40 60,80 T90,20 Q10,10 20,80" fill="none" stroke="currentColor" strokeWidth="1.5" />
-              </motion.svg>
+            {/* Background Decorative Rings */}
+            <div className="absolute inset-0 flex items-center justify-center opacity-10">
+              <div className="w-[80%] aspect-square border border-gold rounded-full" />
+              <div className="w-[60%] aspect-square border border-white/20 rounded-full absolute" />
             </div>
 
-            {/* Main Arch Image (Right) */}
+            {/* Circle 1: Top Left */}
             <motion.div
-              initial={{ opacity: 0, scale: 0.9, x: 50 }}
-              animate={{ opacity: 1, scale: 1, x: 0 }}
-              transition={{ duration: 1.5, ease: [0.19, 1, 0.22, 1] }}
-              className="absolute right-0 w-[75%] md:w-[65%] h-full rounded-t-[8rem] md:rounded-t-[10rem] rounded-b-[1.5rem] md:rounded-b-[2rem] overflow-hidden border-[8px] md:border-[10px] border-white/5 shadow-2xl z-10"
+              style={{ y: y1 }}
+              initial={{ opacity: 0, x: -30, y: -30 }}
+              animate={{ opacity: 1, x: 0, y: 0 }}
+              transition={{ duration: 1.5, ease: "easeOut" }}
+              className="absolute top-0 left-0 w-[55%] aspect-square z-10"
             >
-              <img
-                src="/IMG_6701.jpeg"
-                className="w-full h-full object-cover"
-                alt="Main view"
-              />
+              <div className="w-full h-full rounded-full overflow-hidden border-2 border-white/10 shadow-2xl">
+                <img src="/IMG_6701.jpeg" className="w-full h-full object-cover" alt="View 1" />
+              </div>
             </motion.div>
 
-            {/* Secondary Organic Image (Top Left of main) */}
+            {/* Circle 2: Middle Right (Offset) */}
             <motion.div
-              initial={{ opacity: 0, scale: 0.8, x: -30, y: -30 }}
-              animate={{ opacity: 1, scale: 1, x: 0, y: 0 }}
-              transition={{ duration: 1.2, delay: 0.3, ease: "easeOut" }}
-              className="absolute top-8 md:top-10 left-4 md:left-10 w-[50%] md:w-[45%] h-[50%] md:h-[55%] overflow-hidden z-20"
-              style={{ borderRadius: "60% 40% 30% 70% / 60% 30% 70% 40%" }}
+              style={{ y: y2 }}
+              initial={{ opacity: 0, x: 30 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 1.5, delay: 0.3, ease: "easeOut" }}
+              className="absolute top-1/2 right-0 -translate-y-1/2 w-[55%] aspect-square z-20"
             >
-              <div className="absolute inset-0 border-[4px] md:border-[6px] border-white/10 rounded-inherit pointer-events-none" />
-              <img
-                src="/IMG_6409.jpeg"
-                className="w-full h-full object-cover scale-110"
-                alt="Room detail"
-              />
+              <div className="w-full h-full rounded-full overflow-hidden border-4 border-[#121212] shadow-[0_30px_60px_-15px_rgba(0,0,0,0.5)]">
+                <img src="/IMG_6406.jpeg" className="w-full h-full object-cover" alt="View 2" />
+              </div>
+              {/* Subtle Gold Ring on the Middle Circle */}
+              <div className="absolute inset-0 rounded-full border border-gold/30 pointer-events-none" />
             </motion.div>
 
-            {/* Third Organic Image (Bottom Left of main) */}
+            {/* Circle 3: Bottom Left */}
             <motion.div
-              initial={{ opacity: 0, scale: 0.8, x: -30, y: 30 }}
-              animate={{ opacity: 1, scale: 1, x: 0, y: 0 }}
-              transition={{ duration: 1.2, delay: 0.6, ease: "easeOut" }}
-              className="absolute bottom-8 md:bottom-10 left-[10%] md:left-[15%] w-[45%] md:w-[40%] h-[35%] md:h-[40%] overflow-hidden z-20 shadow-xl"
-              style={{ borderRadius: "40% 60% 70% 30% / 40% 50% 60% 70%" }}
+              style={{ y: y3 }}
+              initial={{ opacity: 0, x: -30, y: 30 }}
+              animate={{ opacity: 1, x: 0, y: 0 }}
+              transition={{ duration: 1.5, delay: 0.6, ease: "easeOut" }}
+              className="absolute bottom-0 left-0 w-[55%] aspect-square z-10"
             >
-              <div className="absolute inset-0 border-[4px] md:border-[6px] border-white/10 rounded-inherit pointer-events-none" />
-              <img
-                src="/IMG_6309.jpeg"
-                className="w-full h-full object-cover"
-                alt="Bathroom detail"
-              />
+              <div className="w-full h-full rounded-full overflow-hidden border-2 border-white/10 shadow-2xl">
+                <img src="/IMG_6403.jpeg" className="w-full h-full object-cover" alt="View 3" />
+              </div>
             </motion.div>
 
-            {/* Doodle Cross / Sparkle */}
+            {/* Central Decorative Sparkle */}
             <motion.div
-              animate={{ rotate: 360 }}
-              transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-              className="absolute bottom-20 right-1/4 z-30 text-white/40 hidden md:block"
+              animate={{ opacity: [0.2, 0.5, 0.2] }}
+              transition={{ duration: 4, repeat: Infinity }}
+              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-0 text-gold/40"
             >
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1">
                 <path d="M12 2L12 22M2 12L22 12" />
               </svg>
             </motion.div>
           </div>
         </div>
       </div>
-
 
     </section>
   );

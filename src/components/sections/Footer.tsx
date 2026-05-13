@@ -37,7 +37,7 @@ export default function Footer() {
                 { label: "Foire Aux Questions", to: "/#faq" }
               ].map((item) => (
                 <li key={item.label}>
-                  <Link to={item.to} className="text-sm font-light text-white/40 hover:text-white transition-all duration-500 flex items-center gap-4 group justify-center md:justify-start">
+                  <Link to={item.to} className="text-sm font-light text-white/60 hover:text-white transition-all duration-500 flex items-center gap-4 group justify-center md:justify-start">
                     <span className="w-0 h-[1px] bg-gold group-hover:w-4 transition-all duration-500 hidden md:block" />
                     <span className="italic font-serif">{item.label}</span>
                   </Link>
@@ -51,21 +51,21 @@ export default function Footer() {
             <ul className="space-y-8">
               <li className="space-y-3 flex flex-col items-center md:items-start">
                 <span className="text-[9px] uppercase tracking-[0.3em] text-white/20 font-bold flex items-center gap-2"><Phone size={12} /> Réservations</span>
-                <p className="text-white/60 font-serif italic text-lg hover:text-white transition-colors cursor-pointer">06 27 09 47 17</p>
+                <p className="text-white/80 font-serif italic text-lg hover:text-white transition-colors cursor-pointer">06 27 09 47 17</p>
               </li>
               <li className="space-y-3 flex flex-col items-center md:items-start">
                 <span className="text-[9px] uppercase tracking-[0.3em] text-white/20 font-bold flex items-center gap-2"><Mail size={12} /> Conciergerie</span>
-                <p className="text-white/60 font-serif italic text-lg hover:text-white transition-colors cursor-pointer">privilege@maisonloveroom.fr</p>
+                <p className="text-white/80 font-serif italic text-lg hover:text-white transition-colors cursor-pointer">privilege@maisonloveroom.fr</p>
               </li>
               <li className="space-y-3 flex flex-col items-center md:items-start">
                 <span className="text-[9px] uppercase tracking-[0.3em] text-white/20 font-bold flex items-center gap-2"><MapPin size={12} /> Adresse Secrète</span>
-                <p className="text-white/40 font-sans font-light text-sm">Paris, France (Révélée après réservation)</p>
+                <p className="text-white/60 font-sans font-light text-sm">Paris, France (Révélée après réservation)</p>
               </li>
             </ul>
           </div>
         </div>
 
-        <div className="pt-10 border-t border-white/5 flex flex-col lg:flex-row justify-between items-center gap-8 text-[10px] uppercase tracking-[0.2em] sm:tracking-[0.4em] font-bold text-white/20 text-center lg:text-left">
+        <div className="pt-10 border-t border-white/5 flex flex-col lg:flex-row justify-between items-center gap-8 text-[10px] uppercase tracking-[0.2em] sm:tracking-[0.4em] font-bold text-white/40 text-center lg:text-left">
           <p>© {new Date().getFullYear()} MAISON LOVE ROOMs PARIS • ALL RIGHTS RESERVED</p>
           <div className="flex flex-wrap justify-center gap-4 sm:gap-8 items-center">
             <Link to="/cgv" className="hover:text-gold transition-colors">CGV</Link>
