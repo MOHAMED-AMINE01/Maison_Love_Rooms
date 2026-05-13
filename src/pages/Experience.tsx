@@ -8,11 +8,13 @@ const FORMULES = [
     price: "189€",
     description: "Une parenthèse enchantée centrée sur l'essentiel du luxe et de l'intimité.",
     features: [
-      "Une nuit pour deux personnes",
-      "Une bouteille de champagne offerte",
-      "Accès balnéo/spa privatif illimité",
+      "Arrivée 18h / Départ 11h",
+      "Accès Balnéo privatif illimité",
+      "Ambiance romantique (Bougies LED)",
+      "1 Bouteille de champagne offerte",
+      "Linge de lit & Serviettes épaisses",
       "Café Nespresso & Thés à disposition",
-      "Linge de maison & Produits d'hygiène",
+      "Produits de douche & Hygiène",
       "Ménage premium inclus"
     ],
     cta: "Réserver cette formule",
@@ -23,13 +25,14 @@ const FORMULES = [
     price: "299€",
     description: "L'immersion totale. Chaque détail est orchestré pour une nuit inoubliable.",
     features: [
-      "Tout le contenu de la formule Essentielle",
-      "Plateau repas raffiné (Salé & Sucré)",
-      "Petit-déjeuner complet (Pancakes, fruits...)",
-      "Décoration romantique (Pétales, bougies LED)",
-      "Sélection de softs & rafraîchissements",
-      "Peignoirs premium à disposition",
-      "Boîtes de jeux & Ambiance personnalisée"
+      "Tout le contenu de l'Essentielle",
+      "1/2 Bouteille de soft / Eau pétillante",
+      "Plateau Repas (Salé & Sucré) pour 2",
+      "Petit-déjeuner complet (Pancakes...)",
+      "Décoration pétales de roses",
+      "Ambiance Musicale (Enceinte Bluetooth)",
+      "Boîtes de jeux & Accessoires",
+      "Peignoirs premium à disposition"
     ],
     cta: "Réserver l'expérience complète",
     popular: true
@@ -37,15 +40,17 @@ const FORMULES = [
 ];
 
 const COMPARISON_DATA = [
-  { label: "Nuitée pour 2 personnes", e: true, c: true },
+  { label: "Check-in 18h / Check-out 11h", e: true, c: true },
+  { icon: Sparkles, label: "Balnéo privatif illimité", e: true, c: true },
   { icon: Wine, label: "Bouteille de Champagne", e: true, c: true },
-  { icon: Sparkles, label: "Accès Spa/Balnéo illimité", e: true, c: true },
-  { label: "Softs & Rafraîchissements", e: false, c: true },
+  { icon: Heart, label: "Ambiance Romantique (Bougies LED)", e: true, c: true },
+  { label: "Linge complet & Hygiène", e: true, c: true },
+  { label: "Ménage Premium", e: true, c: true },
   { icon: Utensils, label: "Plateau Repas (Salé & Sucré)", e: false, c: true },
-  { label: "Petit-Déjeuner Gourmand", e: false, c: true },
-  { icon: Heart, label: "Décoration Romantique", e: false, c: true },
-  { label: "Peignoirs & Linge Premium", e: false, c: true },
-  { icon: Zap, label: "Ambiance (Jeux, Musique)", e: false, c: true },
+  { label: "Petit-Déjeuner (Pancakes, Fruits...)", e: false, c: true },
+  { label: "Softs & Eaux Pétillantes", e: false, c: true },
+  { icon: Zap, label: "Ambiance (Jeux, Musique Bluetooth)", e: false, c: true },
+  { label: "Peignoirs de bain Premium", e: false, c: true },
 ];
 
 export default function Experience() {
