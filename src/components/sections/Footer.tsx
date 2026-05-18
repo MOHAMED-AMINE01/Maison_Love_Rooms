@@ -1,8 +1,34 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Instagram, Phone, Mail, MapPin } from "lucide-react";
 import { Link } from "react-router-dom";
+import { API_URL } from '../../constants';
 
 export default function Footer() {
+  const [contactInfo, setContactInfo] = useState({
+    phone: "06 27 09 47 17",
+    email: "privilege@maisonloveroom.fr",
+    address: "Paris, France (Révélée après réservation)"
+  });
+
+  useEffect(() => {
+    const getSettings = async () => {
+      try {
+        const res = await fetch(`${API_URL}/api/settings`);
+        if (res.ok) {
+          const data = await res.json();
+          setContactInfo({
+            phone: data.phone || "06 27 09 47 17",
+            email: data.email || "privilege@maisonloveroom.fr",
+            address: data.address || "Paris, France (Révélée après réservation)"
+          });
+        }
+      } catch (err) {
+        console.error("Failed to load settings in Footer", err);
+      }
+    };
+    getSettings();
+  }, []);
+
   return (
     <footer id="footer" className="bg-[#0A0A0A] py-20 md:py-20 relative overflow-hidden border-t border-white/5 selection:bg-gold/30">
       {/* Decorative Branding Background */}
@@ -51,15 +77,15 @@ export default function Footer() {
             <ul className="space-y-8">
               <li className="space-y-3 flex flex-col items-center md:items-start">
                 <span className="text-[9px] uppercase tracking-[0.3em] text-white/20 font-bold flex items-center gap-2"><Phone size={12} /> Réservations</span>
-                <p className="text-white/80 font-serif italic text-lg hover:text-white transition-colors cursor-pointer">06 27 09 47 17</p>
+                <p className="text-white/80 font-serif italic text-lg hover:text-white transition-colors cursor-pointer">{contactInfo.phone}</p>
               </li>
               <li className="space-y-3 flex flex-col items-center md:items-start">
                 <span className="text-[9px] uppercase tracking-[0.3em] text-white/20 font-bold flex items-center gap-2"><Mail size={12} /> Conciergerie</span>
-                <p className="text-white/80 font-serif italic text-lg hover:text-white transition-colors cursor-pointer">privilege@maisonloveroom.fr</p>
+                <p className="text-white/80 font-serif italic text-lg hover:text-white transition-colors cursor-pointer">{contactInfo.email}</p>
               </li>
               <li className="space-y-3 flex flex-col items-center md:items-start">
                 <span className="text-[9px] uppercase tracking-[0.3em] text-white/20 font-bold flex items-center gap-2"><MapPin size={12} /> Adresse Secrète</span>
-                <p className="text-white/60 font-sans font-light text-sm">Paris, France (Révélée après réservation)</p>
+                <p className="text-white/60 font-sans font-light text-sm">{contactInfo.address}</p>
               </li>
             </ul>
           </div>

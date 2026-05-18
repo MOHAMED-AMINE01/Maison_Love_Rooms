@@ -70,9 +70,38 @@
     width: 0 !important;
     height: 0 !important;
   }
-  html, body, * {
-    -ms-overflow-style: none !important;  /* IE and Edge */
-    scrollbar-width: none !important;  /* Firefox */
+
+  html,
+  body,
+  * {
+    -ms-overflow-style: none !important;
+    /* IE and Edge */
+    scrollbar-width: none !important;
+    /* Firefox */
+  }
+
+  /* Style des inputs de type date pour s'adapter au thème noir & or de l'admin */
+  input[type="date"] {
+    color-scheme: dark;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: invert(0.6) sepia(0.8) saturate(1.5) hue-rotate(15deg) brightness(1.2);
+    cursor: pointer;
+    opacity: 0.6;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+  }
+
+  input[type="date"]::-webkit-calendar-picker-indicator:hover {
+    opacity: 1;
+    transform: scale(1.1);
+  }
+
+  input[type="date"]:focus {
+    border-color: rgba(188, 155, 93, 0.3) !important;
+    outline: none;
   }
 }
 

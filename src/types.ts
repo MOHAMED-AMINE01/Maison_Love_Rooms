@@ -5,6 +5,7 @@ export interface Suite {
   description: string;
   price: number;
   image: string;
+  images?: string[];
   fallback?: string;
   features: string[];
 }

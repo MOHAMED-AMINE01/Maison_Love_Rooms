@@ -6,6 +6,7 @@ import { ArrowRight, Menu, X } from 'lucide-react';
 const NAV_LINKS = [
   { name: 'Nos Chambres', to: '/#suites', isHash: true },
   { name: 'Expérience', to: '/experience' },
+  { name: 'Cartes Cadeaux', to: '/cartes-cadeaux' },
   { name: 'Contact', to: '/#contact', isHash: true },
 ];
 
@@ -29,7 +30,7 @@ export default function Navbar() {
   return (
     <>
 
-      <nav className={`fixed top-8 left-1/2 -translate-x-1/2 w-[95%] max-w-[1400px] z-[110] transition-all duration-700 ${scrolled ? 'bg-white/80 backdrop-blur-2xl py-0 shadow-[0_20px_50px_-15px_rgba(0,0,0,0.05)] rounded-full border border-noir/5' : 'bg-transparent py-6'}`}>
+      <nav className={`fixed top-8 left-1/2 -translate-x-1/2 w-[95%] max-w-[1400px] z-[110] transition-all duration-700 ${scrolled ? 'bg-white/80 backdrop-blur-2xl py-0 shadow-[0_20px_50px_-15px_rgba(0,0,0,0.05)] rounded-full border border-noir/5' : 'bg-transparent py-2'}`}>
         <div className="container-wide flex items-center justify-between px-10">
           {/* Logo */}
           <Link to="/" className="relative z-[110] group">

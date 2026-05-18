@@ -1,9 +1,28 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { Send, Mail, User, MessageSquare, Sparkles } from 'lucide-react';
+import { API_URL } from '../../constants';
 
 export default function Contact() {
   const [focused, setFocused] = useState<string | null>(null);
+  const [email, setEmail] = useState("privilege@maisonloveroom.fr");
+
+  useEffect(() => {
+    const getSettings = async () => {
+      try {
+        const res = await fetch(`${API_URL}/api/settings`);
+        if (res.ok) {
+          const data = await res.json();
+          if (data.email) {
+            setEmail(data.email);
+          }
+        }
+      } catch (err) {
+        console.error("Failed to load settings in Contact", err);
+      }
+    };
+    getSettings();
+  }, []);
 
   return (
     <section id="contact" className="py-24 md:py-40 bg-[#FAF9F6] relative overflow-hidden">
@@ -45,7 +64,7 @@ export default function Contact() {
 
             <div className="space-y-6 pt-4">
               {[
-                { icon: Mail, label: "Email", value: "privilege@maisonloveroom.fr" },
+                { icon: Mail, label: "Email", value: email },
                 { icon: Sparkles, label: "Réponse sous", value: "2 heures (Conciergerie)" }
               ].map((item, i) => (
                 <motion.div 

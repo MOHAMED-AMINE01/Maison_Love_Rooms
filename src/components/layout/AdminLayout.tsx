@@ -1,61 +1,102 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion } from 'motion/react';
-import { 
-  LayoutDashboard, 
-  CalendarDays, 
-  BedDouble, 
-  Sparkles, 
-  ShoppingBag, 
-  Settings, 
+import {
+  LayoutDashboard,
+  CalendarDays,
+  BedDouble,
+  Sparkles,
+  Users,
+  Settings,
   LogOut,
   Bell,
   Search,
-  ChevronRight
+  Globe,
+  ChevronRight,
+  Menu,
+  Gift,
+  X
 } from "lucide-react";
-import { Link, useLocation, Outlet } from "react-router-dom";
+import { Link, useLocation, Outlet, useNavigate } from "react-router-dom";
 
 const SIDEBAR_ITEMS = [
   { icon: LayoutDashboard, label: "Dashboard", path: "/admin" },
   { icon: CalendarDays, label: "Réservations", path: "/admin/reservations" },
   { icon: BedDouble, label: "Chambres", path: "/admin/chambres" },
   { icon: Sparkles, label: "Disponibilités", path: "/admin/disponibilites" },
-  { icon: Sparkles, label: "Prestations", path: "/admin/prestations" },
-  { icon: ShoppingBag, label: "Boutique", path: "/admin/boutique" },
+  { icon: Sparkles, label: "Boutique & Options", path: "/admin/boutique" },
+  { icon: Gift, label: "Cartes Cadeaux", path: "/admin/cartes-cadeaux" },
   { icon: Settings, label: "Paramètres", path: "/admin/settings" },
 ];
 
 export default function AdminLayout() {
   const location = useLocation();
+  const navigate = useNavigate();
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  useEffect(() => {
+    const token = localStorage.getItem('adminToken');
+    if (!token) {
+      navigate('/admin/login', { replace: true });
+    }
+  }, [navigate]);
+
+  const handleLogout = () => {
+    localStorage.removeItem('adminToken');
+    localStorage.removeItem('adminUser');
+    navigate('/admin/login', { replace: true });
+  };
 
   return (
-    <div className="min-h-screen bg-admin-bg text-white font-sans flex">
-      {/* Sidebar */}
-      <aside className="w-72 border-r border-admin-border flex flex-col fixed h-full bg-admin-bg z-50">
-        <div className="p-8">
-          <Link to="/" className="flex flex-col group">
-            <span className="text-xl font-serif tracking-[0.2em] uppercase font-bold text-white">Maison</span>
-            <span className="text-[10px] tracking-[0.6em] uppercase text-gold font-bold -mt-1">Admin</span>
+    <div className="min-h-screen bg-[#0A0E17] text-white font-sans flex selection:bg-gold/20 relative">
+      {/* Overlay mobile quand la sidebar est ouverte */}
+      {isSidebarOpen && (
+        <div
+          className="fixed inset-0 bg-black/80 backdrop-blur-sm z-40 lg:hidden"
+          onClick={() => setIsSidebarOpen(false)}
+        />
+      )}
+
+      {/* Sidebar - Rétractable sur mobile/tablette */}
+      <aside className={`w-72 border-r border-white/[0.05] flex flex-col fixed inset-y-0 left-0 bg-[#0D121E] z-50 shadow-2xl transform transition-transform duration-300 lg:translate-x-0 ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
+        }`}>
+        {/* Logo / En-tête */}
+        <div className="p-8 border-b border-white/[0.05] flex justify-between items-center">
+          <Link to="/admin" className="flex flex-col group" onClick={() => setIsSidebarOpen(false)}>
+            <span className="text-xl font-serif tracking-[0.15em] uppercase font-bold text-white group-hover:text-gold transition-colors">
+              Maison Love Rooms
+            </span>
+            <span className="text-xs tracking-[0.4em] uppercase text-gold font-bold mt-1">
+              ADMIN
+            </span>
           </Link>
+          <button
+            onClick={() => setIsSidebarOpen(false)}
+            className="lg:hidden p-2 text-white/60 hover:text-white rounded-lg hover:bg-white/[0.05]"
+          >
+            <X size={20} />
+          </button>
         </div>
 
-        <nav className="flex-1 px-4 space-y-2 py-4">
+        {/* Navigation principale */}
+        <nav className="flex-1 px-6 space-y-2 py-8 overflow-y-auto">
           {SIDEBAR_ITEMS.map((item) => {
             const isActive = location.pathname === item.path;
             const Icon = item.icon;
             return (
-              <Link 
-                key={item.path} 
+              <Link
+                key={item.path}
                 to={item.path}
-                className={`admin-sidebar-item ${isActive ? 'active' : ''}`}
+                onClick={() => setIsSidebarOpen(false)}
+                className={`flex items-center gap-4 px-4 py-3.5 rounded-xl transition-all duration-300 group ${isActive
+                  ? 'bg-gradient-to-r from-gold/20 to-gold-light/10 text-gold border-l-4 border-gold font-semibold shadow-lg shadow-gold/5'
+                  : 'text-white/40 hover:text-white hover:bg-white/[0.02]'
+                  }`}
               >
-                <Icon size={18} />
-                <span className="text-sm font-medium">{item.label}</span>
+                <Icon size={20} className={isActive ? 'text-gold' : 'text-white/40 group-hover:text-white transition-colors'} />
+                <span className="text-sm tracking-wide">{item.label}</span>
                 {isActive && (
-                  <motion.div 
-                    layoutId="active-pill"
-                    className="ml-auto"
-                  >
-                    <ChevronRight size={14} className="text-gold" />
+                  <motion.div layoutId="active-indicator" className="ml-auto">
+                    <ChevronRight size={16} className="text-gold" />
                   </motion.div>
                 )}
               </Link>
@@ -63,57 +104,71 @@ export default function AdminLayout() {
           })}
         </nav>
 
-        <div className="p-4 mt-auto border-t border-admin-border">
-          <button className="flex items-center gap-4 px-4 py-3 w-full rounded-lg text-white/40 hover:text-red-400 hover:bg-red-400/5 transition-all duration-200">
-            <LogOut size={18} />
-            <span className="text-sm font-medium">Déconnexion</span>
+        {/* Section Bas de Sidebar */}
+        <div className="p-6 border-t border-white/[0.05] space-y-6 bg-white/[0.01]">
+          {/* Lien Accéder au site */}
+          <Link
+            to="/"
+            target="_blank"
+            className="flex items-center gap-4 px-4 py-3 rounded-xl text-white/60 hover:text-white hover:bg-white/[0.04] transition-all duration-300 group border border-white/[0.05]"
+          >
+            <Globe size={18} className="text-white/40 group-hover:text-gold transition-colors" />
+            <span className="text-sm font-medium tracking-wide">Accéder au site</span>
+          </Link>
+
+          {/* Profil Utilisateur */}
+          <div className="flex items-center gap-4 px-2">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-gold to-gold-light p-[2px] shadow-lg shadow-gold/20 flex-shrink-0">
+              <div className="w-full h-full rounded-[10px] bg-[#0D121E] flex items-center justify-center text-xs font-bold text-gold">
+                SA
+              </div>
+            </div>
+            <div className="flex flex-col overflow-hidden">
+              <span className="text-sm font-bold text-white tracking-wide truncate">Super Admin</span>
+              <span className="text-[10px] text-white/40 tracking-wider font-mono truncate">admin@maisonloverooms.com</span>
+            </div>
+          </div>
+
+          {/* Déconnexion */}
+          <button
+            onClick={handleLogout}
+            className="flex items-center gap-4 px-4 py-3 w-full rounded-xl text-rose-400/70 hover:text-rose-400 hover:bg-rose-500/10 transition-all duration-300 group border border-transparent hover:border-rose-500/20"
+          >
+            <LogOut size={18} className="group-hover:scale-110 transition-transform" />
+            <span className="text-sm font-medium tracking-wide">Déconnexion</span>
           </button>
         </div>
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 ml-72">
-        {/* Header */}
-        <header className="h-20 border-b border-admin-border flex items-center justify-between px-10 bg-admin-bg/80 backdrop-blur-xl sticky top-0 z-40">
+      <main className="flex-1 lg:ml-72 bg-[#0A0E17] min-h-screen flex flex-col w-full overflow-x-hidden">
+        {/* Header Responsive */}
+        <header className="h-20 lg:h-24 border-b border-white/[0.05] flex items-center justify-between px-6 lg:px-12 bg-[#0A0E17]/80 backdrop-blur-2xl sticky top-0 z-40">
           <div className="flex items-center gap-4">
-            <h1 className="text-xl font-serif tracking-wide capitalize">
+            <button
+              onClick={() => setIsSidebarOpen(true)}
+              className="lg:hidden p-2 text-white/60 hover:text-white rounded-lg hover:bg-white/[0.05]"
+            >
+              <Menu size={24} />
+            </button>
+            <h1 className="text-xl lg:text-2xl font-serif tracking-wide capitalize text-white">
               {SIDEBAR_ITEMS.find(item => item.path === location.pathname)?.label || "Dashboard"}
             </h1>
-            <div className="h-4 w-px bg-admin-border mx-2" />
-            <span className="text-xs text-white/40 uppercase tracking-widest font-medium">
-               Gestion de l'excellence
+            <div className="hidden sm:block h-4 w-px bg-white/10 mx-2" />
+            <span className="hidden sm:inline-block text-xs text-gold uppercase tracking-widest font-semibold bg-gold/10 px-3 py-1 rounded-full border border-gold/20">
+              Vue d'ensemble
             </span>
-          </div>
-
-          <div className="flex items-center gap-6">
-            <div className="relative group flex items-center bg-white/[0.03] border border-white/[0.05] rounded-lg px-4 py-2 hover:border-gold/30 transition-all">
-              <Search size={16} className="text-white/40" />
-              <input 
-                type="text" 
-                placeholder="Rechercher..." 
-                className="bg-transparent border-none focus:ring-0 text-sm ml-3 w-40 text-white placeholder:text-white/20"
-              />
-            </div>
-            <button className="relative text-white/40 hover:text-white transition-colors">
-              <Bell size={20} />
-              <div className="absolute -top-1 -right-1 w-2 h-2 bg-gold rounded-full border-2 border-admin-bg" />
-            </button>
-            <div className="flex items-center gap-3 pl-4 border-l border-admin-border">
-              <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-gold to-gold/20 p-px">
-                <div className="w-full h-full rounded-full bg-admin-bg flex items-center justify-center text-[10px] font-bold">
-                   JD
-                </div>
-              </div>
-              <span className="text-xs font-semibold">Jean Dupont</span>
-            </div>
           </div>
         </header>
 
         {/* Page Content */}
-        <div className="p-10">
+        <div className="p-6 lg:p-12 flex-1 max-w-[1600px] w-full mx-auto overflow-x-hidden">
           <Outlet />
         </div>
       </main>
     </div>
   );
 }
+
+
+

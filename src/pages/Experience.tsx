@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion } from 'motion/react';
-import { Wine, Heart, Sparkles, Moon, Check, Clock, ShieldCheck, Star, Utensils, Zap, Key, EyeOff, Instagram } from 'lucide-react';
+import { Wine, Heart, Sparkles, Moon, Check, Clock, ShieldCheck, Star, Utensils, Zap, Key, EyeOff, Instagram, ArrowRight } from 'lucide-react';
+import { API_URL } from '../constants';
 
 const FORMULES = [
   {
@@ -39,6 +40,8 @@ const FORMULES = [
   }
 ];
 
+
+
 const COMPARISON_DATA = [
   { label: "Check-in 18h / Check-out 11h", e: true, c: true },
   { icon: Sparkles, label: "Balnéo privatif illimité", e: true, c: true },
@@ -53,7 +56,89 @@ const COMPARISON_DATA = [
   { label: "Peignoirs de bain Premium", e: false, c: true },
 ];
 
+// Mappe un label à une icône Lucide via mots-clés
+const getIconForLabel = (label: string) => {
+  const l = label.toLowerCase();
+  if (l.includes('champagne') || l.includes('bouteille') || l.includes('vin')) return Wine;
+  if (l.includes('balnéo') || l.includes('spa') || l.includes('jacuzzi')) return Sparkles;
+  if (l.includes('romantique') || l.includes('bougies') || l.includes('pétales') || l.includes('rose')) return Heart;
+  if (l.includes('repas') || l.includes('petit-déjeuner') || l.includes('dîner') || l.includes('traiteur')) return Utensils;
+  if (l.includes('musique') || l.includes('jeux') || l.includes('bluetooth') || l.includes('ambiance')) return Zap;
+  return null;
+};
+
 export default function Experience() {
+  const [formulesList, setFormulesList] = useState(FORMULES);
+  const [comparisonData, setComparisonData] = useState(COMPARISON_DATA);
+  const [checkInTime, setCheckInTime] = useState("18h");
+  const [checkOutTime, setCheckOutTime] = useState("11h");
+  const [maxNights, setMaxNights] = useState(2);
+  const [isScrollable, setIsScrollable] = useState(false);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+
+  const checkScroll = () => {
+    if (scrollContainerRef.current) {
+      const { scrollWidth, clientWidth } = scrollContainerRef.current;
+      setIsScrollable(scrollWidth > clientWidth);
+    }
+  };
+
+  useEffect(() => {
+    checkScroll();
+    const timeout = setTimeout(checkScroll, 100);
+    window.addEventListener('resize', checkScroll);
+    return () => {
+      clearTimeout(timeout);
+      window.removeEventListener('resize', checkScroll);
+    };
+  }, [formulesList]);
+
+  useEffect(() => {
+    // Fetch services
+    fetch(`${API_URL}/api/services`)
+      .then(res => res.json())
+      .then(data => {
+        if (Array.isArray(data)) {
+          const activeFormules = data
+            .filter((s: any) => s.status === 'actif')
+            .map((s: any, idx: number) => ({
+              name: s.name,
+              price: `${s.price}€`,
+              description: s.description,
+              features: s.features && s.features.length > 0 ? s.features : (FORMULES[idx]?.features || FORMULES[0].features),
+              cta: s.name.toLowerCase().includes('complète') ? "Réserver l'expérience complète" : "Réserver cette formule",
+              popular: s.isPopular === true
+            }));
+          if (activeFormules.length > 0) {
+            setFormulesList(activeFormules);
+          }
+        }
+      })
+      .catch(() => console.log('Utilisation des formules statiques de secours'));
+
+    // Fetch tableau comparatif depuis la DB
+    fetch(`${API_URL}/api/settings`)
+      .then(res => res.json())
+      .then(data => {
+        if (data) {
+          if (data.checkInTime) setCheckInTime(data.checkInTime.replace(':', 'h'));
+          if (data.checkOutTime) setCheckOutTime(data.checkOutTime.replace(':', 'h'));
+          if (data.maxNights !== undefined) setMaxNights(data.maxNights);
+          
+          if (data.comparisonTable && data.comparisonTable.length > 0) {
+            const rows = data.comparisonTable.map((row: any) => ({
+              label: row.label,
+              e: row.e,
+              c: row.c,
+              icon: getIconForLabel(row.label)
+            }));
+            setComparisonData(rows);
+          }
+        }
+      })
+      .catch(() => console.log('Utilisation du tableau comparatif statique de secours'));
+  }, []);
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -120,19 +205,44 @@ export default function Experience() {
       {/* Formules - Compact Premium Section */}
       <section className="py-20 md:py-32 bg-[#FAF9F6] relative overflow-hidden">
         <div className="container-wide px-6 md:px-12 relative z-10">
-          <div className="text-center mb-16 md:mb-24 space-y-4">
+          <div className="text-center mb-8 md:mb-12 space-y-4">
             <h2 className="text-4xl md:text-6xl font-serif text-noir leading-none">Nos <span className="italic text-gold">Offres</span></h2>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-16 max-w-5xl mx-auto mb-20 md:mb-32">
-            {FORMULES.map((formule, idx) => (
+          {isScrollable && (
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.5 }}
+              className="flex justify-end items-center gap-2 text-noir/40 mb-4 pr-4 md:pr-0"
+            >
+               <span className="text-[10px] uppercase tracking-widest font-bold">Faites défiler pour voir plus</span>
+               <motion.div
+                 animate={{ x: [0, 5, 0] }}
+                 transition={{ repeat: Infinity, duration: 1.5 }}
+               >
+                 <ArrowRight size={14} />
+               </motion.div>
+            </motion.div>
+          )}
+
+          <div 
+            ref={scrollContainerRef}
+            className={
+            formulesList.length === 1 
+              ? "grid grid-cols-1 max-w-2xl mx-auto mb-20 md:mb-32 pt-8" 
+              : formulesList.length === 2 
+              ? "grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-16 max-w-5xl mx-auto mb-20 md:mb-32 pt-8" 
+              : "flex overflow-x-auto pt-8 pb-8 gap-8 snap-x snap-mandatory scrollbar-none mb-20 md:mb-32 px-4 -mx-4 md:px-0 md:mx-0"
+          }>
+            {formulesList.map((formule, idx) => (
               <motion.div
                 key={formule.name}
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: idx * 0.2 }}
-                className={`relative p-10 md:p-12 rounded-[3.5rem] border border-noir/[0.05] flex flex-col ${formule.popular ? 'bg-white border-gold/30 shadow-xl' : 'bg-white/50'}`}
+                className={`relative p-10 md:p-12 rounded-[3.5rem] border border-noir/[0.05] flex flex-col ${formulesList.length >= 3 ? 'w-[350px] md:w-[420px] shrink-0 snap-center' : ''} ${formule.popular ? 'bg-white border-gold/30 shadow-xl' : 'bg-white/50'}`}
               >
                 {formule.popular && (
                   <div className="absolute -top-5 left-1/2 -translate-x-1/2 bg-gold text-white px-6 py-2 rounded-full text-[8px] uppercase tracking-[0.3em] font-black shadow-lg flex items-center gap-2">
@@ -187,7 +297,7 @@ export default function Experience() {
                 </tr>
               </thead>
               <tbody className="text-noir/50">
-                {COMPARISON_DATA.map((row, i) => (
+                {comparisonData.map((row, i) => (
                   <tr key={i} className="border-b border-noir/5 hover:bg-noir/[0.02] transition-colors">
                     <td className="py-4 flex items-center gap-4">
                       {row.icon && <row.icon size={14} className="text-gold/40" />}
@@ -226,7 +336,7 @@ export default function Experience() {
                   <Clock size={16} />
                   <span className="text-[8px] uppercase tracking-widest font-black opacity-60">Horaires</span>
                 </div>
-                <p className="text-xl md:text-2xl font-serif text-noir">Arrivée 18h <br /> Départ 11h</p>
+                <p className="text-xl md:text-2xl font-serif text-noir">Arrivée {checkInTime} <br /> Départ {checkOutTime}</p>
               </div>
 
               <div className="text-center md:text-left space-y-2">
@@ -234,7 +344,7 @@ export default function Experience() {
                   <Moon size={16} />
                   <span className="text-[8px] uppercase tracking-widest font-black opacity-60">Durée</span>
                 </div>
-                <p className="text-xl md:text-2xl font-serif text-noir">1 à 2 nuits <br /> maximum</p>
+                 <p className="text-xl md:text-2xl font-serif text-noir">1 à {maxNights} nuits <br /> maximum</p>
               </div>
             </div>
           </motion.div>

@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { motion } from 'motion/react';
 import { SUITES } from '../constants';
+import { API_URL } from '../constants';
 import {
    Plus, Minus,
    Waves, Music, Utensils, Bath, Wind, Coffee,
@@ -13,9 +14,55 @@ import {
 export default function SuiteDetail() {
    const { id } = useParams();
    const navigate = useNavigate();
-   const suite = SUITES.find(s => s.id === id);
+   
+   const staticSuite = SUITES.find(s => s.id === id);
+   const [suite, setSuite] = useState<any>(staticSuite);
+   const [loading, setLoading] = useState(!staticSuite);
    const [nights, setNights] = useState(1);
    const [formula, setFormula] = useState<'essentielle' | 'complete'>('essentielle');
+   const [maxNights, setMaxNights] = useState(2);
+
+   useEffect(() => {
+      if (id) {
+         fetch(`${API_URL}/api/suites/${id}`)
+            .then(res => res.json())
+            .then(data => {
+               if (data && data._id) {
+                  setSuite({
+                     id: id,
+                     _id: data._id,
+                     name: data.name,
+                     description: data.description,
+                     price: data.pricePerNight,
+                     image: data.imageUrl || staticSuite?.image || '/images/suites/suite-1.jpg',
+                     images: data.images || staticSuite?.images || [],
+                     features: data.features || staticSuite?.features || [],
+                     status: data.status || 'disponible'
+                  });
+               }
+            })
+            .catch(err => console.log('Utilisation de la suite statique de secours'))
+            .finally(() => setLoading(false));
+      }
+
+      // Fetch global settings for maxNights
+      fetch(`${API_URL}/api/settings`)
+         .then(res => res.json())
+         .then(data => {
+            if (data && data.maxNights !== undefined) {
+               setMaxNights(data.maxNights);
+            }
+         })
+         .catch(err => console.log('Utilisation de la valeur par défaut maxNights'));
+   }, [id]);
+
+   if (loading) {
+      return (
+         <div className="min-h-screen flex items-center justify-center bg-black">
+            <div className="w-10 h-10 border-2 border-gold border-t-transparent rounded-full animate-spin" />
+         </div>
+      );
+   }
 
    if (!suite) {
       return (
@@ -39,11 +86,17 @@ export default function SuiteDetail() {
 
    const gallery = [
       suite.image,
-      "https://images.unsplash.com/photo-1590073844006-33379778ae09?q=80&w=2645&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?q=80&w=2600&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?q=80&w=2600&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?q=80&w=2670&auto=format&fit=crop"
+      ...(suite.images && suite.images.length > 0 ? suite.images : [
+         "https://images.unsplash.com/photo-1590073844006-33379778ae09?q=80&w=2645&auto=format&fit=crop",
+         "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?q=80&w=2600&auto=format&fit=crop",
+         "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?q=80&w=2600&auto=format&fit=crop",
+         "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?q=80&w=2670&auto=format&fit=crop"
+      ])
    ];
+
+   const basePrice = Number(suite.price || 189);
+   const completePrice = basePrice + 110;
+   const currentPrice = formula === 'complete' ? completePrice : basePrice;
 
    return (
       <div className="bg-[#050505] min-h-screen selection:bg-amber-500/30 text-white overflow-x-hidden">
@@ -149,14 +202,14 @@ export default function SuiteDetail() {
                            <div className="flex items-center justify-center lg:justify-start gap-6 md:gap-12 pt-4 md:pt-8">
                               <div className="space-y-1">
                                  <span className="text-[8px] md:text-[9px] uppercase text-white/30 tracking-widest font-black">Nuitée dès</span>
-                                 <p className="text-3xl md:text-4xl font-serif text-amber-500">{suite.price}€</p>
+                                 <p className="text-3xl md:text-4xl font-serif text-amber-500">{basePrice}€</p>
                               </div>
                               <div className="h-10 md:h-12 w-px bg-white/10" />
                               <div className="space-y-1">
                                  <span className="text-[8px] md:text-[9px] uppercase text-white/30 tracking-widest font-black">État</span>
-                                 <p className="text-xs md:text-sm font-black text-green-500 uppercase flex items-center gap-2 tracking-widest">
-                                    <span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse" />
-                                    Disponible
+                                 <p className={`text-xs md:text-sm font-black uppercase flex items-center gap-2 tracking-widest ${suite.status === 'en_maintenance' ? 'text-amber-500' : 'text-green-500'}`}>
+                                    <span className={`w-1.5 h-1.5 rounded-full animate-pulse ${suite.status === 'en_maintenance' ? 'bg-amber-500' : 'bg-green-500'}`} />
+                                    {suite.status === 'en_maintenance' ? 'En Maintenance' : 'Disponible'}
                                  </p>
                               </div>
                            </div>
@@ -180,7 +233,7 @@ export default function SuiteDetail() {
                                        </span>
                                     </div>
                                     <div className="text-right">
-                                       <span className={`block text-xl font-serif ${formula === 'essentielle' ? 'text-gold' : 'text-white'}`}>189€</span>
+                                       <span className={`block text-xl font-serif ${formula === 'essentielle' ? 'text-gold' : 'text-white'}`}>{basePrice}€</span>
                                     </div>
                                  </button>
 
@@ -201,7 +254,7 @@ export default function SuiteDetail() {
                                           </span>
                                        </div>
                                        <div className="text-right">
-                                          <span className={`block text-xl font-serif ${formula === 'complete' ? 'text-gold' : 'text-white'}`}>299€</span>
+                                          <span className={`block text-xl font-serif ${formula === 'complete' ? 'text-gold' : 'text-white'}`}>{completePrice}€</span>
                                        </div>
                                     </button>
 
@@ -229,31 +282,31 @@ export default function SuiteDetail() {
                            </div>
 
                            <div className="space-y-6 pt-4">
-                              <label className="text-[9px] uppercase tracking-[0.5em] font-black text-white/20 text-center block w-full">Nombre de Nuits (1-2 max)</label>
+                              <label className="text-[9px] uppercase tracking-[0.5em] font-black text-white/20 text-center block w-full">Nombre de Nuits (1-{maxNights} max)</label>
                               <div className="flex items-center justify-between p-4 bg-[#050505]/50 border border-white/5 rounded-[2rem]">
                                  <button onClick={() => setNights(Math.max(1, nights - 1))} className="w-12 h-12 flex items-center justify-center border border-white/10 rounded-full hover:bg-white hover:text-[#050505] transition-all"><Minus size={14} /></button>
                                  <div className="text-center">
                                     <span className="text-3xl font-serif block leading-none">{nights}</span>
                                  </div>
-                                 <button onClick={() => setNights(Math.min(2, nights + 1))} className="w-12 h-12 flex items-center justify-center border border-white/10 rounded-full hover:bg-white hover:text-[#050505] transition-all"><Plus size={14} /></button>
+                                 <button onClick={() => setNights(Math.min(maxNights, nights + 1))} className="w-12 h-12 flex items-center justify-center border border-white/10 rounded-full hover:bg-white hover:text-[#050505] transition-all"><Plus size={14} /></button>
                               </div>
                            </div>
 
                            <button
                               onClick={() => navigate('/checkout', { 
                                  state: { 
-                                    suiteId: suite.id,
+                                    suiteId: suite._id || suite.id,
                                     suiteName: suite.name,
                                     suiteImage: suite.image,
                                     nights: nights,
                                     formula: formula,
-                                    price: formula === 'complete' ? 299 : 189
+                                    price: currentPrice
                                  } 
                               })}
                               className="relative w-full bg-gold text-[#0A0A0A] py-8 rounded-[2rem] text-[11px] uppercase tracking-[0.5em] font-black hover:bg-white transition-all duration-500 shadow-2xl overflow-hidden group"
                            >
                               <div className="absolute inset-0 bg-white/20 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000" />
-                              <span className="relative z-10">Confirmer ({(formula === 'complete' ? 299 : 189) * nights}€)</span>
+                              <span className="relative z-10">Confirmer ({currentPrice * nights}€)</span>
                            </button>
 
                            <div className="flex items-center justify-center gap-3 text-white/20">
@@ -272,13 +325,19 @@ export default function SuiteDetail() {
                <div className="container-wide px-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
                      <div className="space-y-6 md:space-y-8">
-                        <img src={gallery[2]} className="w-full aspect-square object-cover rounded-[2rem] md:rounded-[3rem] grayscale hover:grayscale-0 transition-all duration-1000" alt="Gallery 2" />
-                        <img src={gallery[3]} className="w-full aspect-[4/3] object-cover rounded-[2rem] md:rounded-[3rem]" alt="Gallery 3" />
+                        {gallery[2] && (
+                           <img src={gallery[2]} className="w-full aspect-square object-cover rounded-[2rem] md:rounded-[3rem] grayscale hover:grayscale-0 transition-all duration-1000" alt="Gallery 2" />
+                        )}
+                        {gallery[3] && (
+                           <img src={gallery[3]} className="w-full aspect-[4/3] object-cover rounded-[2rem] md:rounded-[3rem]" alt="Gallery 3" />
+                        )}
                      </div>
                      <div className="space-y-6 md:space-y-8 pt-0 md:pt-16">
-                        <img src={gallery[4]} className="w-full aspect-[4/5] object-cover rounded-[2rem] md:rounded-[3rem]" alt="Gallery 4" />
+                        {gallery[4] && (
+                           <img src={gallery[4]} className="w-full aspect-[4/5] object-cover rounded-[2rem] md:rounded-[3rem]" alt="Gallery 4" />
+                        )}
                         <div className="bg-white/5 p-10 md:p-16 rounded-[2rem] md:rounded-[3rem] border border-white/5 flex flex-col justify-center items-center text-center gap-6 md:gap-8 min-h-[300px] md:min-h-[400px]">
-                           <Sparkles className="text-amber-500" size={32} md:size={48} strokeWidth={1} />
+                           <Sparkles className="text-amber-500" size={32} strokeWidth={1} />
                            <h4 className="text-2xl md:text-3xl font-serif italic text-white/80">L'éveil des sens <br /> commence ici.</h4>
                            <p className="text-[8px] md:text-[10px] uppercase tracking-[0.4em] font-black text-white/20">Prestation exclusive</p>
                         </div>

@@ -10,12 +10,16 @@ import Checkout from "./pages/Checkout";
 import Experience from "./pages/Experience";
 import Confirmation from "./pages/Confirmation";
 import Legal from "./pages/Legal";
+import CartesCadeaux from "./pages/CartesCadeaux";
 import AdminLayout from "./components/layout/AdminLayout";
+import AdminLogin from "./pages/admin/Login";
 import AdminDashboard from "./pages/admin/Dashboard";
+
 import AdminReservations from "./pages/admin/Reservations";
 import AdminChambres from "./pages/admin/Chambres";
 import AdminDisponibilites from "./pages/admin/Disponibilites";
 import AdminBoutique from "./pages/admin/Boutique";
+import AdminCartesCadeaux from "./pages/admin/CartesCadeaux";
 import AdminSettings from "./pages/admin/Parametres";
 
 // Scroll handling component
@@ -62,20 +66,27 @@ function AppContent() {
               <Route path="/" element={<Home />} />
               <Route path="/suite/:id" element={<SuiteDetail />} />
               <Route path="/experience" element={<Experience />} />
+              <Route path="/cartes-cadeaux" element={<CartesCadeaux />} />
               <Route path="/checkout" element={<Checkout />} />
               <Route path="/confirmation" element={<Confirmation />} />
               <Route path="/mentions-legales" element={<Legal />} />
               <Route path="/cgv" element={<Legal />} />
               <Route path="/confidentialite" element={<Legal />} />
 
+              {/* Admin Login Route */}
+              <Route path="/admin/login" element={<AdminLogin />} />
+
               {/* Admin Routes */}
               <Route path="/admin" element={<AdminLayout />}>
+
+
                 <Route index element={<AdminDashboard />} />
                 <Route path="reservations" element={<AdminReservations />} />
                 <Route path="chambres" element={<AdminChambres />} />
                 <Route path="disponibilites" element={<AdminDisponibilites />} />
                 <Route path="prestations" element={<AdminBoutique />} />
                 <Route path="boutique" element={<AdminBoutique />} />
+                <Route path="cartes-cadeaux" element={<AdminCartesCadeaux />} />
                 <Route path="settings" element={<AdminSettings />} />
               </Route>
             </Routes>

@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { ArrowLeft, ArrowRight, CreditCard, ShieldCheck, Mail, User, Phone, CheckCircle2 } from 'lucide-react';
 import CustomDatePicker from '../components/ui/CustomDatePicker';
+import { API_URL } from '../constants';
 
 export default function Checkout() {
    const [step, setStep] = useState(1);
@@ -12,6 +13,7 @@ export default function Checkout() {
 
    // Get state from navigation
    const bookingData = location.state || {
+      suiteId: "60d5ec49672f2e0015c12345", // Fallback ID
       suiteName: "Suite Love Room",
       suiteImage: "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?q=80&w=2600&auto=format&fit=crop",
       nights: 1,
@@ -19,11 +21,36 @@ export default function Checkout() {
       price: 189
    };
 
-   const optionsList = [
+   const defaultOptions = [
       { name: "Pack Romantique Plus", price: 45, desc: "Bouquet de fleurs fraîches et mot personnalisé." },
       { name: "Départ Tardif (13h)", price: 40, desc: "Prolongez votre grâce matinée." },
       { name: "Ambiance Musique Live", price: 80, desc: "Sélection musicale premium pré-configurée." }
    ];
+
+   const [optionsList, setOptionsList] = useState(defaultOptions);
+   const [formData, setFormData] = useState({
+      clientName: '',
+      clientEmail: '',
+      clientPhone: '',
+      checkInDate: new Date().toISOString().split('T')[0]
+   });
+   const [loading, setLoading] = useState(false);
+
+   useEffect(() => {
+      fetch(`${API_URL}/api/services`)
+         .then(res => res.json())
+         .then(data => {
+            if (Array.isArray(data)) {
+               const filtered = data.filter(s => s.category !== 'Formules');
+               setOptionsList(filtered.map(s => ({
+                  name: s.name,
+                  price: s.price,
+                  desc: s.description
+               })));
+            }
+         })
+         .catch(err => console.log('Utilisation des options statiques de secours'));
+   }, []);
 
    const toggleOption = (name: string) => {
       setSelectedOptions(prev => prev.includes(name) ? prev.filter(o => o !== name) : [...prev, name]);
@@ -38,8 +65,51 @@ export default function Checkout() {
       return total;
    };
 
-   const nextStep = () => setStep(s => s + 1);
+   const nextStep = () => {
+      if (step === 1 && (!formData.clientName || !formData.clientEmail)) {
+         alert("Veuillez renseigner votre nom et votre email.");
+         return;
+      }
+      setStep(s => s + 1);
+   };
+   
    const prevStep = () => setStep(s => s - 1);
+
+   const handleConfirmBooking = async () => {
+      setLoading(true);
+      try {
+         const checkOutDateObj = new Date(new Date(formData.checkInDate).getTime() + bookingData.nights * 24 * 60 * 60 * 1000);
+         const checkOutDate = checkOutDateObj.toISOString().split('T')[0];
+
+         const res = await fetch(`${API_URL}/api/reservations`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+               suite: bookingData.suiteId,
+               clientName: formData.clientName || "Client Anonyme",
+               clientEmail: formData.clientEmail || "client@example.com",
+               clientPhone: formData.clientPhone || "+33 6 00 00 00 00",
+               checkIn: formData.checkInDate,
+               checkOut: checkOutDate,
+               totalPrice: calculateTotal(),
+               status: "en_attente",
+               numberOfPersons: 2,
+               services: selectedOptions,
+               specialRequest: `Formule : ${bookingData.formula}`
+            })
+         });
+
+         if (res.ok) {
+            navigate('/confirmation');
+         } else {
+            alert("Erreur lors de la confirmation de réservation. Veuillez réessayer.");
+            setLoading(false);
+         }
+      } catch (err) {
+         alert("Erreur de connexion au serveur.");
+         setLoading(false);
+      }
+   };
 
    return (
       <motion.div
@@ -93,29 +163,53 @@ export default function Checkout() {
                            >
                               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10">
                                  <div className="space-y-4">
-                                    <label className="text-[10px] uppercase tracking-widest font-bold text-white/40 ml-1">Nom Complet</label>
+                                    <label className="text-[10px] uppercase tracking-widest font-bold text-white/40 ml-1">Nom Complet *</label>
                                     <div className="relative group">
                                        <User className="absolute left-6 top-1/2 -translate-y-1/2 text-white/20 group-focus-within:text-gold transition-colors" size={18} />
-                                       <input type="text" placeholder="John Doe" className="w-full bg-[#0A0A0A] text-white border border-white/10 rounded-2xl p-6 pl-16 italic focus:ring-1 focus:ring-gold outline-none transition-all placeholder:text-white/20" />
+                                       <input 
+                                          type="text" 
+                                          required
+                                          value={formData.clientName}
+                                          onChange={(e) => setFormData({...formData, clientName: e.target.value})}
+                                          placeholder="John Doe" 
+                                          className="w-full bg-[#0A0A0A] text-white border border-white/10 rounded-2xl p-6 pl-16 italic focus:ring-1 focus:ring-gold outline-none transition-all placeholder:text-white/20" 
+                                       />
                                     </div>
                                  </div>
                                  <div className="space-y-4">
-                                    <label className="text-[10px] uppercase tracking-widest font-bold text-white/40 ml-1">Email Confidentiel</label>
+                                    <label className="text-[10px] uppercase tracking-widest font-bold text-white/40 ml-1">Email Confidentiel *</label>
                                     <div className="relative group">
                                        <Mail className="absolute left-6 top-1/2 -translate-y-1/2 text-white/20 group-focus-within:text-gold transition-colors" size={18} />
-                                       <input type="email" placeholder="john@example.com" className="w-full bg-[#0A0A0A] text-white border border-white/10 rounded-2xl p-6 pl-16 italic focus:ring-1 focus:ring-gold outline-none transition-all placeholder:text-white/20" />
+                                       <input 
+                                          type="email" 
+                                          required
+                                          value={formData.clientEmail}
+                                          onChange={(e) => setFormData({...formData, clientEmail: e.target.value})}
+                                          placeholder="john@example.com" 
+                                          className="w-full bg-[#0A0A0A] text-white border border-white/10 rounded-2xl p-6 pl-16 italic focus:ring-1 focus:ring-gold outline-none transition-all placeholder:text-white/20" 
+                                       />
                                     </div>
                                  </div>
                                  <div className="space-y-4">
                                     <label className="text-[10px] uppercase tracking-widest font-bold text-white/40 ml-1">Téléphone</label>
                                     <div className="relative group">
                                        <Phone className="absolute left-6 top-1/2 -translate-y-1/2 text-white/20 group-focus-within:text-gold transition-colors" size={18} />
-                                       <input type="tel" placeholder="+33 6 00 00 00 00" className="w-full bg-[#0A0A0A] text-white border border-white/10 rounded-2xl p-6 pl-16 italic focus:ring-1 focus:ring-gold outline-none transition-all placeholder:text-white/20" />
+                                       <input 
+                                          type="tel" 
+                                          value={formData.clientPhone}
+                                          onChange={(e) => setFormData({...formData, clientPhone: e.target.value})}
+                                          placeholder="+33 6 00 00 00 00" 
+                                          className="w-full bg-[#0A0A0A] text-white border border-white/10 rounded-2xl p-6 pl-16 italic focus:ring-1 focus:ring-gold outline-none transition-all placeholder:text-white/20" 
+                                       />
                                     </div>
                                  </div>
                                  <div className="space-y-4 relative z-50">
-                                    <label className="text-[10px] uppercase tracking-widest font-bold text-white/40 ml-1">Nuitée Souhaitée</label>
-                                    <CustomDatePicker />
+                                    <label className="text-[10px] uppercase tracking-widest font-bold text-white/40 ml-1">Date d'arrivée souhaitée</label>
+                                    <CustomDatePicker
+                                       value={formData.checkInDate}
+                                       onChange={(val) => setFormData({...formData, checkInDate: val})}
+                                       minDate={new Date().toISOString().split('T')[0]}
+                                    />
                                  </div>
                               </div>
                               <button onClick={nextStep} className="relative overflow-hidden px-10 py-6 w-full bg-gold text-[#0A0A0A] text-[12px] uppercase tracking-[0.4em] font-bold hover:bg-white transition-all duration-700 flex items-center justify-center gap-4 group rounded-full">
@@ -134,27 +228,33 @@ export default function Checkout() {
                               className="space-y-12 relative z-10"
                            >
                               <div className="space-y-6">
-                                 {optionsList.map((opt) => {
-                                    const isSelected = selectedOptions.includes(opt.name);
-                                    return (
-                                       <div 
-                                          key={opt.name} 
-                                          onClick={() => toggleOption(opt.name)}
-                                          className={`flex flex-col sm:flex-row sm:items-center justify-between p-6 sm:p-8 bg-white/[0.02] hover:bg-white/[0.04] cursor-pointer transition-all group gap-4 sm:gap-0 rounded-2xl border ${isSelected ? 'border-gold/50 shadow-[0_0_15px_rgba(188,155,93,0.1)]' : 'border-white/5 hover:border-gold/30'}`}
-                                       >
-                                          <div className="space-y-2">
-                                             <h4 className="text-lg sm:text-xl font-serif text-white">{opt.name}</h4>
-                                             <p className="text-xs italic text-white/40 leading-relaxed max-w-sm">{opt.desc}</p>
-                                          </div>
-                                          <div className="text-left sm:text-right flex sm:block items-center justify-between w-full sm:w-auto border-t sm:border-none border-white/5 pt-4 sm:pt-0">
-                                             <div className="text-gold font-serif text-xl sm:mb-3">{opt.price}€</div>
-                                             <div className={`w-6 h-6 rounded-full border flex items-center justify-center transition-colors ${isSelected ? 'border-gold' : 'border-white/20 group-hover:border-gold'}`}>
-                                                <div className={`w-3 h-3 rounded-full bg-gold transition-opacity ${isSelected ? 'opacity-100' : 'opacity-0 group-hover:opacity-30'}`} />
+                                 {optionsList.length === 0 ? (
+                                    <div className="p-8 text-center bg-white/[0.02] border border-white/5 rounded-2xl italic text-white/40">
+                                       Aucune option additionnelle requise pour cette formule. Vous pouvez passer à l'étape de paiement.
+                                    </div>
+                                 ) : (
+                                    optionsList.map((opt) => {
+                                       const isSelected = selectedOptions.includes(opt.name);
+                                       return (
+                                          <div 
+                                             key={opt.name} 
+                                             onClick={() => toggleOption(opt.name)}
+                                             className={`flex flex-col sm:flex-row sm:items-center justify-between p-6 sm:p-8 bg-white/[0.02] hover:bg-white/[0.04] cursor-pointer transition-all group gap-4 sm:gap-0 rounded-2xl border ${isSelected ? 'border-gold/50 shadow-[0_0_15px_rgba(188,155,93,0.1)]' : 'border-white/5 hover:border-gold/30'}`}
+                                          >
+                                             <div className="space-y-2">
+                                                <h4 className="text-lg sm:text-xl font-serif text-white">{opt.name}</h4>
+                                                <p className="text-xs italic text-white/40 leading-relaxed max-w-sm">{opt.desc}</p>
+                                             </div>
+                                             <div className="text-left sm:text-right flex sm:block items-center justify-between w-full sm:w-auto border-t sm:border-none border-white/5 pt-4 sm:pt-0">
+                                                <div className="text-gold font-serif text-xl sm:mb-3">{opt.price}€</div>
+                                                <div className={`w-6 h-6 rounded-full border flex items-center justify-center transition-colors ${isSelected ? 'border-gold' : 'border-white/20 group-hover:border-gold'}`}>
+                                                   <div className={`w-3 h-3 rounded-full bg-gold transition-opacity ${isSelected ? 'opacity-100' : 'opacity-0 group-hover:opacity-30'}`} />
+                                                </div>
                                              </div>
                                           </div>
-                                       </div>
-                                    )
-                                 })}
+                                       )
+                                    })
+                                 )}
                               </div>
                               <button onClick={nextStep} className="relative overflow-hidden px-10 py-6 w-full bg-gold text-[#0A0A0A] text-[12px] uppercase tracking-[0.4em] font-bold hover:bg-white transition-all duration-700 flex items-center justify-center gap-4 group rounded-full">
                                  <span>Étape de Paiement</span>
@@ -201,10 +301,11 @@ export default function Checkout() {
                               </div>
 
                               <button
-                                 onClick={() => navigate('/confirmation')}
-                                 className="relative overflow-hidden px-10 py-6 w-full bg-white text-[#0A0A0A] text-[12px] uppercase tracking-[0.4em] font-bold hover:bg-gold transition-all duration-700 flex items-center justify-center rounded-full"
+                                 disabled={loading}
+                                 onClick={handleConfirmBooking}
+                                 className="relative overflow-hidden px-10 py-6 w-full bg-white text-[#0A0A0A] text-[12px] uppercase tracking-[0.4em] font-bold hover:bg-gold transition-all duration-700 flex items-center justify-center rounded-full disabled:opacity-50"
                               >
-                                 Confirmer la réservation
+                                 {loading ? "Traitement sécurisé en cours..." : "Confirmer la réservation"}
                               </button>
                            </motion.div>
                         )}

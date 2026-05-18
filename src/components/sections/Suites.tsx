@@ -1,10 +1,32 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { ArrowRight, Star } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { SUITES } from '../../constants';
+import { API_URL } from '../../constants';
 
 export default function Suites() {
+  const [suitesList, setSuitesList] = useState(SUITES);
+
+  useEffect(() => {
+    fetch(`${API_URL}/api/suites`)
+      .then(res => res.json())
+      .then(data => {
+        if (Array.isArray(data) && data.length > 0) {
+          setSuitesList(data.map(s => ({
+            id: s.name.toLowerCase().replace(/\s+/g, '-'),
+            name: s.name,
+            description: s.description,
+            price: s.pricePerNight.toString(),
+            image: s.imageUrl || '/images/suites/suite-1.jpg',
+            features: s.features || [],
+            tagline: s.description.substring(0, 60) + '...'
+          })));
+        }
+      })
+      .catch(err => console.log('Utilisation des données statiques de secours pour les suites'));
+  }, []);
+
   return (
     <section id="suites" className="py-20 md:py-32 bg-[#FAF9F6] overflow-hidden">
       <div className="container-wide">
@@ -20,7 +42,7 @@ export default function Suites() {
         </div>
 
         <div className="space-y-32 md:space-y-48 mx-5">
-          {SUITES.map((suite, index) => (
+          {suitesList.map((suite, index) => (
             <motion.div
               key={suite.id}
               initial={{ opacity: 0, y: 50 }}

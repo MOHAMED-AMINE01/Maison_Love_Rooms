@@ -1,11 +1,38 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { Instagram } from 'lucide-react';
+import { API_URL } from '../../constants';
 
 export default function FloatingSocials() {
-  const whatsappNumber = "33627094717";
+  const [whatsappNumber, setWhatsappNumber] = useState("33627094717");
+  const [instagramHandle, setInstagramHandle] = useState("@maisonloveroom");
+
+  useEffect(() => {
+    const getSettings = async () => {
+      try {
+        const res = await fetch(`${API_URL}/api/settings`);
+        if (res.ok) {
+          const data = await res.json();
+          if (data.whatsapp) {
+            // Clean number for wa.me link (remove all non-digits)
+            const cleanNumber = data.whatsapp.replace(/\D/g, '');
+            setWhatsappNumber(cleanNumber || "33627094717");
+          }
+          if (data.instagram) {
+            setInstagramHandle(data.instagram);
+          }
+        }
+      } catch (err) {
+        console.error("Failed to load settings in FloatingSocials", err);
+      }
+    };
+    getSettings();
+  }, []);
+
   const whatsappUrl = `https://wa.me/${whatsappNumber}`;
-  const instagramUrl = "https://www.instagram.com/maisonloverooms/";
+  const instagramUrl = instagramHandle.startsWith('http') 
+    ? instagramHandle 
+    : `https://www.instagram.com/${instagramHandle.replace('@', '')}/`;
 
   const instaGradient = "linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%)";
 
