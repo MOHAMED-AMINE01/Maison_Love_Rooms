@@ -89,6 +89,8 @@ export default function Ritual() {
               <img
                 src="/IMG_6309.jpeg"
                 alt="L'Évasion"
+                loading="lazy"
+                decoding="async"
                 className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
               />
               <div className="absolute inset-0 bg-noir/20 group-hover:bg-transparent transition-colors duration-700" />
@@ -104,6 +106,8 @@ export default function Ritual() {
               <img
                 src="/IMG_6409.jpeg"
                 alt="Le Secret"
+                loading="lazy"
+                decoding="async"
                 className="w-full h-full object-cover grayscale brightness-75 group-hover:grayscale-0 group-hover:brightness-100 transition-all duration-1000"
               />
               {/* Internal Glow */}

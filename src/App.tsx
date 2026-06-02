@@ -1,26 +1,33 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, lazy, Suspense } from "react";
 import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
 import { AnimatePresence } from "motion/react";
 import Navbar from "./components/layout/Navbar";
 import Footer from "./components/sections/Footer";
 import FloatingSocials from "./components/layout/FloatingSocials";
 import Home from "./pages/Home";
-import SuiteDetail from "./pages/SuiteDetail";
-import Checkout from "./pages/Checkout";
-import Experience from "./pages/Experience";
-import Confirmation from "./pages/Confirmation";
-import Legal from "./pages/Legal";
-import CartesCadeaux from "./pages/CartesCadeaux";
-import AdminLayout from "./components/layout/AdminLayout";
-import AdminLogin from "./pages/admin/Login";
-import AdminDashboard from "./pages/admin/Dashboard";
+import { API_URL } from "./constants";
+import { applyFontTheme, getCachedFontTheme, DEFAULT_FONT_THEME } from "./fontThemes";
 
-import AdminReservations from "./pages/admin/Reservations";
-import AdminChambres from "./pages/admin/Chambres";
-import AdminDisponibilites from "./pages/admin/Disponibilites";
-import AdminBoutique from "./pages/admin/Boutique";
-import AdminCartesCadeaux from "./pages/admin/CartesCadeaux";
-import AdminSettings from "./pages/admin/Parametres";
+// Lazy-loaded routes: kept out of the initial public bundle so the landing
+// page loads as little JS as possible. Each chunk is fetched on navigation.
+const SuiteDetail = lazy(() => import("./pages/SuiteDetail"));
+const Checkout = lazy(() => import("./pages/Checkout"));
+const Experience = lazy(() => import("./pages/Experience"));
+const Confirmation = lazy(() => import("./pages/Confirmation"));
+const Legal = lazy(() => import("./pages/Legal"));
+const CartesCadeaux = lazy(() => import("./pages/CartesCadeaux"));
+
+// Admin area (~3.6k lines) is fully split out — visitors never download it.
+const AdminLayout = lazy(() => import("./components/layout/AdminLayout"));
+const AdminLogin = lazy(() => import("./pages/admin/Login"));
+const AdminDashboard = lazy(() => import("./pages/admin/Dashboard"));
+const AdminReservations = lazy(() => import("./pages/admin/Reservations"));
+const AdminChambres = lazy(() => import("./pages/admin/Chambres"));
+const AdminDisponibilites = lazy(() => import("./pages/admin/Disponibilites"));
+const AdminBoutique = lazy(() => import("./pages/admin/Boutique"));
+const AdminCartesCadeaux = lazy(() => import("./pages/admin/CartesCadeaux"));
+const AdminTypographie = lazy(() => import("./pages/admin/Typographie"));
+const AdminSettings = lazy(() => import("./pages/admin/Parametres"));
 
 // Scroll handling component
 function ScrollHandler() {
@@ -51,6 +58,26 @@ function AppContent() {
   const location = useLocation();
   const isAdmin = location.pathname.startsWith('/admin');
 
+  // Applique le style typographique choisi en admin à tout le site client.
+  // L'admin conserve le style par défaut pour rester lisible.
+  useEffect(() => {
+    if (isAdmin) {
+      applyFontTheme(DEFAULT_FONT_THEME);
+      return;
+    }
+    // Applique d'abord le dernier style mémorisé (zéro flash), puis synchronise
+    // avec le serveur au cas où il aurait changé.
+    applyFontTheme(getCachedFontTheme());
+    fetch(`${API_URL}/api/settings`)
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data) => {
+        if (data?.fontTheme) applyFontTheme(data.fontTheme);
+      })
+      .catch(() => {
+        /* hors-ligne — on garde le style mémorisé */
+      });
+  }, [isAdmin]);
+
   return (
     <div className={`${isAdmin ? 'bg-admin-bg' : 'bg-page'} min-h-screen selection:bg-gold/20 relative overflow-x-hidden text-noir font-sans`}>
       <ScrollHandler />
@@ -62,6 +89,7 @@ function AppContent() {
 
         <main>
           <AnimatePresence mode="wait">
+            <Suspense fallback={<div className={`min-h-screen ${isAdmin ? 'bg-admin-bg' : 'bg-page'}`} />}>
             <Routes location={location}>
               <Route path="/" element={<Home />} />
               <Route path="/suite/:id" element={<SuiteDetail />} />
@@ -87,9 +115,11 @@ function AppContent() {
                 <Route path="prestations" element={<AdminBoutique />} />
                 <Route path="boutique" element={<AdminBoutique />} />
                 <Route path="cartes-cadeaux" element={<AdminCartesCadeaux />} />
+                <Route path="typographie" element={<AdminTypographie />} />
                 <Route path="settings" element={<AdminSettings />} />
               </Route>
             </Routes>
+            </Suspense>
           </AnimatePresence>
         </main>
 

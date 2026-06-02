@@ -59,6 +59,8 @@ export default function Suites() {
                     transition={{ duration: 1.5, ease: "easeOut" }}
                     src={suite.image}
                     alt={suite.name}
+                    loading="lazy"
+                    decoding="async"
                     className="w-full aspect-[4/3] md:aspect-[16/10] object-cover brightness-90 group-hover:brightness-100 transition-all"
                   />
                 </div>

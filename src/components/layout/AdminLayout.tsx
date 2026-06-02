@@ -14,6 +14,7 @@ import {
   ChevronRight,
   Menu,
   Gift,
+  Type,
   X
 } from "lucide-react";
 import { Link, useLocation, Outlet, useNavigate } from "react-router-dom";
@@ -25,6 +26,7 @@ const SIDEBAR_ITEMS = [
   { icon: Sparkles, label: "Disponibilités", path: "/admin/disponibilites" },
   { icon: Sparkles, label: "Boutique & Options", path: "/admin/boutique" },
   { icon: Gift, label: "Cartes Cadeaux", path: "/admin/cartes-cadeaux" },
+  { icon: Type, label: "Typographie", path: "/admin/typographie" },
   { icon: Settings, label: "Paramètres", path: "/admin/settings" },
 ];
 

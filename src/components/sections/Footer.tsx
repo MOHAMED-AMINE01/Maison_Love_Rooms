@@ -45,6 +45,8 @@ export default function Footer() {
               <img
                 src="/logo.png"
                 alt="Maison Love Rooms"
+                loading="lazy"
+                decoding="async"
                 className="h-20 scale-150 md:h-24 brightness-0 invert opacity-80 group-hover:opacity-100 transition-opacity duration-700"
               />
             </Link>

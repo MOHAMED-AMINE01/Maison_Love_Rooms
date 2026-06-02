@@ -17,6 +17,7 @@ export interface ISettings extends Document {
   checkInTime: string;
   checkOutTime: string;
   maxNights: number;
+  fontTheme: string;
 }
 
 const settingsSchema = new Schema<ISettings>({
@@ -37,7 +38,8 @@ const settingsSchema = new Schema<ISettings>({
   whatsapp: { type: String, default: '+33 1 23 45 67 89' },
   checkInTime: { type: String, default: '18:00' },
   checkOutTime: { type: String, default: '11:00' },
-  maxNights: { type: Number, default: 2 }
+  maxNights: { type: Number, default: 2 },
+  fontTheme: { type: String, default: 'heritage' }
 }, { timestamps: true });
 
 export default mongoose.model<ISettings>('Settings', settingsSchema);

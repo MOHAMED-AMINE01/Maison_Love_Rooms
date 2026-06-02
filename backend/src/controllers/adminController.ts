@@ -368,7 +368,7 @@ export const getSettings = async (req: Request, res: Response) => {
 // @access  Private
 export const updateSettings = async (req: Request, res: Response) => {
   try {
-    const { comparisonTable, establishmentName, email, phone, address, instagram, whatsapp, checkInTime, checkOutTime, maxNights } = req.body;
+    const { comparisonTable, establishmentName, email, phone, address, instagram, whatsapp, checkInTime, checkOutTime, maxNights, fontTheme } = req.body;
     let settings = await Settings.findOne({ singletonId: 'main' });
     if (!settings) {
       settings = await Settings.create({
@@ -382,7 +382,8 @@ export const updateSettings = async (req: Request, res: Response) => {
         whatsapp: whatsapp || '+33 1 23 45 67 89',
         checkInTime: checkInTime || '18:00',
         checkOutTime: checkOutTime || '11:00',
-        maxNights: maxNights !== undefined ? Number(maxNights) : 2
+        maxNights: maxNights !== undefined ? Number(maxNights) : 2,
+        fontTheme: fontTheme || 'heritage'
       });
     } else {
       if (comparisonTable !== undefined) settings.comparisonTable = comparisonTable;
@@ -395,6 +396,7 @@ export const updateSettings = async (req: Request, res: Response) => {
       if (checkInTime !== undefined) settings.checkInTime = checkInTime;
       if (checkOutTime !== undefined) settings.checkOutTime = checkOutTime;
       if (maxNights !== undefined) settings.maxNights = Number(maxNights);
+      if (fontTheme !== undefined) settings.fontTheme = fontTheme;
       await settings.save();
     }
     res.json(settings);
