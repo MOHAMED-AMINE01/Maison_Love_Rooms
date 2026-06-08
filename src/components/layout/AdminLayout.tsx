@@ -37,18 +37,31 @@ export default function AdminLayout() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   useEffect(() => {
-    // Vérifie la session via le cookie httpOnly (si 401 → login)
-    fetch(`${API_URL}/api/admin/stats`, { credentials: 'include' })
+    const token = localStorage.getItem('adminToken');
+    if (!token) {
+      navigate('/admin/login', { replace: true });
+      return;
+    }
+    // Vérifie la session via le token Bearer
+    fetch(`${API_URL}/api/admin/stats`, {
+      headers: { Authorization: `Bearer ${token}` },
+      credentials: 'include'
+    })
       .then(res => { if (!res.ok) navigate('/admin/login', { replace: true }); })
       .catch(() => navigate('/admin/login', { replace: true }));
   }, [navigate]);
 
   const handleLogout = async () => {
-    await fetch(`${API_URL}/api/admin/logout`, {
-      method: 'POST',
-      credentials: 'include',
-    });
+    const token = localStorage.getItem('adminToken');
+    if (token) {
+      await fetch(`${API_URL}/api/admin/logout`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}` },
+        credentials: 'include',
+      });
+    }
     localStorage.removeItem('adminUser');
+    localStorage.removeItem('adminToken');
     navigate('/admin/login', { replace: true });
   };
 

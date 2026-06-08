@@ -41,6 +41,7 @@ export const loginAdmin = async (req: Request, res: Response) => {
           id: newAdmin._id,
           name: newAdmin.name,
           email: newAdmin.email,
+          token: token,
         });
       }
       return res.status(401).json({ message: 'Identifiants invalides' });
@@ -61,6 +62,7 @@ export const loginAdmin = async (req: Request, res: Response) => {
         id: admin._id,
         name: admin.name,
         email: admin.email,
+        token: token,
       });
     } else {
       res.status(401).json({ message: 'Identifiants invalides' });

@@ -12,10 +12,16 @@ export default function AdminLogin() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Vérifie silencieusement si une session cookie est encore valide
-    fetch(`${API_URL}/api/admin/stats`, { credentials: 'include' })
-      .then(res => { if (res.ok) navigate('/admin', { replace: true }); })
-      .catch(() => { /* pas de session active, on reste sur login */ });
+    // Vérifie silencieusement si un token est sauvegardé
+    const token = localStorage.getItem('adminToken');
+    if (token) {
+      fetch(`${API_URL}/api/admin/stats`, {
+        headers: { Authorization: `Bearer ${token}` },
+        credentials: 'include'
+      })
+        .then(res => { if (res.ok) navigate('/admin', { replace: true }); })
+        .catch(() => { /* pas de session active, on reste sur login */ });
+    }
   }, [navigate]);
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -34,8 +40,8 @@ export default function AdminLogin() {
       const data = await res.json();
 
       if (res.ok) {
-        // On stocke uniquement les infos non-sensibles (pas le token)
         localStorage.setItem('adminUser', JSON.stringify(data));
+        localStorage.setItem('adminToken', data.token);
         navigate('/admin', { replace: true });
       } else {
         setError(data.message || 'Identifiants invalides');
