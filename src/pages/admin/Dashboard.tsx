@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { useNavigate } from 'react-router-dom';
 import { API_URL } from '../../constants';
+import { adminFetch } from '../../utils/apiClient';
 import { 
   BedDouble, 
   CheckCircle, 
@@ -66,27 +67,21 @@ export default function AdminDashboard() {
       try {
         setLoading(true);
         // Fetch Stats
-        const statsRes = await fetch(`${API_URL}/api/admin/stats`, {
-          credentials: 'include'
-        });
+        const statsRes = await adminFetch('/api/admin/stats');
         if (statsRes.ok) {
           const statsData = await statsRes.json();
           setStats(statsData);
         }
 
         // Fetch Reservations
-        const resRes = await fetch(`${API_URL}/api/admin/reservations`, {
-          credentials: 'include'
-        });
+        const resRes = await adminFetch('/api/admin/reservations');
         if (resRes.ok) {
           const resData = await resRes.json();
           setReservations(resData.slice(0, 5)); // 5 dernières
         }
 
         // Fetch Suites Count
-        const suitesRes = await fetch(`${API_URL}/api/admin/suites`, {
-          credentials: 'include'
-        });
+        const suitesRes = await adminFetch('/api/admin/suites');
         if (suitesRes.ok) {
           const suitesData = await suitesRes.json();
           setSuitesCount(suitesData.length);
