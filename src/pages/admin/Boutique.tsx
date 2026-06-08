@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { AdminToast, AdminConfirmModal, useAdminToast, useAdminConfirm } from '../../components/admin/AdminModal';
 import { API_URL } from '../../constants';
+import { adminFetch } from '../../utils/apiClient';
 import {
   Plus,
   Minus,
@@ -87,7 +88,7 @@ export default function AdminBoutique() {
   const fetchServices = async () => {
     setLoading(true);
     try {
-      const res = await fetch(`${API_URL}/api/admin/services`);
+      const res = await adminFetch('/api/admin/services');
       if (!res.ok) throw new Error('Erreur lors du chargement des services');
       const data = await res.json();
       setServices(data);
@@ -100,10 +101,7 @@ export default function AdminBoutique() {
 
   const fetchSettings = async () => {
     try {
-      
-      const res = await fetch(`${API_URL}/api/admin/settings`, {
-        credentials: 'include'
-      });
+      const res = await adminFetch('/api/admin/settings');
       if (res.ok) {
         const data = await res.json();
         setComparisonTable(data.comparisonTable || []);
@@ -156,10 +154,8 @@ export default function AdminBoutique() {
       onConfirm: async () => {
         hideConfirm();
         try {
-          
-          const res = await fetch(`${API_URL}/api/admin/services/${id}`, {
-            method: 'DELETE',
-            credentials: 'include'
+          const res = await adminFetch(`/api/admin/services/${id}`, {
+            method: 'DELETE'
           });
           if (res.ok) {
             setServices(services.filter(s => s._id !== id));
@@ -182,16 +178,13 @@ export default function AdminBoutique() {
     }
 
     try {
-      
-      const url = editId
-        ? `${API_URL}/api/admin/services/${editId}`
-        : `${API_URL}/api/admin/services`;
+      const endpoint = editId
+        ? `/api/admin/services/${editId}`
+        : `/api/admin/services`;
       const method = editId ? 'PUT' : 'POST';
 
-      const res = await fetch(url, {
+      const res = await adminFetch(endpoint, {
         method,
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
         body: JSON.stringify(formData)
       });
 
@@ -215,11 +208,8 @@ export default function AdminBoutique() {
   const handleSaveSettings = async () => {
     setSavingSettings(true);
     try {
-      
-      const res = await fetch(`${API_URL}/api/admin/settings`, {
+      const res = await adminFetch('/api/admin/settings', {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
         body: JSON.stringify({ comparisonTable })
       });
 
