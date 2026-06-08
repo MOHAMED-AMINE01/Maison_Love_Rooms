@@ -4,6 +4,7 @@ import { useLocation } from 'react-router-dom';
 import { AdminToast, AdminConfirmModal, useAdminToast, useAdminConfirm } from '../../components/admin/AdminModal';
 import CustomDatePicker from '../../components/ui/CustomDatePicker';
 import { API_URL } from '../../constants';
+import { adminFetch } from '../../utils/apiClient';
 import { 
   Search, 
   Filter, 
@@ -111,18 +112,14 @@ export default function AdminReservations() {
       
       
       // 1. Fetch Reservations
-      const resReservations = await fetch(`${API_URL}/api/admin/reservations`, {
-        credentials: 'include'
-      });
+      const resReservations = await adminFetch('/api/admin/reservations');
       if (resReservations.ok) {
         const dataRes = await resReservations.json();
         setReservations(dataRes);
       }
 
       // 2. Fetch Suites
-      const resSuites = await fetch(`${API_URL}/api/admin/suites`, {
-        credentials: 'include'
-      });
+      const resSuites = await adminFetch('/api/admin/suites');
       if (resSuites.ok) {
         const dataSuites = await resSuites.json();
         setSuites(dataSuites);
@@ -188,10 +185,8 @@ export default function AdminReservations() {
     setUpdating(true);
     try {
       
-      const res = await fetch(`${API_URL}/api/admin/reservations/${selectedRes._id}`, {
+      const res = await adminFetch(`/api/admin/reservations/${selectedRes._id}`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
         body: JSON.stringify({
           ...selectedRes,
           status,
@@ -221,10 +216,8 @@ export default function AdminReservations() {
           ? `Formule : ${selectedFormula}\n${newResData.specialRequest}` 
           : `Formule : ${selectedFormula}`
       };
-      const res = await fetch(`${API_URL}/api/admin/reservations`, {
+      const res = await adminFetch('/api/admin/reservations', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
         body: JSON.stringify(payload)
       });
 
@@ -265,9 +258,8 @@ export default function AdminReservations() {
         hideConfirm();
         try {
           
-          const res = await fetch(`${API_URL}/api/admin/reservations/${id}`, {
-            method: 'DELETE',
-            credentials: 'include'
+          const res = await adminFetch(`/api/admin/reservations/${id}`, {
+            method: 'DELETE'
           });
           if (!res.ok) throw new Error('Erreur lors du traitement');
           setReservations(reservations.filter(r => r._id !== id));
