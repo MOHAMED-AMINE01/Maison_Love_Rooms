@@ -6,18 +6,21 @@ export interface AuthRequest extends Request {
 }
 
 export const protect = (req: AuthRequest, res: Response, next: NextFunction) => {
-  let token;
+  // Priorité au cookie httpOnly, fallback sur Authorization header
+  const token = req.cookies?.adminToken ||
+    (req.headers.authorization?.startsWith('Bearer')
+      ? req.headers.authorization.split(' ')[1]
+      : null);
 
-  if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
-    try {
-      token = req.headers.authorization.split(' ')[1];
-      const decoded = jwt.verify(token, process.env.JWT_SECRET as string);
-      req.admin = decoded;
-      next();
-    } catch (error) {
-      res.status(401).json({ message: 'Non autorisé, token invalide' });
-    }
-  } else {
-    res.status(401).json({ message: 'Non autorisé, aucun token' });
+  if (!token) {
+    return res.status(401).json({ message: 'Non autorisé, aucun token' });
+  }
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET as string);
+    req.admin = decoded;
+    next();
+  } catch (error) {
+    res.status(401).json({ message: 'Non autorisé, token invalide' });
   }
 };

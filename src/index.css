@@ -2,11 +2,11 @@
 @import "tailwindcss";
 
 @theme {
-  --color-page: #F6F4F1;
+  --color-page: #EDE6DC;
   --color-noir: #0A0A0A;
   --color-gold: #BC9B5D;
-  --color-gold-light: #E8D5B5;
-  --color-creme: #FCFAF7;
+  --color-gold-light: #D4C5A0;
+  --color-creme: #F5EFE5;
 
   /* Admin Dark Theme */
   --color-admin-bg: #0D0D0D;

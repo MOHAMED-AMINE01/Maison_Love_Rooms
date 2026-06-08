@@ -4,18 +4,18 @@ import { useLocation } from 'react-router-dom';
 
 export default function Legal() {
    const location = useLocation();
-   const isCGV = location.pathname.includes('cgv');
    const isPrivacy = location.pathname.includes('confidentialite');
-   
+   const isCookies = location.pathname.includes('cookies');
+
    let title = "Mentions Légales.";
    let subtitle = "Transparence";
-   
-   if (isCGV) {
-      title = "Conditions Générales.";
-      subtitle = "Engagements";
-   } else if (isPrivacy) {
-      title = "Confidentialité.";
+
+   if (isPrivacy) {
+      title = "Politique de Confidentialité.";
       subtitle = "Protection";
+   } else if (isCookies) {
+      title = "Politique Cookies.";
+      subtitle = "Cookies";
    }
 
    return (
@@ -36,67 +36,240 @@ export default function Legal() {
             </div>
 
             <div className="bg-[#121212] border border-white/5 rounded-3xl p-8 md:p-16 shadow-2xl">
-               <div className="space-y-12 md:space-y-16 text-white/60 font-light italic leading-relaxed text-sm md:text-lg">
-                  {isPrivacy ? (
+               <div className="space-y-8 md:space-y-12 text-white/70 font-light leading-relaxed text-sm md:text-base">
+                  {isCookies ? (
                      <>
-                        <section className="space-y-4 md:space-y-6">
-                           <h2 className="text-lg md:text-2xl font-serif text-white not-italic">1. Collecte des données</h2>
+                        <section className="space-y-3">
+                           <h2 className="text-lg md:text-2xl font-serif text-white not-italic">Utilisation des cookies</h2>
+                           <p>Le site utilise des cookies pour :</p>
+                           <ul className="list-disc list-inside space-y-2 ml-2">
+                              <li>Mesurer l'audience</li>
+                              <li>Améliorer l'expérience utilisateur</li>
+                           </ul>
+                        </section>
+
+                        <section className="space-y-3">
                            <p>
-                              Maison Love Rooms limite la collecte de données au strict nécessaire pour garantir votre réservation. Votre anonymat est notre priorité.
+                              Lors de votre première visite, un bandeau de gestion du consentement vous permet d'accepter ou de refuser tout ou partie des cookies. Vous pouvez également gérer les cookies via les paramètres de votre navigateur.
                            </p>
                         </section>
-                        <section className="space-y-4 md:space-y-6">
-                           <h2 className="text-lg md:text-2xl font-serif text-white not-italic">2. Discrétion Bancaire</h2>
+
+                        <section className="space-y-3">
+                           <h2 className="text-lg md:text-2xl font-serif text-white not-italic">Sécurité</h2>
                            <p>
-                              Toutes les transactions apparaîtront sous l'intitulé neutre "ML Services". Aucune mention de nos suites n'est conservée sur vos relevés bancaires.
+                              Maison Love Rooms met en œuvre toutes les mesures techniques et organisationnelles nécessaires pour garantir la sécurité et la confidentialité des données personnelles.
                            </p>
                         </section>
-                        <section className="space-y-4 md:space-y-6">
-                           <h2 className="text-lg md:text-2xl font-serif text-white not-italic">3. Utilisation des données</h2>
+
+                        <section className="space-y-3">
+                           <h2 className="text-lg md:text-2xl font-serif text-white not-italic">Durée de conservation</h2>
                            <p>
-                              Vos informations (email, téléphone) ne servent qu'à vous transmettre les codes d'accès sécurisés de votre suite. Elles sont automatiquement chiffrées et purgées de nos serveurs 48h après votre départ.
+                              Les cookies sont conservés pour une durée maximale de 13 mois après leur dépôt.
+                           </p>
+                        </section>
+
+                        <section className="space-y-3">
+                           <h2 className="text-lg md:text-2xl font-serif text-white not-italic">Gestion du consentement</h2>
+                           <p>
+                              Lors de votre première visite, un bandeau de gestion du consentement vous permet d'accepter ou de refuser tout ou partie des cookies. Vous pouvez également gérer les cookies via les paramètres de votre navigateur.
+                           </p>
+                        </section>
+
+                        <section className="space-y-3 pt-4 border-t border-white/10">
+                           <h2 className="text-lg md:text-2xl font-serif text-white not-italic">Contact</h2>
+                           <p>
+                              Pour toute question concernant notre politique de cookies, vous pouvez nous contacter à : <span className="text-gold"><a href="mailto:conciergerie@maisonloveroom.fr" className="text-gold hover:text-gold/80 underline">conciergerie@maisonloveroom.fr</a></span>
                            </p>
                         </section>
                      </>
-                  ) : isCGV ? (
+                  ) : isPrivacy ? (
                      <>
-                        <section className="space-y-4 md:space-y-6">
-                           <h2 className="text-lg md:text-2xl font-serif text-white not-italic">1. Réservation et Paiement</h2>
+                        <section className="space-y-3">
+                           <h2 className="text-lg md:text-2xl font-serif text-white not-italic">Introduction</h2>
                            <p>
-                              Toute réservation est définitive après encaissement. Une caution sous forme d'empreinte bancaire (non débitée) est exigée avant l'accès à la suite pour couvrir les éventuels dommages.
+                              La présente politique de confidentialité a pour but d'informer les utilisateurs du site sur la manière dont sont collectées, utilisées et protégées leurs données personnelles.
+                           </p>
+                           <p>
+                              Maison Love Rooms s'engage à ce que la collecte et le traitement de vos données soient conformes au Règlement Général sur la Protection des Données (RGPD) et à la législation française en vigueur.
                            </p>
                         </section>
-                        <section className="space-y-4 md:space-y-6">
-                           <h2 className="text-lg md:text-2xl font-serif text-white not-italic">2. Conditions d'Annulation</h2>
+
+                        <section className="space-y-3">
+                           <h2 className="text-lg md:text-2xl font-serif text-white not-italic">Responsable du traitement</h2>
                            <p>
-                              L'annulation est gratuite jusqu'à 7 jours avant le début du séjour. En deçà, l'intégralité du montant de la nuitée sera retenue à titre de dédommagement.
+                              Le responsable du traitement des données est :
+                           </p>
+                           <p className="text-gold font-semibold">
+                              Maison Love Rooms<br />
+                              Email : <a href="mailto:conciergerie@maisonloveroom.fr" className="text-gold hover:text-gold/80 underline">conciergerie@maisonloveroom.fr</a>
                            </p>
                         </section>
-                        <section className="space-y-4 md:space-y-6">
-                           <h2 className="text-lg md:text-2xl font-serif text-white not-italic">3. Règlement Intérieur</h2>
+
+                        <section className="space-y-3">
+                           <h2 className="text-lg md:text-2xl font-serif text-white not-italic">Données collectées</h2>
                            <p>
-                              Nos suites sont strictement non-fumeurs. Les animaux de compagnie ne sont pas admis. Tout manquement ou dégât matériel constaté entraînera des frais de remise en état prélevés sur l'empreinte bancaire.
+                              Les données personnelles pouvant être collectées sur le site sont :
+                           </p>
+                           <ul className="list-disc list-inside space-y-2 ml-2">
+                              <li>Nom</li>
+                              <li>Adresse mail</li>
+                              <li>Autres informations saisies dans le champ "message" du formulaire de contact</li>
+                           </ul>
+                           <p>
+                              Ces données sont fournies volontairement par l'utilisateur lors de l'envoi d'un message via le formulaire de contact. Le site peut également collecter automatiquement des données de navigation (adresses IP, données de localisation, type de navigateur, etc.) par le biais de cookies, à des fins statistiques et d'amélioration de l'expérience utilisateur.
+                           </p>
+                        </section>
+
+                        <section className="space-y-3">
+                           <h2 className="text-lg md:text-2xl font-serif text-white not-italic">Finalités du traitement</h2>
+                           <p>
+                              Les données sont collectées pour les finalités suivantes :
+                           </p>
+                           <ul className="list-disc list-inside space-y-2 ml-2">
+                              <li>Répondre aux demandes envoyées via le formulaire de contact</li>
+                              <li>Assurer la gestion et le bon fonctionnement du site</li>
+                              <li>Analyser l'audience du site et améliorer les services proposés</li>
+                           </ul>
+                        </section>
+
+                        <section className="space-y-3">
+                           <h2 className="text-lg md:text-2xl font-serif text-white not-italic">Destinataires des données</h2>
+                           <p>
+                              Les données collectées sont destinées uniquement à Maison Love Rooms et ne sont jamais cédées, louées ou vendues à des tiers.
+                           </p>
+                        </section>
+
+                        <section className="space-y-3">
+                           <h2 className="text-lg md:text-2xl font-serif text-white not-italic">Durée de conservation</h2>
+                           <p>
+                              Les données personnelles sont conservées :
+                           </p>
+                           <ul className="list-disc list-inside space-y-2 ml-2">
+                              <li>Pour les demandes de contact : pendant 12 mois à compter du dernier échange</li>
+                              <li>Pour les cookies : jusqu'à 13 mois maximum après dépôt</li>
+                           </ul>
+                        </section>
+
+                        <section className="space-y-3">
+                           <h2 className="text-lg md:text-2xl font-serif text-white not-italic">Droits des utilisateurs</h2>
+                           <p>
+                              Conformément au RGPD, vous disposez des droits suivants concernant vos données personnelles :
+                           </p>
+                           <ul className="list-disc list-inside space-y-2 ml-2">
+                              <li>Droit d'accès</li>
+                              <li>Droit de rectification</li>
+                              <li>Droit à l'effacement</li>
+                              <li>Droit à la limitation du traitement</li>
+                              <li>Droit d'opposition</li>
+                              <li>Droit à la portabilité des données</li>
+                           </ul>
+                           <p className="pt-3">
+                              Vous pouvez exercer ces droits en envoyant un e-mail à : <span className="text-gold"><a href="mailto:conciergerie@maisonloveroom.fr" className="text-gold hover:text-gold/80 underline">conciergerie@maisonloveroom.fr</a></span>
                            </p>
                         </section>
                      </>
                   ) : (
                      <>
-                        <section className="space-y-4 md:space-y-6">
-                           <h2 className="text-lg md:text-2xl font-serif text-white not-italic">1. Édition du site</h2>
+                        <section className="space-y-3">
+                           <h2 className="text-lg md:text-2xl font-serif text-white not-italic">Éditeur du site</h2>
                            <p>
-                              Le présent site est édité par la société ML Services, Société par Actions Simplifiée au capital de 10 000 €, dont le siège social est situé à Paris, France.
+                              Le présent site est édité par :
+                           </p>
+                           <p className="text-gold font-semibold">
+                              Maison Love Rooms<br />
+                              Email : <a href="mailto:conciergerie@maisonloveroom.fr" className="text-gold hover:text-gold/80 underline">conciergerie@maisonloveroom.fr</a><br />
+                              Le directeur de publication du site est Maison Love Room
                            </p>
                         </section>
-                        <section className="space-y-4 md:space-y-6">
-                           <h2 className="text-lg md:text-2xl font-serif text-white not-italic">2. Hébergement</h2>
+
+                        <section className="space-y-3">
+                           <h2 className="text-lg md:text-2xl font-serif text-white not-italic">Hébergement du site</h2>
                            <p>
-                              Ce site est hébergé par une infrastructure sécurisée garantissant le cryptage complet et la confidentialité de vos données de navigation.
+                              Le site est hébergé par :
+                           </p>
+                           <p className="text-gold font-semibold">
+                              IONOS SARL<br />
+                              Adresse : 7 place de la Gare, 57200 Sarreguemines, France<br />
+                              Site web : <a href="https://www.ionos.fr" className="hover:text-gold/80">https://www.ionos.fr</a>
                            </p>
                         </section>
-                        <section className="space-y-4 md:space-y-6">
-                           <h2 className="text-lg md:text-2xl font-serif text-white not-italic">3. Propriété Intellectuelle</h2>
+
+                        <section className="space-y-3">
+                           <h2 className="text-lg md:text-2xl font-serif text-white not-italic">Propriété intellectuelle</h2>
                            <p>
-                              L'ensemble des éléments constituant ce site (textes, photographies, vidéos, logos, charte graphique) sont la propriété exclusive de ML Services. Toute reproduction est formellement interdite sans accord écrit.
+                              L'ensemble du contenu du site (textes, images, photos, vidéos, éléments graphiques, logos, structure générale…) est protégé par la législation en vigueur sur la propriété intellectuelle.
+                           </p>
+                           <p>
+                              Toute reproduction, modification ou diffusion, totale ou partielle, sans accord préalable écrit de l'éditeur est interdite.
+                           </p>
+                        </section>
+
+                        <section className="space-y-3">
+                           <h2 className="text-lg md:text-2xl font-serif text-white not-italic">Données personnelles</h2>
+                           <p>
+                              Des données personnelles peuvent être collectées via le formulaire de contact et par l'utilisation de cookies.
+                           </p>
+                           <p>
+                              Le responsable du traitement est :<br />
+                              <span className="text-gold">Maison Love Rooms — <a href="mailto:conciergerie@maisonloveroom.fr" className="text-gold hover:text-gold/80 underline">conciergerie@maisonloveroom.fr</a></span>
+                           </p>
+                           <p>
+                              Le traitement des données est conforme au RGPD et à la législation française. Pour plus de détails, consultez la <a href="/confidentialite" className="text-gold hover:text-gold/80">Politique de confidentialité</a> du site.
+                           </p>
+                           <p>
+                              Les utilisateurs disposent des droits suivants : accès, rectification, suppression, opposition, portabilité, limitation du traitement.<br />
+                              Pour exercer vos droits : <span className="text-gold"><a href="mailto:conciergerie@maisonloveroom.fr" className="text-gold hover:text-gold/80 underline">conciergerie@maisonloveroom.fr</a></span>
+                           </p>
+                        </section>
+
+                        <section className="space-y-3">
+                           <h2 className="text-lg md:text-2xl font-serif text-white not-italic">Cookies</h2>
+                           <p>
+                              Le site utilise des cookies pour mesurer l'audience et améliorer l'expérience utilisateur.
+                           </p>
+                           <p>
+                              Un bandeau de consentement permet de gérer l'utilisation des cookies. Pour plus d'informations, consultez la <a href="/cookies" className="text-gold hover:text-gold/80">politique cookies</a>.
+                           </p>
+                        </section>
+
+                        <section className="space-y-3">
+                           <h2 className="text-lg md:text-2xl font-serif text-white not-italic">Responsabilité</h2>
+                           <p>
+                              L'éditeur ne saurait être tenu responsable :
+                           </p>
+                           <ul className="list-disc list-inside space-y-2 ml-2">
+                              <li>d'interruptions temporaires du site,</li>
+                              <li>de dysfonctionnements indépendants de sa volonté,</li>
+                              <li>de tout dommage indirect lié à l'utilisation du site.</li>
+                           </ul>
+                        </section>
+
+                        <section className="space-y-3">
+                           <h2 className="text-lg md:text-2xl font-serif text-white not-italic">Liens externes</h2>
+                           <p>
+                              Le site peut contenir des liens vers des sites tiers.<br /> Maison Love Rooms décline toute responsabilité concernant leur contenu ou leur politique de confidentialité.
+                           </p>
+                        </section>
+
+                        <section className="space-y-3">
+                           <h2 className="text-lg md:text-2xl font-serif text-white not-italic">Modification des mentions légales</h2>
+                           <p>
+                              Les présentes mentions légales peuvent être modifiées à tout moment pour rester conformes à la réglementation.
+                           </p>
+                        </section>
+
+                        <section className="space-y-3">
+                           <h2 className="text-lg md:text-2xl font-serif text-white not-italic">Droit applicable</h2>
+                           <p>
+                              Les présentes mentions légales sont régies par le droit français.<br /> En cas de litige, les tribunaux français seront seuls compétents.
+                           </p>
+                        </section>
+
+                        <section className="space-y-3">
+                           <h2 className="text-lg md:text-2xl font-serif text-white not-italic">Crédits</h2>
+                           <p>
+                              Site web conçu et développé par Fayçal Zighem – Freelance<br />
+                              SIRET : 101 365 617 00014
                            </p>
                         </section>
                      </>
@@ -105,7 +278,7 @@ export default function Legal() {
             </div>
 
             <div className="pt-8 md:pt-12 text-center">
-               <p className="text-[10px] uppercase tracking-[0.4em] font-bold text-white/20">Dernière mise à jour : Mai 2026</p>
+               <p className="text-[10px] uppercase tracking-[0.4em] font-bold text-white/20">Dernière mise à jour : Juin 2026</p>
             </div>
          </div>
       </motion.div>

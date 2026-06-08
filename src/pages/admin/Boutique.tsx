@@ -100,9 +100,9 @@ export default function AdminBoutique() {
 
   const fetchSettings = async () => {
     try {
-      const token = localStorage.getItem('adminToken');
+      
       const res = await fetch(`${API_URL}/api/admin/settings`, {
-        headers: { 'Authorization': `Bearer ${token}` }
+        credentials: 'include'
       });
       if (res.ok) {
         const data = await res.json();
@@ -156,10 +156,10 @@ export default function AdminBoutique() {
       onConfirm: async () => {
         hideConfirm();
         try {
-          const token = localStorage.getItem('adminToken');
+          
           const res = await fetch(`${API_URL}/api/admin/services/${id}`, {
             method: 'DELETE',
-            headers: { 'Authorization': `Bearer ${token}` }
+            credentials: 'include'
           });
           if (res.ok) {
             setServices(services.filter(s => s._id !== id));
@@ -182,7 +182,7 @@ export default function AdminBoutique() {
     }
 
     try {
-      const token = localStorage.getItem('adminToken');
+      
       const url = editId
         ? `${API_URL}/api/admin/services/${editId}`
         : `${API_URL}/api/admin/services`;
@@ -190,10 +190,8 @@ export default function AdminBoutique() {
 
       const res = await fetch(url, {
         method,
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify(formData)
       });
 
@@ -217,13 +215,11 @@ export default function AdminBoutique() {
   const handleSaveSettings = async () => {
     setSavingSettings(true);
     try {
-      const token = localStorage.getItem('adminToken');
+      
       const res = await fetch(`${API_URL}/api/admin/settings`, {
         method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({ comparisonTable })
       });
 

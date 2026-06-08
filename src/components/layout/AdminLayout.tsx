@@ -18,6 +18,7 @@ import {
   X
 } from "lucide-react";
 import { Link, useLocation, Outlet, useNavigate } from "react-router-dom";
+import { API_URL } from '../../constants';
 
 const SIDEBAR_ITEMS = [
   { icon: LayoutDashboard, label: "Dashboard", path: "/admin" },
@@ -36,14 +37,17 @@ export default function AdminLayout() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   useEffect(() => {
-    const token = localStorage.getItem('adminToken');
-    if (!token) {
-      navigate('/admin/login', { replace: true });
-    }
+    // Vérifie la session via le cookie httpOnly (si 401 → login)
+    fetch(`${API_URL}/api/admin/stats`, { credentials: 'include' })
+      .then(res => { if (!res.ok) navigate('/admin/login', { replace: true }); })
+      .catch(() => navigate('/admin/login', { replace: true }));
   }, [navigate]);
 
-  const handleLogout = () => {
-    localStorage.removeItem('adminToken');
+  const handleLogout = async () => {
+    await fetch(`${API_URL}/api/admin/logout`, {
+      method: 'POST',
+      credentials: 'include',
+    });
     localStorage.removeItem('adminUser');
     navigate('/admin/login', { replace: true });
   };

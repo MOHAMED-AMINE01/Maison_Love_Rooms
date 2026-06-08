@@ -42,7 +42,7 @@ export default function Booking() {
           <div className="pt-20 flex flex-col items-center gap-4 text-white/10 uppercase tracking-[0.8em] text-[8px] font-bold">
             <span>Maison Love Rooms</span>
             <div className="h-4 w-px bg-white/10" />
-            <span>Paris, FR</span>
+            <span>Tours, FR</span>
           </div>
         </motion.div>
       </div>

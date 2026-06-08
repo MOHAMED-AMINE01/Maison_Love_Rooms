@@ -65,11 +65,9 @@ export default function AdminDashboard() {
     const fetchDashboardData = async () => {
       try {
         setLoading(true);
-        const token = localStorage.getItem('adminToken') || '';
-        
         // Fetch Stats
         const statsRes = await fetch(`${API_URL}/api/admin/stats`, {
-          headers: { Authorization: `Bearer ${token}` }
+          credentials: 'include'
         });
         if (statsRes.ok) {
           const statsData = await statsRes.json();
@@ -78,7 +76,7 @@ export default function AdminDashboard() {
 
         // Fetch Reservations
         const resRes = await fetch(`${API_URL}/api/admin/reservations`, {
-          headers: { Authorization: `Bearer ${token}` }
+          credentials: 'include'
         });
         if (resRes.ok) {
           const resData = await resRes.json();
@@ -87,7 +85,7 @@ export default function AdminDashboard() {
 
         // Fetch Suites Count
         const suitesRes = await fetch(`${API_URL}/api/admin/suites`, {
-          headers: { Authorization: `Bearer ${token}` }
+          credentials: 'include'
         });
         if (suitesRes.ok) {
           const suitesData = await suitesRes.json();

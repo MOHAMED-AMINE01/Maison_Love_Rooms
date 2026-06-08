@@ -24,9 +24,9 @@ export default function AdminTypographie() {
 
     const fetchSettings = async () => {
       try {
-        const token = localStorage.getItem('adminToken');
+        
         const res = await fetch(`${API_URL}/api/admin/settings`, {
-          headers: { Authorization: `Bearer ${token}` },
+          credentials: 'include',
         });
         if (res.ok) {
           const data = await res.json();
@@ -47,13 +47,11 @@ export default function AdminTypographie() {
   const handleSave = async () => {
     setSaving(true);
     try {
-      const token = localStorage.getItem('adminToken');
+      
       const res = await fetch(`${API_URL}/api/admin/settings`, {
         method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({ fontTheme: selected }),
       });
 
@@ -161,14 +159,14 @@ export default function AdminTypographie() {
                           className="text-3xl leading-tight text-white"
                           style={{ fontFamily: theme.serif }}
                         >
-                          L'Émotion <span className="italic text-white/40">en Héritage.</span>
+                          Érotisme <span className="italic text-white/40">et plaisir.</span>
                         </p>
                         <p
                           className="text-sm text-white/50 leading-relaxed"
                           style={{ fontFamily: theme.sans }}
                         >
-                          Une adresse confidentielle au cœur de Paris. Redécouvrez la volupté dans
-                          nos chambres de prestige.
+                          Maison Love Rooms vous propose deux love room imaginées pour les amoureux qui
+                          veulent s'évader le temps d'une soirée dans un cocon de douceur et d'exotisme.
                         </p>
                         <div className="flex items-center gap-3 pt-2">
                           <span

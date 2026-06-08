@@ -1,5 +1,6 @@
 import express, { Request, Response } from 'express';
 import cors from 'cors';
+import cookieParser from 'cookie-parser';
 import dotenv from 'dotenv';
 import connectDB from './config/db';
 import { seedDatabase } from './seeder';
@@ -18,10 +19,27 @@ connectDB().then(() => {
 
 const app = express();
 
-
 // Middlewares
-app.use(cors());
+const ALLOWED_ORIGINS = [
+  'http://localhost:5173',
+  'http://localhost:3000',
+  'http://localhost:4173',
+  ...(process.env.FRONTEND_URL ? [process.env.FRONTEND_URL] : []),
+];
+
+app.use(cors({
+  origin: (origin, callback) => {
+    // Autorise les requêtes sans origin (Postman, curl) et les origins whitelistées
+    if (!origin || ALLOWED_ORIGINS.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error(`Origin ${origin} non autorisée par CORS`));
+    }
+  },
+  credentials: true,
+}));
 app.use(express.json());
+app.use(cookieParser());
 
 // Utilisation des routes Admin et Publiques
 app.use('/api/admin', adminRoutes);
@@ -31,7 +49,6 @@ app.use('/api', publicRoutes);
 app.get('/', (req: Request, res: Response) => {
   res.send('API Maison Love Rooms Backend est fonctionnelle !');
 });
-
 
 // Port du serveur
 const PORT = process.env.PORT || 5000;

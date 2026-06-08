@@ -5,9 +5,9 @@ import { API_URL } from '../../constants';
 
 export default function Footer() {
   const [contactInfo, setContactInfo] = useState({
-    phone: "06 27 09 47 17",
-    email: "privilege@maisonloveroom.fr",
-    address: "Paris, France (Révélée après réservation)"
+    phone: "06.27.09.47.17",
+    email: "conciergerie@maisonloveroom.fr",
+    address: "Tours, France (Révélée après réservation)"
   });
 
   useEffect(() => {
@@ -17,9 +17,9 @@ export default function Footer() {
         if (res.ok) {
           const data = await res.json();
           setContactInfo({
-            phone: data.phone || "06 27 09 47 17",
-            email: data.email || "privilege@maisonloveroom.fr",
-            address: data.address || "Paris, France (Révélée après réservation)"
+            phone: data.phone || "06.27.09.47.17",
+            email: data.email || "conciergerie@maisonloveroom.fr",
+            address: data.address || "Tours, France (Révélée après réservation)"
           });
         }
       } catch (err) {
@@ -34,7 +34,7 @@ export default function Footer() {
       {/* Decorative Branding Background */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] md:w-[800px] h-[600px] md:h-[800px] bg-gold/5 blur-[150px] rounded-full pointer-events-none z-0" />
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[40vw] font-serif italic text-white/[0.02] pointer-events-none select-none z-0">
-        ML
+        MLR
       </div>
 
       <div className="container-wide relative z-10 px-6 md:px-10">
@@ -51,7 +51,7 @@ export default function Footer() {
               />
             </Link>
             <p className="text-white/40 font-serif italic text-lg md:text-xl max-w-md leading-relaxed">
-              Une adresse confidentielle, un service d'excellence hôtelière et une discrétion absolue pour sublimer vos moments les plus précieux au cœur de Paris.
+              Une adresse confidentielle, un service d'excellence hôtelière et une discrétion absolue pour sublimer vos moments les plus précieux au cœur de Tours.
             </p>
           </div>
 
@@ -60,9 +60,9 @@ export default function Footer() {
             <ul className="space-y-4">
               {[
                 { label: "Accueil", to: "/" },
-                { label: "Nos Suites", to: "/#suites" },
-                { label: "L'Expérience", to: "/experience" },
-                { label: "Foire Aux Questions", to: "/#faq" }
+                { label: "Nos suites", to: "/#suites" },
+                { label: "L'expérience", to: "/experience" },
+                { label: "Foire aux questions", to: "/#faq" }
               ].map((item) => (
                 <li key={item.label}>
                   <Link to={item.to} className="text-sm font-light text-white/60 hover:text-white transition-all duration-500 flex items-center gap-4 group justify-center md:justify-start">
@@ -94,13 +94,13 @@ export default function Footer() {
         </div>
 
         <div className="pt-10 border-t border-white/5 flex flex-col lg:flex-row justify-between items-center gap-8 text-[10px] uppercase tracking-[0.2em] sm:tracking-[0.4em] font-bold text-white/40 text-center lg:text-left">
-          <p>© {new Date().getFullYear()} MAISON LOVE ROOMs PARIS • ALL RIGHTS RESERVED</p>
+          <p>© {new Date().getFullYear()} MAISON LOVE ROOMS • Tous droits réservés</p>
           <div className="flex flex-wrap justify-center gap-4 sm:gap-8 items-center">
-            <Link to="/cgv" className="hover:text-gold transition-colors">CGV</Link>
-            <div className="w-1 h-1 rounded-full bg-white/10 hidden sm:block" />
             <Link to="/confidentialite" className="hover:text-gold transition-colors">Confidentialité</Link>
             <div className="w-1 h-1 rounded-full bg-white/10 hidden sm:block" />
             <Link to="/mentions-legales" className="hover:text-gold transition-colors">Mentions Légales</Link>
+            <div className="w-1 h-1 rounded-full bg-white/10 hidden sm:block" />
+            <Link to="/cookies" className="hover:text-gold transition-colors">Cookies</Link>
           </div>
         </div>
       </div>

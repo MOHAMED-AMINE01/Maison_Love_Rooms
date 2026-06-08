@@ -12,10 +12,10 @@ export default function AdminLogin() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const token = localStorage.getItem('adminToken');
-    if (token) {
-      navigate('/admin', { replace: true });
-    }
+    // Vérifie silencieusement si une session cookie est encore valide
+    fetch(`${API_URL}/api/admin/stats`, { credentials: 'include' })
+      .then(res => { if (res.ok) navigate('/admin', { replace: true }); })
+      .catch(() => { /* pas de session active, on reste sur login */ });
   }, [navigate]);
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -27,13 +27,14 @@ export default function AdminLogin() {
       const res = await fetch(`${API_URL}/api/admin/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include', // reçoit et stocke le cookie httpOnly
         body: JSON.stringify({ email, password }),
       });
 
       const data = await res.json();
 
       if (res.ok) {
-        localStorage.setItem('adminToken', data.token);
+        // On stocke uniquement les infos non-sensibles (pas le token)
         localStorage.setItem('adminUser', JSON.stringify(data));
         navigate('/admin', { replace: true });
       } else {

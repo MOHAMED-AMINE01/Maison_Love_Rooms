@@ -33,7 +33,7 @@ export default function Suites() {
         <div className="flex flex-col md:flex-row items-center justify-between mb-16 md:mb-24 gap-8 px-4">
           <div className="max-w-2xl space-y-6 text-center md:text-start">
             <h2 className="text-5xl md:text-8xl font-serif leading-[0.85] tracking-tighter text-noir">
-              Nos <span className="italic text-gold">Chambres</span> Premium
+              Nos <span className="italic text-gold">chambres</span> premium
             </h2>
           </div>
           <p className="text-noir/40 font-serif italic text-lg md:text-xl max-w-sm border-l border-gold/30 pl-8 text-center md:text-start">

@@ -48,12 +48,12 @@ export default function Hero() {
 
 
               <h1 className="text-5xl md:text-7xl lg:text-[5.5rem] leading-[1.1] tracking-tight text-white font-serif max-w-xl">
-                L'Émotion <br />
-                <span className="italic text-white/40">en Héritage.</span>
+                Érotisme <br />
+                <span className="italic text-white/40">et plaisir.</span>
               </h1>
 
               <p className="max-w-md text-lg md:text-xl font-light text-white/40 leading-relaxed font-sans border-l border-white/10 pl-8">
-                Une adresse confidentielle au cœur de Paris. Redécouvrez la volupté dans nos chambres de prestige, pensés pour l'inoubliable.
+                Maison Love Rooms vous propose deux love room imaginées pour les amoureux qui veulent s'évader le temps d'une soirée dans un cocon de douceur et d'exotisme.
               </p>
             </motion.div>
 

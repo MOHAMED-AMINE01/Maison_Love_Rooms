@@ -98,8 +98,8 @@ function AppContent() {
               <Route path="/checkout" element={<Checkout />} />
               <Route path="/confirmation" element={<Confirmation />} />
               <Route path="/mentions-legales" element={<Legal />} />
-              <Route path="/cgv" element={<Legal />} />
               <Route path="/confidentialite" element={<Legal />} />
+              <Route path="/cookies" element={<Legal />} />
 
               {/* Admin Login Route */}
               <Route path="/admin/login" element={<AdminLogin />} />

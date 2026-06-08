@@ -1,12 +1,13 @@
 import express from 'express';
-import { 
-  loginAdmin, 
-  getDashboardStats, 
-  getReservations, 
-  createReservation, 
+import {
+  loginAdmin,
+  logoutAdmin,
+  getDashboardStats,
+  getReservations,
+  createReservation,
   updateReservation,
   deleteReservation,
-  getSuites, 
+  getSuites,
   createSuite,
   updateSuite,
   deleteSuite,
@@ -17,14 +18,19 @@ import {
   addBlockedDate,
   removeBlockedDate,
   getSettings,
-  updateSettings
+  updateSettings,
+  getGiftCards,
+  createGiftCard,
+  updateGiftCard,
+  deleteGiftCard
 } from '../controllers/adminController';
 import { protect } from '../middlewares/authMiddleware';
 
 const router = express.Router();
 
-// Route publique
+// Routes publiques
 router.post('/login', loginAdmin);
+router.post('/logout', logoutAdmin);
 
 // Routes protégées par JWT
 router.get('/stats', protect, getDashboardStats);
@@ -60,6 +66,15 @@ router.route('/services')
 router.route('/services/:id')
   .put(protect, updateService)
   .delete(protect, deleteService);
+
+// Routes pour les cartes cadeaux
+router.route('/gift-cards')
+  .get(getGiftCards) // Public pour la page client
+  .post(protect, createGiftCard);
+
+router.route('/gift-cards/:id')
+  .put(protect, updateGiftCard)
+  .delete(protect, deleteGiftCard);
 
 export default router;
 

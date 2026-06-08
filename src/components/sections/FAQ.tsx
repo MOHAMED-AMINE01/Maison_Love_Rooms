@@ -29,7 +29,7 @@ export default function FAQ() {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   return (
-    <section id="faq" className="py-24 md:py-48 mx-3 bg-[#FAF9F6] border-t border-noir/5">
+    <section id="faq" className="pt-24 md:pt-48 pb-12 md:pb-20 mx-3 bg-[#FAF9F6] border-t border-noir/5">
       <div className="container-wide px-4 md:px-8">
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-32">
@@ -44,8 +44,8 @@ export default function FAQ() {
             >
 
               <h2 className="text-5xl md:text-7xl text-center md:text-left font-serif leading-[0.85] tracking-tighter text-noir">
-                Vos Questions, <br className="hidden md:block" />
-                <span className="italic text-gold">Nos Réponses.</span>
+                Vos questions, <br className="hidden md:block" />
+                <span className="italic text-gold">nos réponses.</span>
               </h2>
               <p className="text-xl text-noir/40 font-serif italic leading-relaxed max-w-sm text-center md:text-left">
                 "Parce que la sérénité commence par la clarté, nous avons anticipé chacun de vos besoins."

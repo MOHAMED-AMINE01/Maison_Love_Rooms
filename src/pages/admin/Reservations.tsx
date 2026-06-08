@@ -108,11 +108,11 @@ export default function AdminReservations() {
   const fetchData = async () => {
     setLoading(true);
     try {
-      const token = localStorage.getItem('adminToken');
+      
       
       // 1. Fetch Reservations
       const resReservations = await fetch(`${API_URL}/api/admin/reservations`, {
-        headers: { 'Authorization': `Bearer ${token}` }
+        credentials: 'include'
       });
       if (resReservations.ok) {
         const dataRes = await resReservations.json();
@@ -121,7 +121,7 @@ export default function AdminReservations() {
 
       // 2. Fetch Suites
       const resSuites = await fetch(`${API_URL}/api/admin/suites`, {
-        headers: { 'Authorization': `Bearer ${token}` }
+        credentials: 'include'
       });
       if (resSuites.ok) {
         const dataSuites = await resSuites.json();
@@ -187,13 +187,11 @@ export default function AdminReservations() {
     if (!selectedRes) return;
     setUpdating(true);
     try {
-      const token = localStorage.getItem('adminToken');
+      
       const res = await fetch(`${API_URL}/api/admin/reservations/${selectedRes._id}`, {
         method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({
           ...selectedRes,
           status,
@@ -216,7 +214,7 @@ export default function AdminReservations() {
     e.preventDefault();
     setAddingRes(true);
     try {
-      const token = localStorage.getItem('adminToken');
+      
       const payload = {
         ...newResData,
         specialRequest: newResData.specialRequest 
@@ -225,10 +223,8 @@ export default function AdminReservations() {
       };
       const res = await fetch(`${API_URL}/api/admin/reservations`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify(payload)
       });
 
@@ -268,10 +264,10 @@ export default function AdminReservations() {
       onConfirm: async () => {
         hideConfirm();
         try {
-          const token = localStorage.getItem('adminToken');
+          
           const res = await fetch(`${API_URL}/api/admin/reservations/${id}`, {
             method: 'DELETE',
-            headers: { 'Authorization': `Bearer ${token}` }
+            credentials: 'include'
           });
           if (!res.ok) throw new Error('Erreur lors du traitement');
           setReservations(reservations.filter(r => r._id !== id));

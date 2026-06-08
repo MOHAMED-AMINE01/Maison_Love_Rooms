@@ -81,13 +81,13 @@ export default function AdminDisponibilites() {
   const fetchData = async () => {
     setLoading(true);
     try {
-      const token = localStorage.getItem('adminToken');
+      
       const [suitesRes, resRes] = await Promise.all([
         fetch(`${API_URL}/api/admin/suites`, {
-          headers: { 'Authorization': `Bearer ${token}` }
+          credentials: 'include'
         }),
         fetch(`${API_URL}/api/admin/reservations`, {
-          headers: { 'Authorization': `Bearer ${token}` }
+          credentials: 'include'
         })
       ]);
 
@@ -128,13 +128,11 @@ export default function AdminDisponibilites() {
     }
 
     try {
-      const token = localStorage.getItem('adminToken');
+      
       const res = await fetch(`${API_URL}/api/admin/suites/${blockForm.suiteId}/block-dates`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({
           startDate: blockForm.startDate,
           endDate: blockForm.endDate,
@@ -169,10 +167,10 @@ export default function AdminDisponibilites() {
       onConfirm: async () => {
         hideConfirm();
         try {
-          const token = localStorage.getItem('adminToken');
+          
           const res = await fetch(`${API_URL}/api/admin/suites/${suiteId}/block-dates/${blockId}`, {
             method: 'DELETE',
-            headers: { 'Authorization': `Bearer ${token}` }
+            credentials: 'include'
           });
           if (res.ok) {
             const updatedSuite = await res.json();

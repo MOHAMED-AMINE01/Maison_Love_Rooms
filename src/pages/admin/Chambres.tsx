@@ -81,9 +81,9 @@ export default function AdminChambres() {
    // Fetch suites from backend
    const fetchSuites = async () => {
       try {
-         const token = localStorage.getItem('adminToken');
+         
          const res = await fetch(`${API_URL}/api/admin/suites`, {
-            headers: { 'Authorization': `Bearer ${token}` }
+            credentials: 'include'
          });
          if (res.ok) {
             const data = await res.json();
@@ -158,10 +158,10 @@ export default function AdminChambres() {
          onConfirm: async () => {
             hideConfirm();
             try {
-               const token = localStorage.getItem('adminToken');
+               
                const res = await fetch(`${API_URL}/api/admin/suites/${id}`, {
                   method: 'DELETE',
-                  headers: { 'Authorization': `Bearer ${token}` }
+                  credentials: 'include'
                });
                if (res.ok) {
                   setSuites(suites.filter(s => s._id !== id));
@@ -183,7 +183,7 @@ export default function AdminChambres() {
       }
 
       try {
-         const token = localStorage.getItem('adminToken');
+         
          const url = editId
             ? `${API_URL}/api/admin/suites/${editId}`
             : `${API_URL}/api/admin/suites`;
@@ -191,10 +191,8 @@ export default function AdminChambres() {
 
          const res = await fetch(url, {
             method,
-            headers: {
-               'Content-Type': 'application/json',
-               'Authorization': `Bearer ${token}`
-            },
+            headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
             body: JSON.stringify(formData)
          });
 

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
-import { Send, Mail, User, MessageSquare, Sparkles } from 'lucide-react';
+import { Send, Mail, User, MessageSquare, Sparkles, Phone } from 'lucide-react';
 import { API_URL } from '../../constants';
 
 export default function Contact() {
@@ -25,49 +25,50 @@ export default function Contact() {
   }, []);
 
   return (
-    <section id="contact" className="py-24 md:py-40 bg-[#FAF9F6] relative overflow-hidden">
+    <section id="contact" className="pt-12 md:pt-20 pb-24 md:pb-40 bg-[#FAF9F6] relative overflow-hidden">
       {/* Decorative background elements */}
       <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-gold/5 blur-[120px] rounded-full -translate-y-1/2 translate-x-1/4 pointer-events-none" />
       <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-gold/5 blur-[100px] rounded-full translate-y-1/2 -translate-x-1/4 pointer-events-none" />
 
       <div className="container-wide px-6 md:px-12 relative z-10">
         <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
-          
+
           {/* Left Side: Content */}
           <div className="space-y-10">
             <div className="space-y-4">
-              <motion.span 
+              <motion.span
                 initial={{ opacity: 0, x: -20 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 className="text-[10px] uppercase tracking-[0.6em] text-gold font-black block"
               >
-                Conciergerie Privée
+                Conciergerie privée
               </motion.span>
-              <motion.h2 
+              <motion.h2
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 className="text-5xl md:text-7xl font-serif text-noir leading-tight"
               >
-                Un Souhait <br />
-                <span className="italic text-gold">Particulier ?</span>
+                Un souhait <br />
+                <span className="italic text-gold">particulier ?</span>
               </motion.h2>
             </div>
 
-            <motion.p 
+            <motion.p
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
               transition={{ delay: 0.2 }}
               className="text-noir/40 font-serif italic text-lg md:text-xl max-w-md leading-relaxed"
             >
-              "Notre équipe est à votre entière disposition pour orchestrer vos demandes les plus exclusives et rendre votre séjour inoubliable."
+              Vous avez des questions ? Besoin d'informations ? Vous souhaitez obtenir des renseignements concernant votre réservation ? Contactez-nous, c'est avec plaisir que nous vous répondrons.
             </motion.p>
 
             <div className="space-y-6 pt-4">
               {[
+                { icon: Phone, label: "Téléphone", value: "06.27.09.47.17" },
                 { icon: Mail, label: "Email", value: email },
-                { icon: Sparkles, label: "Réponse sous", value: "2 heures (Conciergerie)" }
+                { icon: Sparkles, label: "Ou bien", value: "Remplissez notre formulaire ci-dessous" }
               ].map((item, i) => (
-                <motion.div 
+                <motion.div
                   key={i}
                   initial={{ opacity: 0, x: -20 }}
                   whileInView={{ opacity: 1, x: 0 }}
@@ -87,20 +88,21 @@ export default function Contact() {
           </div>
 
           {/* Right Side: Stylish Form (Light Mode) */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             whileInView={{ opacity: 1, scale: 1 }}
             className="bg-white border border-noir/[0.03] p-10 md:p-14 rounded-[3rem] shadow-xl relative"
           >
-            <form className="space-y-8">
+            <form className="space-y-8" onSubmit={(e) => e.preventDefault()}>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 {/* Name Input */}
                 <div className="relative group">
                   <label className={`absolute left-0 transition-all duration-500 pointer-events-none text-[10px] uppercase tracking-widest font-black ${focused === 'name' ? '-top-6 text-gold opacity-100' : 'top-1 text-noir/20 opacity-60'}`}>
-                    Votre Nom
+                    Votre Nom <span className="text-gold">*</span>
                   </label>
-                  <input 
-                    type="text" 
+                  <input
+                    type="text"
+                    required
                     onFocus={() => setFocused('name')}
                     onBlur={(e) => setFocused(e.target.value ? 'name' : null)}
                     className="w-full bg-transparent border-b border-noir/10 py-2 text-noir font-light focus:outline-none focus:border-gold transition-colors duration-500"
@@ -111,10 +113,11 @@ export default function Contact() {
                 {/* Email Input */}
                 <div className="relative group">
                   <label className={`absolute left-0 transition-all duration-500 pointer-events-none text-[10px] uppercase tracking-widest font-black ${focused === 'email' ? '-top-6 text-gold opacity-100' : 'top-1 text-noir/20 opacity-60'}`}>
-                    Votre Email
+                    Votre Email <span className="text-gold">*</span>
                   </label>
-                  <input 
-                    type="email" 
+                  <input
+                    type="email"
+                    required
                     onFocus={() => setFocused('email')}
                     onBlur={(e) => setFocused(e.target.value ? 'email' : null)}
                     className="w-full bg-transparent border-b border-noir/10 py-2 text-noir font-light focus:outline-none focus:border-gold transition-colors duration-500"
@@ -128,8 +131,8 @@ export default function Contact() {
                 <label className={`absolute left-0 transition-all duration-500 pointer-events-none text-[10px] uppercase tracking-widest font-black ${focused === 'subject' ? '-top-6 text-gold opacity-100' : 'top-1 text-noir/20 opacity-60'}`}>
                   Objet de votre demande
                 </label>
-                <input 
-                  type="text" 
+                <input
+                  type="text"
                   onFocus={() => setFocused('subject')}
                   onBlur={(e) => setFocused(e.target.value ? 'subject' : null)}
                   className="w-full bg-transparent border-b border-noir/10 py-2 text-noir font-light focus:outline-none focus:border-gold transition-colors duration-500"
@@ -140,10 +143,11 @@ export default function Contact() {
               {/* Message Input */}
               <div className="relative group">
                 <label className={`absolute left-0 transition-all duration-500 pointer-events-none text-[10px] uppercase tracking-widest font-black ${focused === 'message' ? '-top-6 text-gold opacity-100' : 'top-1 text-noir/20 opacity-60'}`}>
-                  Votre Message
+                  Votre Message <span className="text-gold">*</span>
                 </label>
-                <textarea 
+                <textarea
                   rows={4}
+                  required
                   onFocus={() => setFocused('message')}
                   onBlur={(e) => setFocused(e.target.value ? 'message' : null)}
                   className="w-full bg-transparent border-b border-noir/10 py-2 text-noir font-light focus:outline-none focus:border-gold transition-colors duration-500 resize-none"
@@ -152,12 +156,12 @@ export default function Contact() {
               </div>
 
               {/* Submit Button */}
-              <button 
+              <button
                 type="submit"
                 className="group w-full relative py-6 bg-gold text-white text-[11px] font-bold uppercase tracking-[0.4em] rounded-full overflow-hidden transition-all duration-500 shadow-2xl hover:shadow-gold/20 flex items-center justify-center gap-4"
               >
                 <div className="absolute inset-0 bg-noir translate-y-[101%] group-hover:translate-y-0 transition-transform duration-500" />
-                <span className="relative z-10">Envoyer le message</span>
+                <span className="relative z-10">Envoyer</span>
                 <Send size={14} className="relative z-10 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform duration-500" />
               </button>
             </form>

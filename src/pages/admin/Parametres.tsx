@@ -25,9 +25,9 @@ export default function AdminSettings() {
    useEffect(() => {
       const fetchSettings = async () => {
          try {
-            const token = localStorage.getItem('adminToken');
+            
             const res = await fetch(`${API_URL}/api/admin/settings`, {
-               headers: { 'Authorization': `Bearer ${token}` }
+               credentials: 'include'
             });
             if (res.ok) {
                const data = await res.json();
@@ -35,7 +35,7 @@ export default function AdminSettings() {
                   establishmentName: data.establishmentName || 'Maison Love Rooms',
                   email: data.email || 'conciergerie@maisonloveroom.fr',
                   phone: data.phone || '+33 1 23 45 67 89',
-                  address: data.address || 'Rue des Saints-Pères, 75006 Paris',
+                  address: data.address || 'Centre-ville, 37000 Tours',
                   instagram: data.instagram || '@maisonloveroom',
                   whatsapp: data.whatsapp || '+33 1 23 45 67 89',
                   checkInTime: data.checkInTime || '18:00',
@@ -59,13 +59,11 @@ export default function AdminSettings() {
       e.preventDefault();
       setSaving(true);
       try {
-         const token = localStorage.getItem('adminToken');
+         
          const res = await fetch(`${API_URL}/api/admin/settings`, {
             method: 'PUT',
-            headers: {
-               'Content-Type': 'application/json',
-               'Authorization': `Bearer ${token}`
-            },
+            headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
             body: JSON.stringify(formData)
          });
 
@@ -136,7 +134,7 @@ export default function AdminSettings() {
                      />
                   </div>
                   <div className="space-y-2">
-                     <label className="text-[10px] uppercase tracking-widest text-white/40 font-bold mb-2 block">Adresse Parisienne</label>
+                     <label className="text-[10px] uppercase tracking-widest text-white/40 font-bold mb-2 block">Adresse de l'établissement</label>
                      <input 
                         type="text" 
                         value={formData.address} 

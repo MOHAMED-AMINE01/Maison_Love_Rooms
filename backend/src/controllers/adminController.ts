@@ -7,6 +7,7 @@ import Reservation from '../models/Reservation';
 import Suite from '../models/Suite';
 import Service from '../models/Service';
 import Settings from '../models/Settings';
+import GiftCard from '../models/GiftCard';
 
 // @desc    Authentification Admin & génération du token
 // @route   POST /api/admin/login
@@ -30,11 +31,16 @@ export const loginAdmin = async (req: Request, res: Response) => {
           role: 'admin'
         });
         const token = jwt.sign({ id: newAdmin._id, role: newAdmin.role }, process.env.JWT_SECRET as string, { expiresIn: '30d' });
+        res.cookie('adminToken', token, {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === 'production',
+          sameSite: 'strict',
+          maxAge: 30 * 24 * 60 * 60 * 1000, // 30 jours
+        });
         return res.json({
           id: newAdmin._id,
           name: newAdmin.name,
           email: newAdmin.email,
-          token
         });
       }
       return res.status(401).json({ message: 'Identifiants invalides' });
@@ -45,11 +51,16 @@ export const loginAdmin = async (req: Request, res: Response) => {
 
     if (isMatch) {
       const token = jwt.sign({ id: admin._id, role: admin.role }, process.env.JWT_SECRET as string, { expiresIn: '30d' });
+      res.cookie('adminToken', token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'strict',
+        maxAge: 30 * 24 * 60 * 60 * 1000, // 30 jours
+      });
       res.json({
         id: admin._id,
         name: admin.name,
         email: admin.email,
-        token
       });
     } else {
       res.status(401).json({ message: 'Identifiants invalides' });
@@ -458,5 +469,85 @@ export const removeBlockedDate = async (req: Request, res: Response) => {
   } catch (error: any) {
     res.status(500).json({ message: error.message });
   }
+};
+
+// @desc    Get all gift cards (public + admin)
+// @route   GET /api/admin/gift-cards
+// @access  Public
+export const getGiftCards = async (req: Request, res: Response) => {
+  try {
+    const cards = await GiftCard.find().sort({ createdAt: -1 });
+    res.json(cards);
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// @desc    Create a gift card
+// @route   POST /api/admin/gift-cards
+// @access  Private
+export const createGiftCard = async (req: Request, res: Response) => {
+  const { name, description, price, imageUrl, features, badge, status } = req.body;
+  try {
+    if (!name || !description || price === undefined || !imageUrl) {
+      return res.status(400).json({ message: 'Champs requis manquants' });
+    }
+    const card = new GiftCard({ name, description, price, imageUrl, features, badge, status });
+    await card.save();
+    res.status(201).json(card);
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// @desc    Update a gift card
+// @route   PUT /api/admin/gift-cards/:id
+// @access  Private
+export const updateGiftCard = async (req: Request, res: Response) => {
+  const { name, description, price, imageUrl, features, badge, status } = req.body;
+  try {
+    const card = await GiftCard.findById(req.params.id);
+    if (!card) {
+      return res.status(404).json({ message: 'Carte cadeau non trouvée' });
+    }
+    if (name) card.name = name;
+    if (description) card.description = description;
+    if (price !== undefined) card.price = price;
+    if (imageUrl) card.imageUrl = imageUrl;
+    if (features) card.features = features;
+    if (badge !== undefined) card.badge = badge;
+    if (status) card.status = status;
+    await card.save();
+    res.json(card);
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// @desc    Delete a gift card
+// @route   DELETE /api/admin/gift-cards/:id
+// @access  Private
+export const deleteGiftCard = async (req: Request, res: Response) => {
+  try {
+    const card = await GiftCard.findByIdAndDelete(req.params.id);
+    if (!card) {
+      return res.status(404).json({ message: 'Carte cadeau non trouvée' });
+    }
+    res.json({ message: 'Carte cadeau supprimée' });
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// @desc    Logout admin — efface le cookie httpOnly
+// @route   POST /api/admin/logout
+// @access  Public
+export const logoutAdmin = (req: Request, res: Response) => {
+  res.clearCookie('adminToken', {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'strict',
+  });
+  res.json({ message: 'Déconnexion réussie' });
 };
 

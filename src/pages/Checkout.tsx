@@ -22,9 +22,9 @@ export default function Checkout() {
    };
 
    const defaultOptions = [
-      { name: "Pack Romantique Plus", price: 45, desc: "Bouquet de fleurs fraîches et mot personnalisé." },
-      { name: "Départ Tardif (13h)", price: 40, desc: "Prolongez votre grâce matinée." },
-      { name: "Ambiance Musique Live", price: 80, desc: "Sélection musicale premium pré-configurée." }
+      { name: "Pack romantique plus", price: 45, desc: "Bouquet de fleurs fraîches et mot personnalisé." },
+      { name: "Départ tardif (13h)", price: 40, desc: "Prolongez votre grâce matinée." },
+      { name: "Ambiance musique live", price: 80, desc: "Sélection musicale premium pré-configurée." }
    ];
 
    const [optionsList, setOptionsList] = useState(defaultOptions);
@@ -72,7 +72,7 @@ export default function Checkout() {
       }
       setStep(s => s + 1);
    };
-   
+
    const prevStep = () => setStep(s => s - 1);
 
    const handleConfirmBooking = async () => {
@@ -125,7 +125,7 @@ export default function Checkout() {
                <div className="lg:col-span-8 relative z-20">
                   <div className="mb-12 flex items-center justify-between">
                      <div>
-                        <h1 className="text-3xl md:text-5xl font-serif mb-2 md:mb-4 italic text-white">Réservez l'Exception.</h1>
+                        <h1 className="text-3xl md:text-5xl font-serif mb-2 md:mb-4 italic text-white leading-tight">Réservez dès maintenant votre nuit d’exception, et vivez une expérience intense à deux. </h1>
                         <p className="text-white/40 italic font-light text-sm md:text-base">Étape {step} sur 3 — {step === 1 ? 'Vos Informations' : step === 2 ? 'Personnalisation' : 'Paiement Sécurisé'}</p>
                      </div>
                      {step > 1 && (
@@ -166,13 +166,13 @@ export default function Checkout() {
                                     <label className="text-[10px] uppercase tracking-widest font-bold text-white/40 ml-1">Nom Complet *</label>
                                     <div className="relative group">
                                        <User className="absolute left-6 top-1/2 -translate-y-1/2 text-white/20 group-focus-within:text-gold transition-colors" size={18} />
-                                       <input 
-                                          type="text" 
+                                       <input
+                                          type="text"
                                           required
                                           value={formData.clientName}
-                                          onChange={(e) => setFormData({...formData, clientName: e.target.value})}
-                                          placeholder="John Doe" 
-                                          className="w-full bg-[#0A0A0A] text-white border border-white/10 rounded-2xl p-6 pl-16 italic focus:ring-1 focus:ring-gold outline-none transition-all placeholder:text-white/20" 
+                                          onChange={(e) => setFormData({ ...formData, clientName: e.target.value })}
+                                          placeholder="John Doe"
+                                          className="w-full bg-[#0A0A0A] text-white border border-white/10 rounded-2xl p-6 pl-16 italic focus:ring-1 focus:ring-gold outline-none transition-all placeholder:text-white/20"
                                        />
                                     </div>
                                  </div>
@@ -180,13 +180,13 @@ export default function Checkout() {
                                     <label className="text-[10px] uppercase tracking-widest font-bold text-white/40 ml-1">Email Confidentiel *</label>
                                     <div className="relative group">
                                        <Mail className="absolute left-6 top-1/2 -translate-y-1/2 text-white/20 group-focus-within:text-gold transition-colors" size={18} />
-                                       <input 
-                                          type="email" 
+                                       <input
+                                          type="email"
                                           required
                                           value={formData.clientEmail}
-                                          onChange={(e) => setFormData({...formData, clientEmail: e.target.value})}
-                                          placeholder="john@example.com" 
-                                          className="w-full bg-[#0A0A0A] text-white border border-white/10 rounded-2xl p-6 pl-16 italic focus:ring-1 focus:ring-gold outline-none transition-all placeholder:text-white/20" 
+                                          onChange={(e) => setFormData({ ...formData, clientEmail: e.target.value })}
+                                          placeholder="john@example.com"
+                                          className="w-full bg-[#0A0A0A] text-white border border-white/10 rounded-2xl p-6 pl-16 italic focus:ring-1 focus:ring-gold outline-none transition-all placeholder:text-white/20"
                                        />
                                     </div>
                                  </div>
@@ -194,12 +194,12 @@ export default function Checkout() {
                                     <label className="text-[10px] uppercase tracking-widest font-bold text-white/40 ml-1">Téléphone</label>
                                     <div className="relative group">
                                        <Phone className="absolute left-6 top-1/2 -translate-y-1/2 text-white/20 group-focus-within:text-gold transition-colors" size={18} />
-                                       <input 
-                                          type="tel" 
+                                       <input
+                                          type="tel"
                                           value={formData.clientPhone}
-                                          onChange={(e) => setFormData({...formData, clientPhone: e.target.value})}
-                                          placeholder="+33 6 00 00 00 00" 
-                                          className="w-full bg-[#0A0A0A] text-white border border-white/10 rounded-2xl p-6 pl-16 italic focus:ring-1 focus:ring-gold outline-none transition-all placeholder:text-white/20" 
+                                          onChange={(e) => setFormData({ ...formData, clientPhone: e.target.value })}
+                                          placeholder="+33 6 00 00 00 00"
+                                          className="w-full bg-[#0A0A0A] text-white border border-white/10 rounded-2xl p-6 pl-16 italic focus:ring-1 focus:ring-gold outline-none transition-all placeholder:text-white/20"
                                        />
                                     </div>
                                  </div>
@@ -207,7 +207,7 @@ export default function Checkout() {
                                     <label className="text-[10px] uppercase tracking-widest font-bold text-white/40 ml-1">Date d'arrivée souhaitée</label>
                                     <CustomDatePicker
                                        value={formData.checkInDate}
-                                       onChange={(val) => setFormData({...formData, checkInDate: val})}
+                                       onChange={(val) => setFormData({ ...formData, checkInDate: val })}
                                        minDate={new Date().toISOString().split('T')[0]}
                                     />
                                  </div>
@@ -236,8 +236,8 @@ export default function Checkout() {
                                     optionsList.map((opt) => {
                                        const isSelected = selectedOptions.includes(opt.name);
                                        return (
-                                          <div 
-                                             key={opt.name} 
+                                          <div
+                                             key={opt.name}
                                              onClick={() => toggleOption(opt.name)}
                                              className={`flex flex-col sm:flex-row sm:items-center justify-between p-6 sm:p-8 bg-white/[0.02] hover:bg-white/[0.04] cursor-pointer transition-all group gap-4 sm:gap-0 rounded-2xl border ${isSelected ? 'border-gold/50 shadow-[0_0_15px_rgba(188,155,93,0.1)]' : 'border-white/5 hover:border-gold/30'}`}
                                           >
@@ -338,7 +338,7 @@ export default function Checkout() {
                                  <span>Nuitée x {bookingData.nights}</span>
                                  <span className="font-serif text-white/80">{bookingData.price * bookingData.nights}€</span>
                               </div>
-                              
+
                               {selectedOptions.map(optName => {
                                  const option = optionsList.find(o => o.name === optName);
                                  if (!option) return null;
@@ -349,7 +349,7 @@ export default function Checkout() {
                                     </div>
                                  );
                               })}
-                              
+
                               <div className="flex justify-between items-center pt-8 border-t border-white/10 text-3xl font-serif">
                                  <span className="text-white">Total</span>
                                  <span className="text-gold">{calculateTotal()}€</span>
@@ -361,6 +361,17 @@ export default function Checkout() {
                      <div className="flex items-center justify-center gap-4 text-white/20">
                         <ShieldCheck size={16} />
                         <span className="text-[9px] uppercase tracking-[0.3em] font-bold">Réservation 100% Confidentielle</span>
+                     </div>
+
+                     {/* Bloc Demandes Spéciales */}
+                     <div className="bg-[#121212] border border-white/5 p-8 sm:p-10 rounded-[2.5rem] relative shadow-xl overflow-hidden space-y-4">
+                        <h4 className="text-lg font-serif text-gold italic">Demandes spéciales : cadeau, surprise..</h4>
+                        <p className="text-sm text-white/50 font-light leading-relaxed">
+                           Vous souhaitez faire une surprise à votre partenaire et vous avez des demandes spécifiques ? Contactez-nous, nous ferons notre maximum pour répondre à vos demandes.
+                        </p>
+                        <p className="text-xs text-white/30 font-light italic leading-relaxed">
+                           À tout moment, si vous avez des questions ou besoin de conseils, nous sommes à votre écoute, par email et téléphone ! N'hésitez pas à nous contacter.
+                        </p>
                      </div>
                   </div>
                </div>

@@ -34,7 +34,7 @@ export default function Ritual() {
             <motion.div style={{ opacity }}>
 
               <h2 className="text-4xl md:text-6xl font-serif text-white leading-[1.2] md:leading-[1.1] tracking-tight">
-                Le Concept <br />
+                Le concept <br />
                 <span className="bg-gradient-to-r from-gold via-gold/80 to-gold bg-clip-text text-transparent italic font-light">Maison Love Rooms</span>
               </h2>
             </motion.div>
@@ -46,7 +46,7 @@ export default function Ritual() {
               className="space-y-8 max-w-lg mx-auto lg:mx-0"
             >
               <p className="text-white/60 text-base md:text-lg leading-relaxed font-light">
-                Plus qu'une suite, un sanctuaire dédié à l'intimité. Nous avons conçu chaque détail pour que votre séjour soit une parenthèse hors du temps, loin des regards indiscrets.
+                Plus qu'une chambre, un cocon de douceur et d'exotisme. Nous avons imaginé chaque détail pour que votre séjour soit une parenthèse hors du temps, loin des regards indiscrets.
               </p>
 
               {/* Feature Grid - Improved Mobile Layout */}
@@ -57,15 +57,15 @@ export default function Ritual() {
                 </div>
                 <div className="space-y-1 md:space-y-2 group">
                   <span className="text-2xl md:text-3xl font-serif text-gold group-hover:scale-110 transition-transform block">24/7</span>
-                  <p className="text-[8px] md:text-[10px] uppercase tracking-widest text-white/40 font-bold">Conciergerie Dédiée</p>
+                  <p className="text-[8px] md:text-[10px] uppercase tracking-widest text-white/40 font-bold">Conciergerie dédiée</p>
                 </div>
                 <div className="space-y-1 md:space-y-2 group">
                   <span className="text-2xl md:text-3xl font-serif text-gold group-hover:scale-110 transition-transform block">0</span>
                   <p className="text-[8px] md:text-[10px] uppercase tracking-widest text-white/40 font-bold">Vis-à-vis total</p>
                 </div>
                 <div className="space-y-1 md:space-y-2 group">
-                  <span className="text-2xl md:text-3xl font-serif text-gold group-hover:scale-110 transition-transform block">Paris</span>
-                  <p className="text-[8px] md:text-[10px] uppercase tracking-widest text-white/40 font-bold">Cœur de la capitale</p>
+                  <span className="text-2xl md:text-3xl font-serif text-gold group-hover:scale-110 transition-transform block">Tours</span>
+                  <p className="text-[8px] md:text-[10px] uppercase tracking-widest text-white/40 font-bold">Cœur de ville</p>
                 </div>
               </div>
 
