@@ -24,6 +24,8 @@ const ALLOWED_ORIGINS = [
   'http://localhost:5173',
   'http://localhost:3000',
   'http://localhost:4173',
+  'https://maisonloverooms.vercel.app',
+  'https://maisonloverooms.netlify.app',
   ...(process.env.FRONTEND_URL ? [process.env.FRONTEND_URL] : []),
 ];
 
