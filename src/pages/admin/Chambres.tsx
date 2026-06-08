@@ -179,16 +179,13 @@ export default function AdminChambres() {
       }
 
       try {
-         
-         const url = editId
-            ? `${API_URL}/api/admin/suites/${editId}`
-            : `${API_URL}/api/admin/suites`;
+         const endpoint = editId
+            ? `/api/admin/suites/${editId}`
+            : `/api/admin/suites`;
          const method = editId ? 'PUT' : 'POST';
 
-         const res = await fetch(url, {
+         const res = await adminFetch(endpoint, {
             method,
-            headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
             body: JSON.stringify(formData)
          });
 
