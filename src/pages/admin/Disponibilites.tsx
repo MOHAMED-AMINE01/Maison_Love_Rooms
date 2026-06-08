@@ -4,6 +4,7 @@ import { useLocation } from 'react-router-dom';
 import { AdminToast, AdminConfirmModal, useAdminToast, useAdminConfirm } from '../../components/admin/AdminModal';
 import CustomDatePicker from '../../components/ui/CustomDatePicker';
 import { API_URL } from '../../constants';
+import { adminFetch } from '../../utils/apiClient';
 import { 
   Calendar as CalendarIcon, 
   ChevronLeft, 
@@ -83,12 +84,8 @@ export default function AdminDisponibilites() {
     try {
       
       const [suitesRes, resRes] = await Promise.all([
-        fetch(`${API_URL}/api/admin/suites`, {
-          credentials: 'include'
-        }),
-        fetch(`${API_URL}/api/admin/reservations`, {
-          credentials: 'include'
-        })
+        adminFetch('/api/admin/suites'),
+        adminFetch('/api/admin/reservations')
       ]);
 
       if (!suitesRes.ok || !resRes.ok) throw new Error('Erreur de chargement des données');
@@ -129,10 +126,8 @@ export default function AdminDisponibilites() {
 
     try {
       
-      const res = await fetch(`${API_URL}/api/admin/suites/${blockForm.suiteId}/block-dates`, {
+      const res = await adminFetch(`/api/admin/suites/${blockForm.suiteId}/block-dates`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
         body: JSON.stringify({
           startDate: blockForm.startDate,
           endDate: blockForm.endDate,
@@ -168,9 +163,8 @@ export default function AdminDisponibilites() {
         hideConfirm();
         try {
           
-          const res = await fetch(`${API_URL}/api/admin/suites/${suiteId}/block-dates/${blockId}`, {
-            method: 'DELETE',
-            credentials: 'include'
+          const res = await adminFetch(`/api/admin/suites/${suiteId}/block-dates/${blockId}`, {
+            method: 'DELETE'
           });
           if (res.ok) {
             const updatedSuite = await res.json();
