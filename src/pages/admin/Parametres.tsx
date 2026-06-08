@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { Save, Loader, Plus, Minus } from "lucide-react";
 import { AdminToast, useAdminToast } from '../../components/admin/AdminModal';
-import { API_URL } from '../../constants';
+import { adminFetch } from '../../utils/apiClient';
 
 export default function AdminSettings() {
    const [loading, setLoading] = useState(true);
@@ -25,10 +25,7 @@ export default function AdminSettings() {
    useEffect(() => {
       const fetchSettings = async () => {
          try {
-            
-            const res = await fetch(`${API_URL}/api/admin/settings`, {
-               credentials: 'include'
-            });
+            const res = await adminFetch('/api/admin/settings');
             if (res.ok) {
                const data = await res.json();
                setFormData({
@@ -59,11 +56,8 @@ export default function AdminSettings() {
       e.preventDefault();
       setSaving(true);
       try {
-         
-         const res = await fetch(`${API_URL}/api/admin/settings`, {
+         const res = await adminFetch('/api/admin/settings', {
             method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
             body: JSON.stringify(formData)
          });
 
