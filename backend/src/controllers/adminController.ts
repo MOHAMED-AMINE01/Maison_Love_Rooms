@@ -33,8 +33,8 @@ export const loginAdmin = async (req: Request, res: Response) => {
         const token = jwt.sign({ id: newAdmin._id, role: newAdmin.role }, process.env.JWT_SECRET as string, { expiresIn: '30d' });
         res.cookie('adminToken', token, {
           httpOnly: true,
-          secure: process.env.NODE_ENV === 'production',
-          sameSite: 'strict',
+          secure: true,
+          sameSite: 'none',
           maxAge: 30 * 24 * 60 * 60 * 1000, // 30 jours
         });
         return res.json({
