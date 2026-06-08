@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { Gift, Plus, Edit3, Trash2, Search, X, Upload } from 'lucide-react';
 import { AdminToast, useAdminToast } from '../../components/admin/AdminModal';
 import { API_URL } from '../../constants';
+import { adminFetch } from '../../utils/apiClient';
 
 interface GiftCardData {
   _id: string;
@@ -52,7 +53,7 @@ export default function AdminCartesCadeaux() {
   const fetchCards = async () => {
     setLoading(true);
     try {
-      const res = await fetch(`${API_URL}/api/admin/gift-cards`);
+      const res = await adminFetch('/api/admin/gift-cards');
       if (res.ok) {
         const data = await res.json();
         setCards(data);
@@ -182,15 +183,13 @@ export default function AdminCartesCadeaux() {
     };
 
     try {
-      const url = editingCard
-        ? `${API_URL}/api/admin/gift-cards/${editingCard._id}`
-        : `${API_URL}/api/admin/gift-cards`;
+      const endpoint = editingCard
+        ? `/api/admin/gift-cards/${editingCard._id}`
+        : `/api/admin/gift-cards`;
       const method = editingCard ? 'PUT' : 'POST';
 
-      const res = await fetch(url, {
+      const res = await adminFetch(endpoint, {
         method,
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
         body: JSON.stringify(payload),
       });
 
@@ -226,9 +225,8 @@ export default function AdminCartesCadeaux() {
     if (!confirmModal.targetId) return;
     
     try {
-      const res = await fetch(`${API_URL}/api/admin/gift-cards/${confirmModal.targetId}`, {
-        method: 'DELETE',
-        credentials: 'include'
+      const res = await adminFetch(`/api/admin/gift-cards/${confirmModal.targetId}`, {
+        method: 'DELETE'
       });
       if (res.ok) {
         showToast('success', 'Carte supprimée avec succès');
