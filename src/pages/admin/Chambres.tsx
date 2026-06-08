@@ -24,8 +24,8 @@ import {
    Utensils,
    Heart
 } from "lucide-react";
-import { SUITES } from '../../constants';
-import { API_URL } from '../../constants';
+import { SUITES, API_URL } from '../../constants';
+import { adminFetch } from '../../utils/apiClient';
 
 interface SuiteData {
    _id?: string;
@@ -81,10 +81,7 @@ export default function AdminChambres() {
    // Fetch suites from backend
    const fetchSuites = async () => {
       try {
-         
-         const res = await fetch(`${API_URL}/api/admin/suites`, {
-            credentials: 'include'
-         });
+         const res = await adminFetch('/api/admin/suites');
          if (res.ok) {
             const data = await res.json();
             setSuites(data);
@@ -159,9 +156,8 @@ export default function AdminChambres() {
             hideConfirm();
             try {
                
-               const res = await fetch(`${API_URL}/api/admin/suites/${id}`, {
-                  method: 'DELETE',
-                  credentials: 'include'
+               const res = await adminFetch(`/api/admin/suites/${id}`, {
+                  method: 'DELETE'
                });
                if (res.ok) {
                   setSuites(suites.filter(s => s._id !== id));
