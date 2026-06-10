@@ -43,7 +43,7 @@ export default function AdminChambres() {
    const [loading, setLoading] = useState(true);
    const [isAdding, setIsAdding] = useState(false);
    const [view, setView] = useState<'grid' | 'list'>('grid');
- 
+
    // Pagination
    const [currentPage, setCurrentPage] = useState(1);
    const itemsPerPage = 8;
@@ -155,7 +155,7 @@ export default function AdminChambres() {
          onConfirm: async () => {
             hideConfirm();
             try {
-               
+
                const res = await adminFetch(`/api/admin/suites/${id}`, {
                   method: 'DELETE'
                });
@@ -348,116 +348,113 @@ export default function AdminChambres() {
          ) : (
             <>
                <div className={`grid ${view === 'grid' ? 'grid-cols-1 md:grid-cols-2 xl:grid-cols-4' : 'grid-cols-1'} gap-6`}>
-               {paginatedSuites.map((suite, i) => (
-                  <motion.div
-                     key={suite._id || suite.name}
-                     initial={{ opacity: 0, scale: 0.95 }}
-                     animate={{ opacity: 1, scale: 1 }}
-                     transition={{ delay: i * 0.1 }}
-                     className={`admin-card group overflow-hidden ${view === 'list' ? 'flex flex-col sm:flex-row items-stretch sm:items-center' : 'flex flex-col'}`}
-                  >
-                     <div className={`relative overflow-hidden ${view === 'list' ? 'w-full sm:w-64 h-48 sm:h-auto sm:aspect-video flex-shrink-0' : 'aspect-video w-full'}`}>
-                        <img
-                           src={suite.imageUrl || "https://images.unsplash.com/photo-1578683010236-d716f9a3f461?q=80&w=2000&auto=format&fit=crop"}
-                           alt={suite.name}
-                           className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 opacity-70"
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-[#0A0E17] via-transparent to-transparent" />
-                        <div className="absolute top-4 right-4 flex gap-2 z-10">
-                           <button
-                              onClick={() => handleOpenEdit(suite)}
-                              className="p-2 rounded-lg bg-white/10 backdrop-blur-md hover:bg-gold hover:text-black transition-all text-white"
-                           >
-                              <Edit3 size={14} />
-                           </button>
-                           <button
-                              onClick={() => handleDelete(suite._id)}
-                              className="p-2 rounded-lg bg-rose-500/20 backdrop-blur-md hover:bg-rose-500 transition-all text-rose-500 hover:text-white"
-                           >
-                              <Trash2 size={14} />
-                           </button>
-                        </div>
-                     </div>
-
-                     <div className="p-6 space-y-4 flex-1 flex flex-col justify-between">
-                        <div>
-                           <div className="space-y-1">
-                              <span className="text-[10px] text-gold font-bold uppercase tracking-widest">À partir de {suite.pricePerNight}€</span>
-                              <h4 className="text-xl font-serif">{suite.name}</h4>
-                           </div>
-                           <p className="text-xs text-white/60 line-clamp-2 mt-2 font-serif italic">{suite.description}</p>
-                        </div>
-
-                        <div className="flex flex-wrap gap-1.5 my-4">
-                           {suite.features?.slice(0, 4).map(f => (
-                              <span key={f} className="text-[9px] uppercase tracking-wider px-2.5 py-1 bg-white/[0.04] rounded-md border border-white/[0.05] text-white/70">
-                                 {f}
-                              </span>
-                           ))}
-                        </div>
-
-                        <div className="pt-4 flex items-center justify-between border-t border-white/[0.05] mt-auto">
-                           <span className="text-[10px] text-emerald-400 font-bold uppercase tracking-widest flex items-center gap-2">
-                              <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                              {suite.status || 'Disponible'}
-                           </span>
-                           <span className="text-[10px] text-white/20 uppercase tracking-widest font-mono">ID: {suite._id?.slice(-6) || 'DEMO'}</span>
-                        </div>
-                     </div>
-                  </motion.div>
-               ))}
-            </div>
-
-            {/* Pagination Controller */}
-            {totalPages > 1 && (
-               <div className="flex flex-col sm:flex-row items-center justify-between border-t border-white/5 pt-6 mt-8 gap-4 select-none">
-                  <span className="text-xs text-white/40">
-                     Affichage de <span className="font-semibold text-white">{startIndex + 1}</span> à <span className="font-semibold text-white">{Math.min(endIndex, totalItems)}</span> sur <span className="font-semibold text-white">{totalItems}</span> entrées
-                  </span>
-                  <div className="flex items-center gap-2">
-                     <button
-                        onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
-                        disabled={currentPage === 1}
-                        className={`p-2.5 rounded-xl border border-white/[0.05] transition-all flex items-center justify-center cursor-pointer ${
-                           currentPage === 1 
-                              ? 'text-white/20 bg-white/[0.01] pointer-events-none' 
-                              : 'text-white/60 bg-white/[0.03] hover:border-gold hover:text-gold hover:bg-gold/5'
-                        }`}
+                  {paginatedSuites.map((suite, i) => (
+                     <motion.div
+                        key={suite._id || suite.name}
+                        initial={{ opacity: 0, scale: 0.95 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ delay: i * 0.1 }}
+                        className={`admin-card group overflow-hidden ${view === 'list' ? 'flex flex-col sm:flex-row items-stretch sm:items-center' : 'flex flex-col'}`}
                      >
-                        <ChevronLeft size={16} />
-                     </button>
-                     
-                     {Array.from({ length: totalPages }).map((_, idx) => {
-                        const pageNum = idx + 1;
-                        return (
-                           <button
-                              key={pageNum}
-                              onClick={() => setCurrentPage(pageNum)}
-                              className={`w-[40px] h-[40px] rounded-xl text-xs font-bold transition-all flex items-center justify-center cursor-pointer border ${
-                                 currentPage === pageNum
+                        <div className={`relative overflow-hidden ${view === 'list' ? 'w-full sm:w-64 h-48 sm:h-auto sm:aspect-video flex-shrink-0' : 'aspect-video w-full'}`}>
+                           <img
+                              src={suite.imageUrl || "https://images.unsplash.com/photo-1578683010236-d716f9a3f461?q=80&w=2000&auto=format&fit=crop"}
+                              alt={suite.name}
+                              className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 opacity-70"
+                           />
+                           <div className="absolute inset-0 bg-gradient-to-t from-[#0A0E17] via-transparent to-transparent" />
+                           <div className="absolute top-4 right-4 flex gap-2 z-10">
+                              <button
+                                 onClick={() => handleOpenEdit(suite)}
+                                 className="p-2 rounded-lg bg-white/10 backdrop-blur-md hover:bg-gold hover:text-black transition-all text-white"
+                              >
+                                 <Edit3 size={14} />
+                              </button>
+                              <button
+                                 onClick={() => handleDelete(suite._id)}
+                                 className="p-2 rounded-lg bg-rose-500/20 backdrop-blur-md hover:bg-rose-500 transition-all text-rose-500 hover:text-white"
+                              >
+                                 <Trash2 size={14} />
+                              </button>
+                           </div>
+                        </div>
+
+                        <div className="p-6 space-y-4 flex-1 flex flex-col justify-between">
+                           <div>
+                              <div className="space-y-1">
+                                 <span className="text-[10px] text-gold font-bold uppercase tracking-widest">À partir de {suite.pricePerNight}€</span>
+                                 <h4 className="text-xl font-serif">{suite.name}</h4>
+                              </div>
+                              <p className="text-xs text-white/60 line-clamp-2 mt-2 font-serif italic">{suite.description}</p>
+                           </div>
+
+                           <div className="flex flex-wrap gap-1.5 my-4">
+                              {suite.features?.slice(0, 4).map(f => (
+                                 <span key={f} className="text-[9px] uppercase tracking-wider px-2.5 py-1 bg-white/[0.04] rounded-md border border-white/[0.05] text-white/70">
+                                    {f}
+                                 </span>
+                              ))}
+                           </div>
+
+                           <div className="pt-4 flex items-center justify-between border-t border-white/[0.05] mt-auto">
+                              <span className="text-[10px] text-emerald-400 font-bold uppercase tracking-widest flex items-center gap-2">
+                                 <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                                 {suite.status || 'Disponible'}
+                              </span>
+                              <span className="text-[10px] text-white/20 uppercase tracking-widest font-mono">ID: {suite._id?.slice(-6) || 'DEMO'}</span>
+                           </div>
+                        </div>
+                     </motion.div>
+                  ))}
+               </div>
+
+               {/* Pagination Controller */}
+               {totalPages > 1 && (
+                  <div className="flex flex-col sm:flex-row items-center justify-between border-t border-white/5 pt-6 mt-8 gap-4 select-none">
+                     <span className="text-xs text-white/40">
+                        Affichage de <span className="font-semibold text-white">{startIndex + 1}</span> à <span className="font-semibold text-white">{Math.min(endIndex, totalItems)}</span> sur <span className="font-semibold text-white">{totalItems}</span> entrées
+                     </span>
+                     <div className="flex items-center gap-2">
+                        <button
+                           onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                           disabled={currentPage === 1}
+                           className={`p-2.5 rounded-xl border border-white/[0.05] transition-all flex items-center justify-center cursor-pointer ${currentPage === 1
+                              ? 'text-white/20 bg-white/[0.01] pointer-events-none'
+                              : 'text-white/60 bg-white/[0.03] hover:border-gold hover:text-gold hover:bg-gold/5'
+                              }`}
+                        >
+                           <ChevronLeft size={16} />
+                        </button>
+
+                        {Array.from({ length: totalPages }).map((_, idx) => {
+                           const pageNum = idx + 1;
+                           return (
+                              <button
+                                 key={pageNum}
+                                 onClick={() => setCurrentPage(pageNum)}
+                                 className={`w-[40px] h-[40px] rounded-xl text-xs font-bold transition-all flex items-center justify-center cursor-pointer border ${currentPage === pageNum
                                     ? 'bg-gold text-black border-gold shadow-[0_0_15px_rgba(188,155,93,0.25)]'
                                     : 'bg-white/[0.03] border-white/[0.05] text-white/60 hover:border-gold/30 hover:text-gold hover:bg-gold/5'
-                              }`}
-                           >
-                              {pageNum}
-                           </button>
-                        );
-                     })}
+                                    }`}
+                              >
+                                 {pageNum}
+                              </button>
+                           );
+                        })}
 
-                     <button
-                        onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
-                        disabled={currentPage === totalPages}
-                        className={`p-2.5 rounded-xl border border-white/[0.05] transition-all flex items-center justify-center cursor-pointer ${
-                           currentPage === totalPages 
-                              ? 'text-white/20 bg-white/[0.01] pointer-events-none' 
+                        <button
+                           onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                           disabled={currentPage === totalPages}
+                           className={`p-2.5 rounded-xl border border-white/[0.05] transition-all flex items-center justify-center cursor-pointer ${currentPage === totalPages
+                              ? 'text-white/20 bg-white/[0.01] pointer-events-none'
                               : 'text-white/60 bg-white/[0.03] hover:border-gold hover:text-gold hover:bg-gold/5'
-                        }`}
-                      >
-                         <ChevronRight size={16} />
-                      </button>
-                   </div>
-                </div>
-             )}
+                              }`}
+                        >
+                           <ChevronRight size={16} />
+                        </button>
+                     </div>
+                  </div>
+               )}
             </>
          )}
 
@@ -481,7 +478,7 @@ export default function AdminChambres() {
                               <Plus size={20} />
                            </div>
                            <h3 className="text-xl sm:text-2xl font-serif italic text-white">
-                              {editId ? "Modifier la Chambre" : "Nouvelle Chambre"}
+                              {editId ? "Modifier la chambre" : "Nouvelle chambre"}
                            </h3>
                         </div>
                         <button onClick={() => setIsAdding(false)} className="p-2 hover:bg-white/5 rounded-lg transition-colors text-white/60 hover:text-white">
@@ -568,9 +565,8 @@ export default function AdminChambres() {
                                                             setFormData({ ...formData, status: opt.value });
                                                             setOpenStatusDropdown(false);
                                                          }}
-                                                         className={`w-full px-4 py-3 text-sm text-left flex items-center justify-between hover:bg-white/5 transition-colors ${
-                                                            formData.status === opt.value ? 'text-gold' : 'text-white/70'
-                                                         }`}
+                                                         className={`w-full px-4 py-3 text-sm text-left flex items-center justify-between hover:bg-white/5 transition-colors ${formData.status === opt.value ? 'text-gold' : 'text-white/70'
+                                                            }`}
                                                       >
                                                          <span className="flex items-center gap-3">
                                                             <span className={`w-2 h-2 rounded-full ${opt.color}`} />

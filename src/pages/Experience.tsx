@@ -62,9 +62,10 @@ export default function Experience() {
   const [checkInTime, setCheckInTime] = useState("18h");
   const [checkOutTime, setCheckOutTime] = useState("11h");
   const [maxNights, setMaxNights] = useState(2);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
 
-  // Pagination des formules (3 par page)
-  const FORMULES_PER_PAGE = 2;
+  // Pagination des formules (1 sur mobile, 2 sur desktop)
+  const FORMULES_PER_PAGE = isMobile ? 1 : 2;
   const [formulePage, setFormulePage] = useState(0);
   const [formuleDir, setFormuleDir] = useState(0);
   const formuleTotalPages = Math.max(1, Math.ceil(formulesList.length / FORMULES_PER_PAGE));
@@ -78,6 +79,12 @@ export default function Experience() {
   };
   const prevFormulePage = () => goToFormulePage(formulePage === 0 ? formuleTotalPages - 1 : formulePage - 1);
   const nextFormulePage = () => goToFormulePage(formulePage === formuleTotalPages - 1 ? 0 : formulePage + 1);
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     // Fetch services
@@ -219,9 +226,9 @@ export default function Experience() {
               <button
                 onClick={prevFormulePage}
                 aria-label="Offres précédentes"
-                className="hidden md:flex absolute left-0 top-1/2 -translate-y-1/2 z-30 w-12 h-12 rounded-full border border-noir/10 bg-white/80 backdrop-blur-md items-center justify-center text-noir/50 hover:text-white hover:bg-gold hover:border-gold transition-all duration-300 shadow-sm"
+                className="flex absolute left-0 top-1/2 -translate-y-1/2 z-30 w-14 h-14 rounded-full border-2 border-noir/20 bg-white shadow-lg items-center justify-center text-noir hover:text-white hover:bg-gold hover:border-gold transition-all duration-300"
               >
-                <ChevronLeft size={22} />
+                <ChevronLeft size={28} />
               </button>
             )}
 
@@ -230,9 +237,9 @@ export default function Experience() {
               <button
                 onClick={nextFormulePage}
                 aria-label="Offres suivantes"
-                className="hidden md:flex absolute right-0 top-1/2 -translate-y-1/2 z-30 w-12 h-12 rounded-full border border-noir/10 bg-white/80 backdrop-blur-md items-center justify-center text-noir/50 hover:text-white hover:bg-gold hover:border-gold transition-all duration-300 shadow-sm"
+                className="flex absolute right-0 top-1/2 -translate-y-1/2 z-30 w-14 h-14 rounded-full border-2 border-noir/20 bg-white shadow-lg items-center justify-center text-noir hover:text-white hover:bg-gold hover:border-gold transition-all duration-300"
               >
-                <ChevronRight size={22} />
+                <ChevronRight size={28} />
               </button>
             )}
 
@@ -291,40 +298,27 @@ export default function Experience() {
               </motion.div>
             </AnimatePresence>
 
-            {/* Points de pagination */}
+            {/* Points de pagination + Indicateur */}
             {formuleTotalPages > 1 && (
-              <div className="flex items-center justify-center gap-3 mt-12">
-                {Array.from({ length: formuleTotalPages }).map((_, i) => (
-                  <button
-                    key={i}
-                    onClick={() => goToFormulePage(i)}
-                    aria-label={`Aller à la page ${i + 1}`}
-                    className={`rounded-full transition-all duration-300 ${i === formulePage ? 'w-8 h-2 bg-gold' : 'w-2 h-2 bg-noir/15 hover:bg-noir/30'
-                      }`}
-                  />
-                ))}
+              <div className="flex flex-col items-center justify-center gap-6 mt-16">
+                <div className="flex items-center gap-4">
+                  <div className="flex items-center gap-3">
+                    {Array.from({ length: formuleTotalPages }).map((_, i) => (
+                      <button
+                        key={i}
+                        onClick={() => goToFormulePage(i)}
+                        aria-label={`Aller à la page ${i + 1}`}
+                        className={`rounded-full transition-all duration-300 ${i === formulePage ? 'w-10 h-3 bg-gold' : 'w-3 h-3 bg-noir/20 hover:bg-noir/40'
+                          }`}
+                      />
+                    ))}
+                  </div>
+                  <span className="text-noir/50 text-sm font-light ml-4">{formulePage + 1}/{formuleTotalPages}</span>
+                </div>
               </div>
             )}
 
-            {/* Flèches mobiles */}
-            {formuleTotalPages > 1 && (
-              <div className="flex md:hidden items-center justify-center gap-4 mt-8">
-                <button
-                  onClick={prevFormulePage}
-                  aria-label="Offres précédentes"
-                  className="w-12 h-12 rounded-full border border-noir/10 bg-white flex items-center justify-center text-noir/50 active:bg-gold active:text-white transition-all shadow-sm"
-                >
-                  <ChevronLeft size={22} />
-                </button>
-                <button
-                  onClick={nextFormulePage}
-                  aria-label="Offres suivantes"
-                  className="w-12 h-12 rounded-full border border-noir/10 bg-white flex items-center justify-center text-noir/50 active:bg-gold active:text-white transition-all shadow-sm"
-                >
-                  <ChevronRight size={22} />
-                </button>
-              </div>
-            )}
+            {/* Flèches mobiles - supprimées pour éviter duplication avec les flèches principales */}
 
           </div>
 
@@ -391,7 +385,7 @@ export default function Experience() {
                   <Moon size={16} />
                   <span className="text-[8px] uppercase tracking-widest font-black opacity-60">Durée</span>
                 </div>
-                <p className="text-xl md:text-2xl font-serif text-noir">1 à {maxNights} nuits <br /> maximum</p>
+                <p className="text-xl md:text-2xl font-serif text-noir">à partir de <br /> 1 nuit</p>
               </div>
             </div>
           </motion.div>

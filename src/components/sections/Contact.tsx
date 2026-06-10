@@ -36,13 +36,7 @@ export default function Contact() {
           {/* Left Side: Content */}
           <div className="space-y-10">
             <div className="space-y-4">
-              <motion.span
-                initial={{ opacity: 0, x: -20 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                className="text-[10px] uppercase tracking-[0.6em] text-gold font-black block"
-              >
-                Conciergerie privée
-              </motion.span>
+
               <motion.h2
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}

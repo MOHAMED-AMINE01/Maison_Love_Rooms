@@ -76,7 +76,6 @@ export default function Suites() {
               <div className="w-full lg:w-[45%] space-y-8 md:space-y-10 px-4 md:px-0">
                 <div className="space-y-4 md:space-y-6">
                   <div className="space-y-2">
-                    <span className="text-[10px] uppercase tracking-[0.5em] text-gold font-black italic">L'Exceptionnel</span>
                     <h3 className="text-5xl md:text-7xl font-serif text-noir leading-none tracking-tight">
                       {suite.name}
                     </h3>

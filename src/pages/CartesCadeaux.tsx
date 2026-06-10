@@ -81,7 +81,7 @@ export default function CartesCadeaux() {
             animate={{ opacity: 1, y: 0 }}
             className="text-4xl md:text-6xl font-serif font-bold text-transparent bg-clip-text bg-gradient-to-r from-white via-page to-gold"
           >
-            cartes cadeaux
+            Cartes cadeaux
           </motion.h1>
           <motion.p
             initial={{ opacity: 0, y: 20 }}

@@ -14,7 +14,7 @@ import {
 export default function SuiteDetail() {
    const { id } = useParams();
    const navigate = useNavigate();
-   
+
    const staticSuite = SUITES.find(s => s.id === id);
    const [suite, setSuite] = useState<any>(staticSuite);
    const [loading, setLoading] = useState(!staticSuite);
@@ -122,11 +122,6 @@ export default function SuiteDetail() {
                      transition={{ delay: 0.5, duration: 1 }}
                      className="space-y-6 md:space-y-12 max-w-5xl"
                   >
-                     <div className="flex items-center justify-center gap-3 md:gap-6 text-amber-500">
-                        <div className="w-8 md:w-16 h-px bg-amber-500" />
-                        <span className="text-[8px] md:text-[10px] uppercase tracking-[0.5em] md:tracking-[0.8em] font-black">Midnight Sanctuary</span>
-                        <div className="w-8 md:w-16 h-px bg-amber-500" />
-                     </div>
                      <h1 className="text-5xl md:text-[9vw] font-serif leading-[0.9] tracking-tighter italic">
                         {suite.name}
                      </h1>
@@ -293,15 +288,15 @@ export default function SuiteDetail() {
                            </div>
 
                            <button
-                              onClick={() => navigate('/checkout', { 
-                                 state: { 
+                              onClick={() => navigate('/checkout', {
+                                 state: {
                                     suiteId: suite._id || suite.id,
                                     suiteName: suite.name,
                                     suiteImage: suite.image,
                                     nights: nights,
                                     formula: formula,
                                     price: currentPrice
-                                 } 
+                                 }
                               })}
                               className="relative w-full bg-gold text-[#0A0A0A] py-8 rounded-[2rem] text-[11px] uppercase tracking-[0.5em] font-black hover:bg-white transition-all duration-500 shadow-2xl overflow-hidden group"
                            >
