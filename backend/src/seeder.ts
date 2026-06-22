@@ -5,6 +5,7 @@ import Suite from './models/Suite';
 import Reservation from './models/Reservation';
 import Service from './models/Service';
 import Settings from './models/Settings';
+import Product from './models/Product';
 
 export const seedDatabase = async () => {
   try {
@@ -237,6 +238,50 @@ export const seedDatabase = async () => {
       console.log('Tableau comparatif par défaut inséré avec succès.');
     } else {
       console.log('Paramètres déjà existants. Conservation des données.');
+    }
+
+    // 6. Insertion de produits de démonstration (boutique / stock) si aucun produit
+    console.log('Vérification des produits (Boutique / Stock) dans MongoDB...');
+    const productCount = await Product.countDocuments();
+    if (productCount === 0) {
+      console.log('Aucun produit trouvé, insertion de produits de démonstration...');
+      await Product.insertMany([
+        {
+          name: 'Bougie parfumée « Love »',
+          description: 'Bougie artisanale aux notes de rose et bois de santal, pour prolonger l\'ambiance romantique chez vous.',
+          price: 29,
+          imageUrl: 'https://images.unsplash.com/photo-1602874801007-bd36c376cd5e?q=80&w=1200&auto=format&fit=crop',
+          stock: 12,
+          status: 'actif',
+        },
+        {
+          name: 'Coffret huiles de massage',
+          description: 'Duo d\'huiles de massage sensuelles aux extraits naturels, présenté dans un écrin élégant.',
+          price: 45,
+          imageUrl: 'https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?q=80&w=1200&auto=format&fit=crop',
+          stock: 3,
+          status: 'actif',
+        },
+        {
+          name: 'Peignoir premium en coton',
+          description: 'Peignoir moelleux brodé Maison Love Rooms, une douceur enveloppante à emporter.',
+          price: 69,
+          imageUrl: 'https://images.unsplash.com/photo-1620656798579-1984d9e87df7?q=80&w=1200&auto=format&fit=crop',
+          stock: 8,
+          status: 'actif',
+        },
+        {
+          name: 'Champagne Brut « Célébration »',
+          description: 'Bouteille de champagne brut sélectionnée par notre conciergerie pour vos instants précieux.',
+          price: 39,
+          imageUrl: 'https://images.unsplash.com/photo-1510972527921-ce03766a1cf1?q=80&w=1200&auto=format&fit=crop',
+          stock: 0,
+          status: 'actif',
+        },
+      ]);
+      console.log('Produits de démonstration insérés avec succès.');
+    } else {
+      console.log('Produits déjà existants. Conservation des données.');
     }
 
     console.log('Synchronisation des données statiques terminée avec succès !');

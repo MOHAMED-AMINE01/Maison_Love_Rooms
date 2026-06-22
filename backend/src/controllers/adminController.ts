@@ -8,6 +8,8 @@ import Suite from '../models/Suite';
 import Service from '../models/Service';
 import Settings from '../models/Settings';
 import GiftCard from '../models/GiftCard';
+import Product from '../models/Product';
+import Order from '../models/Order';
 
 // @desc    Authentification Admin & génération du token
 // @route   POST /api/admin/login
@@ -536,6 +538,244 @@ export const deleteGiftCard = async (req: Request, res: Response) => {
       return res.status(404).json({ message: 'Carte cadeau non trouvée' });
     }
     res.json({ message: 'Carte cadeau supprimée' });
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+/* ==========================================================================
+   PRODUITS / GESTION DE STOCK
+   ========================================================================== */
+
+// @desc    Liste tous les produits (admin)
+// @route   GET /api/admin/products
+// @access  Public (lecture) — l'admin voit aussi les inactifs
+export const getProducts = async (req: Request, res: Response) => {
+  try {
+    const products = await Product.find().sort({ createdAt: -1 });
+    res.json(products);
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// @desc    Liste les produits actifs et en stock (site public)
+// @route   GET /api/products
+// @access  Public
+export const getPublicProducts = async (req: Request, res: Response) => {
+  try {
+    const products = await Product.find({ status: 'actif' }).sort({ createdAt: -1 });
+    res.json(products);
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// @desc    Crée un produit
+// @route   POST /api/admin/products
+// @access  Private
+export const createProduct = async (req: Request, res: Response) => {
+  const { name, description, price, imageUrl, images, stock, status } = req.body;
+  try {
+    if (!name || !description || price === undefined || !imageUrl) {
+      return res.status(400).json({ message: 'Champs requis manquants' });
+    }
+    const product = new Product({
+      name,
+      description,
+      price,
+      imageUrl,
+      images: images || [],
+      stock: stock !== undefined ? stock : 0,
+      status,
+    });
+    await product.save();
+    res.status(201).json(product);
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// @desc    Met à jour un produit
+// @route   PUT /api/admin/products/:id
+// @access  Private
+export const updateProduct = async (req: Request, res: Response) => {
+  const { name, description, price, imageUrl, images, stock, status } = req.body;
+  try {
+    const product = await Product.findById(req.params.id);
+    if (!product) {
+      return res.status(404).json({ message: 'Produit non trouvé' });
+    }
+    if (name) product.name = name;
+    if (description) product.description = description;
+    if (price !== undefined) product.price = price;
+    if (imageUrl) product.imageUrl = imageUrl;
+    if (images) product.images = images;
+    if (stock !== undefined) product.stock = Math.max(0, stock);
+    if (status) product.status = status;
+    await product.save();
+    res.json(product);
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// @desc    Ajuste le stock d'un produit (ex: vente physique -1, réassort +1)
+// @route   PATCH /api/admin/products/:id/stock
+// @access  Private
+export const adjustProductStock = async (req: Request, res: Response) => {
+  const { delta } = req.body; // entier relatif, ex: -1 ou +5
+  try {
+    if (typeof delta !== 'number' || !Number.isFinite(delta)) {
+      return res.status(400).json({ message: 'Le champ "delta" doit être un nombre' });
+    }
+    const product = await Product.findById(req.params.id);
+    if (!product) {
+      return res.status(404).json({ message: 'Produit non trouvé' });
+    }
+    const next = product.stock + delta;
+    if (next < 0) {
+      return res.status(400).json({ message: 'Stock insuffisant' });
+    }
+    product.stock = next;
+    await product.save();
+    res.json(product);
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// @desc    Supprime un produit
+// @route   DELETE /api/admin/products/:id
+// @access  Private
+export const deleteProduct = async (req: Request, res: Response) => {
+  try {
+    const product = await Product.findByIdAndDelete(req.params.id);
+    if (!product) {
+      return res.status(404).json({ message: 'Produit non trouvé' });
+    }
+    res.json({ message: 'Produit supprimé' });
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+/* ==========================================================================
+   COMMANDES (vente en ligne)
+   ========================================================================== */
+
+// @desc    Crée une commande depuis le site et décrémente le stock automatiquement.
+//          Phase 1 : sans paiement (encaissement hors ligne). L'architecture
+//          (paymentStatus / paymentProvider) est prête pour brancher Stripe.
+// @route   POST /api/orders
+// @access  Public
+export const createOrder = async (req: Request, res: Response) => {
+  const { items, customerName, customerEmail, customerPhone } = req.body;
+  try {
+    if (!Array.isArray(items) || items.length === 0) {
+      return res.status(400).json({ message: 'Aucun produit dans la commande' });
+    }
+    if (!customerName || !customerEmail) {
+      return res.status(400).json({ message: 'Coordonnées client manquantes' });
+    }
+
+    // Normalise les quantités demandées par produit.
+    const requested = new Map<string, number>();
+    for (const it of items) {
+      const id = String(it.productId || it.product || '');
+      const qty = Math.max(1, parseInt(it.quantity, 10) || 1);
+      if (!id) {
+        return res.status(400).json({ message: 'Identifiant produit manquant' });
+      }
+      requested.set(id, (requested.get(id) || 0) + qty);
+    }
+
+    // Décrémente chaque produit de façon atomique avec garde anti-survente.
+    // On garde la trace de ce qui a été décrémenté pour pouvoir annuler en cas d'échec.
+    const decremented: { id: string; qty: number }[] = [];
+    const orderItems: any[] = [];
+    let total = 0;
+
+    for (const [id, qty] of requested.entries()) {
+      const updated = await Product.findOneAndUpdate(
+        { _id: id, status: 'actif', stock: { $gte: qty } },
+        { $inc: { stock: -qty } },
+        { new: true }
+      );
+
+      if (!updated) {
+        // Rollback des décréments déjà appliqués
+        for (const d of decremented) {
+          await Product.findByIdAndUpdate(d.id, { $inc: { stock: d.qty } });
+        }
+        return res.status(409).json({
+          message: 'Stock insuffisant ou produit indisponible',
+          productId: id,
+        });
+      }
+
+      decremented.push({ id, qty });
+      orderItems.push({
+        product: updated._id,
+        name: updated.name,
+        price: updated.price,
+        quantity: qty,
+      });
+      total += updated.price * qty;
+    }
+
+    const order = await Order.create({
+      items: orderItems,
+      customerName,
+      customerEmail,
+      customerPhone,
+      total,
+      status: 'en_attente',
+      paymentStatus: 'non_paye',
+      paymentProvider: 'aucun',
+    });
+
+    res.status(201).json(order);
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// @desc    Liste les commandes (admin)
+// @route   GET /api/admin/orders
+// @access  Private
+export const getOrders = async (req: Request, res: Response) => {
+  try {
+    const orders = await Order.find().sort({ createdAt: -1 });
+    res.json(orders);
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// @desc    Met à jour le statut / le paiement d'une commande.
+//          Si la commande passe à « annulee », le stock des produits est réapprovisionné.
+// @route   PATCH /api/admin/orders/:id
+// @access  Private
+export const updateOrder = async (req: Request, res: Response) => {
+  const { status, paymentStatus } = req.body;
+  try {
+    const order = await Order.findById(req.params.id);
+    if (!order) {
+      return res.status(404).json({ message: 'Commande non trouvée' });
+    }
+
+    // Réassort automatique si l'on annule une commande qui ne l'était pas déjà.
+    if (status === 'annulee' && order.status !== 'annulee') {
+      for (const item of order.items) {
+        await Product.findByIdAndUpdate(item.product, { $inc: { stock: item.quantity } });
+      }
+    }
+
+    if (status) order.status = status;
+    if (paymentStatus) order.paymentStatus = paymentStatus;
+    await order.save();
+    res.json(order);
   } catch (error: any) {
     res.status(500).json({ message: error.message });
   }

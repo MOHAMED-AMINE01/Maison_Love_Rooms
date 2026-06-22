@@ -5,8 +5,7 @@ import { ArrowRight, Menu, X } from 'lucide-react';
 
 const NAV_LINKS = [
   { name: 'Nos Chambres', to: '/#suites', isHash: true },
-  { name: 'Boutique', to: '/experience' },
-  { name: 'Cartes Cadeaux', to: '/cartes-cadeaux' },
+  { name: 'Boutique et Prestation', to: '/experience' },
   { name: 'Contact', to: '/#contact', isHash: true },
 ];
 
@@ -120,7 +119,7 @@ export default function Navbar() {
                 onClick={() => setIsOpen(false)}
                 className="bg-gold text-white w-full text-center py-5 rounded-xl flex items-center justify-center gap-4 group font-bold uppercase tracking-[0.3em] text-[10px] shadow-2xl shadow-gold/20"
               >
-                <span>Réserver le séjour</span>
+                <span>Réserver un séjour</span>
                 <ArrowRight size={18} className="group-hover:translate-x-2 transition-transform" />
               </Link>
             </motion.div>

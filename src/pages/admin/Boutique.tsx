@@ -298,22 +298,6 @@ export default function AdminBoutique() {
         </button>
       </div>
 
-      {/* Onglets */}
-      <div className="flex gap-4 border-b border-white/10 pb-4">
-        <button
-          onClick={() => setActiveTab('prestations')}
-          className={`pb-2 px-4 border-b-2 transition-all font-bold tracking-wide ${activeTab === 'prestations' ? 'border-gold text-gold' : 'border-transparent text-white/50 hover:text-white'}`}
-        >
-          Liste des Prestations
-        </button>
-        <button
-          onClick={() => setActiveTab('comparatif')}
-          className={`pb-2 px-4 border-b-2 transition-all font-bold tracking-wide ${activeTab === 'comparatif' ? 'border-gold text-gold' : 'border-transparent text-white/50 hover:text-white'}`}
-        >
-          Tableau Comparatif (Expérience)
-        </button>
-      </div>
-
       {activeTab === 'prestations' && (
         <>
           {/* Statistiques */}
@@ -482,110 +466,6 @@ export default function AdminBoutique() {
       </>
       )}
 
-      {activeTab === 'comparatif' && (
-        <div className="admin-card p-8 shadow-2xl space-y-8 animate-fade-in">
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b border-admin-border pb-6 gap-4">
-            <div>
-              <h3 className="text-2xl font-serif">Configuration du Tableau Comparatif</h3>
-              <p className="text-sm text-white/50 mt-1">Gérez les lignes du tableau affiché sur la page Expérience et cochez ce qui est inclus dans chaque formule.</p>
-            </div>
-            <button
-              onClick={handleSaveSettings}
-              disabled={savingSettings}
-              className="px-6 py-3 bg-gold text-black rounded-xl font-bold uppercase tracking-widest text-xs hover:bg-gold-light transition-all flex items-center gap-2"
-            >
-              <CheckCircle2 size={16} />
-              {savingSettings ? 'Sauvegarde...' : 'Sauvegarder'}
-            </button>
-          </div>
-
-          <div className="space-y-4">
-            {/* Table Header mock */}
-            <div className="hidden sm:flex gap-6 px-5 py-2 text-[10px] uppercase tracking-widest text-white/40 font-bold border-b border-white/5">
-               <div className="flex-1 min-w-[250px]">Prestation</div>
-               <div className="w-[120px] text-center">Essentielle</div>
-               <div className="w-[120px] text-center text-gold">Complète</div>
-               <div className="w-[40px]"></div>
-            </div>
-
-            {comparisonTable.map((row, idx) => (
-              <div key={idx} className="flex flex-col sm:flex-row gap-6 bg-white/[0.02] border border-white/[0.05] p-5 rounded-xl items-start sm:items-center">
-                <div className="flex-1 w-full min-w-[250px]">
-                  <input
-                    type="text"
-                    value={row.label}
-                    onChange={(e) => {
-                      const newTable = [...comparisonTable];
-                      newTable[idx].label = e.target.value;
-                      setComparisonTable(newTable);
-                    }}
-                    placeholder="ex: Bouteille de Champagne"
-                    className="w-full bg-[#0D0D0D] border border-white/10 rounded-lg px-4 py-3 text-sm text-white outline-none focus:border-gold transition-colors"
-                  />
-                </div>
-                
-                <div className="flex gap-6 w-full sm:w-auto">
-                   <label className="flex-1 sm:w-[120px] flex flex-col sm:flex-row items-center justify-center gap-3 cursor-pointer group">
-                     <span className="sm:hidden text-[10px] uppercase text-white/40">Essentielle</span>
-                     <div className={`w-6 h-6 rounded border flex items-center justify-center transition-colors ${row.e ? 'bg-gold/20 border-gold text-gold' : 'border-white/20 text-transparent group-hover:border-white/40'}`}>
-                       <input 
-                         type="checkbox" 
-                         className="hidden"
-                         checked={row.e}
-                         onChange={(e) => {
-                            const newTable = [...comparisonTable];
-                            newTable[idx].e = e.target.checked;
-                            setComparisonTable(newTable);
-                         }}
-                       />
-                       <CheckCircle2 size={14} />
-                     </div>
-                   </label>
-                   
-                   <label className="flex-1 sm:w-[120px] flex flex-col sm:flex-row items-center justify-center gap-3 cursor-pointer group">
-                     <span className="sm:hidden text-[10px] uppercase text-gold">Complète</span>
-                     <div className={`w-6 h-6 rounded border flex items-center justify-center transition-colors ${row.c ? 'bg-gold border-gold text-black' : 'border-gold/30 text-transparent group-hover:border-gold/50'}`}>
-                       <input 
-                         type="checkbox" 
-                         className="hidden"
-                         checked={row.c}
-                         onChange={(e) => {
-                            const newTable = [...comparisonTable];
-                            newTable[idx].c = e.target.checked;
-                            setComparisonTable(newTable);
-                         }}
-                       />
-                       <CheckCircle2 size={14} />
-                     </div>
-                   </label>
-                </div>
-
-                <div className="pt-2 sm:pt-0 w-full sm:w-[40px] flex justify-end">
-                  <button
-                    onClick={() => {
-                      const newTable = [...comparisonTable];
-                      newTable.splice(idx, 1);
-                      setComparisonTable(newTable);
-                    }}
-                    className="p-3 w-full sm:w-auto flex justify-center bg-rose-500/10 text-rose-400 rounded-lg hover:bg-rose-500/20 transition-all"
-                    title="Supprimer la ligne"
-                  >
-                    <Trash2 size={18} />
-                  </button>
-                </div>
-              </div>
-            ))}
-
-            <button
-              onClick={() => setComparisonTable([...comparisonTable, { label: '', e: false, c: false }])}
-              className="w-full py-6 mt-4 border-2 border-dashed border-white/10 rounded-xl text-white/40 hover:bg-white/[0.02] hover:text-gold hover:border-gold/30 transition-all flex flex-col items-center justify-center gap-2"
-            >
-              <Plus size={24} />
-              <span className="text-sm font-bold uppercase tracking-widest">Ajouter une ligne au tableau</span>
-            </button>
-          </div>
-        </div>
-      )}
 
       {/* Drawer Ajout / Modification */}
       <AnimatePresence>

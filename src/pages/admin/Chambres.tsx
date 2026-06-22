@@ -8,7 +8,8 @@ import {
    Edit3,
    Image as ImageIcon,
    Wifi,
-   Tv,
+   Projector,
+   Dices,
    Wind,
    Coffee,
    X,
@@ -291,11 +292,10 @@ export default function AdminChambres() {
 
    const AVAILABLE_FEATURES = [
       { icon: Wifi, label: "Fibre Wifi" },
-      { icon: Tv, label: "Cinema 4K" },
-      { icon: Wind, label: "Hammam" },
+      { icon: Projector, label: "Rétroprojecteur" },
       { icon: Coffee, label: "Nespresso" },
       { icon: Wind, label: "Spa Privatif" },
-      { icon: Sparkles, label: "Ciel Étoilé" },
+      { icon: Dices, label: "Jeux Société Adulte" },
       { icon: Wind, label: "Balnéo Privative" },
       { icon: Coffee, label: "Champagne Inclus" },
       { icon: Sparkles, label: "Décoration Jungle" },

@@ -1,10 +1,12 @@
 import express from 'express';
-import { 
-  getSuites, 
-  getSuiteById, 
-  getServices, 
+import {
+  getSuites,
+  getSuiteById,
+  getServices,
   createReservation,
-  getSettings
+  getSettings,
+  getPublicProducts,
+  createOrder
 } from '../controllers/adminController';
 
 const router = express.Router();
@@ -19,5 +21,9 @@ router.get('/settings', getSettings);
 
 // Route publique pour créer une réservation
 router.post('/reservations', createReservation);
+
+// Routes publiques pour la boutique (produits actifs + création de commande)
+router.get('/products', getPublicProducts);
+router.post('/orders', createOrder);
 
 export default router;

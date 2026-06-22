@@ -22,7 +22,14 @@ import {
   getGiftCards,
   createGiftCard,
   updateGiftCard,
-  deleteGiftCard
+  deleteGiftCard,
+  getProducts,
+  createProduct,
+  updateProduct,
+  adjustProductStock,
+  deleteProduct,
+  getOrders,
+  updateOrder
 } from '../controllers/adminController';
 import { protect } from '../middlewares/authMiddleware';
 
@@ -75,6 +82,22 @@ router.route('/gift-cards')
 router.route('/gift-cards/:id')
   .put(protect, updateGiftCard)
   .delete(protect, deleteGiftCard);
+
+// Routes pour les produits / gestion de stock
+router.route('/products')
+  .get(getProducts) // Lecture publique (l'admin voit aussi les inactifs)
+  .post(protect, createProduct);
+
+router.route('/products/:id')
+  .put(protect, updateProduct)
+  .delete(protect, deleteProduct);
+
+// Ajustement manuel du stock (vente physique -1, réassort +1, ...)
+router.patch('/products/:id/stock', protect, adjustProductStock);
+
+// Liste des commandes passées en ligne + mise à jour (statut / paiement)
+router.get('/orders', protect, getOrders);
+router.patch('/orders/:id', protect, updateOrder);
 
 export default router;
 

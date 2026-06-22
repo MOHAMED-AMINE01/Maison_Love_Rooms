@@ -61,7 +61,7 @@ export default function Footer() {
               {[
                 { label: "Accueil", to: "/" },
                 { label: "Nos suites", to: "/#suites" },
-                { label: "L'expérience", to: "/experience" },
+                { label: "Boutique et Prestation", to: "/experience" },
                 { label: "Foire aux questions", to: "/#faq" }
               ].map((item) => (
                 <li key={item.label}>
@@ -84,10 +84,6 @@ export default function Footer() {
               <li className="space-y-3 flex flex-col items-center md:items-start">
                 <span className="text-[9px] uppercase tracking-[0.3em] text-white/20 font-bold flex items-center gap-2"><Mail size={12} /> Conciergerie</span>
                 <p className="text-white/80 font-serif italic text-lg hover:text-white transition-colors cursor-pointer">{contactInfo.email}</p>
-              </li>
-              <li className="space-y-3 flex flex-col items-center md:items-start">
-                <span className="text-[9px] uppercase tracking-[0.3em] text-white/20 font-bold flex items-center gap-2"><MapPin size={12} /> Adresse Secrète</span>
-                <p className="text-white/60 font-sans font-light text-sm">{contactInfo.address}</p>
               </li>
             </ul>
           </div>

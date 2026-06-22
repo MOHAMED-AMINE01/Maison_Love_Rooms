@@ -14,6 +14,8 @@ import {
   ChevronRight,
   Menu,
   Gift,
+  Package,
+  ClipboardList,
   Type,
   X
 } from "lucide-react";
@@ -26,6 +28,8 @@ const SIDEBAR_ITEMS = [
   { icon: BedDouble, label: "Chambres", path: "/admin/chambres" },
   { icon: Sparkles, label: "Disponibilités", path: "/admin/disponibilites" },
   { icon: Sparkles, label: "Boutique & Options", path: "/admin/boutique" },
+  { icon: Package, label: "Stock & Produits", path: "/admin/stock" },
+  { icon: ClipboardList, label: "Commandes", path: "/admin/commandes" },
   { icon: Gift, label: "Cartes Cadeaux", path: "/admin/cartes-cadeaux" },
   { icon: Type, label: "Typographie", path: "/admin/typographie" },
   { icon: Settings, label: "Paramètres", path: "/admin/settings" },
@@ -174,9 +178,7 @@ export default function AdminLayout() {
               {SIDEBAR_ITEMS.find(item => item.path === location.pathname)?.label || "Dashboard"}
             </h1>
             <div className="hidden sm:block h-4 w-px bg-white/10 mx-2" />
-            <span className="hidden sm:inline-block text-xs text-gold uppercase tracking-widest font-semibold bg-gold/10 px-3 py-1 rounded-full border border-gold/20">
-              Vue d'ensemble
-            </span>
+
           </div>
         </header>
 

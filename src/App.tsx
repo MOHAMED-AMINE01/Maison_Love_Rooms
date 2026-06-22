@@ -1,5 +1,5 @@
 import { useEffect, useState, lazy, Suspense } from "react";
-import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { AnimatePresence } from "motion/react";
 import Navbar from "./components/layout/Navbar";
 import Footer from "./components/sections/Footer";
@@ -15,7 +15,6 @@ const Checkout = lazy(() => import("./pages/Checkout"));
 const Experience = lazy(() => import("./pages/Experience"));
 const Confirmation = lazy(() => import("./pages/Confirmation"));
 const Legal = lazy(() => import("./pages/Legal"));
-const CartesCadeaux = lazy(() => import("./pages/CartesCadeaux"));
 
 // Admin area (~3.6k lines) is fully split out — visitors never download it.
 const AdminLayout = lazy(() => import("./components/layout/AdminLayout"));
@@ -25,6 +24,8 @@ const AdminReservations = lazy(() => import("./pages/admin/Reservations"));
 const AdminChambres = lazy(() => import("./pages/admin/Chambres"));
 const AdminDisponibilites = lazy(() => import("./pages/admin/Disponibilites"));
 const AdminBoutique = lazy(() => import("./pages/admin/Boutique"));
+const AdminStock = lazy(() => import("./pages/admin/Stock"));
+const AdminCommandes = lazy(() => import("./pages/admin/Commandes"));
 const AdminCartesCadeaux = lazy(() => import("./pages/admin/CartesCadeaux"));
 const AdminTypographie = lazy(() => import("./pages/admin/Typographie"));
 const AdminSettings = lazy(() => import("./pages/admin/Parametres"));
@@ -94,7 +95,8 @@ function AppContent() {
               <Route path="/" element={<Home />} />
               <Route path="/suite/:id" element={<SuiteDetail />} />
               <Route path="/experience" element={<Experience />} />
-              <Route path="/cartes-cadeaux" element={<CartesCadeaux />} />
+              {/* Ancienne page Cartes Cadeaux : désormais intégrée à « Boutique et Service » */}
+              <Route path="/cartes-cadeaux" element={<Navigate to="/experience" replace />} />
               <Route path="/checkout" element={<Checkout />} />
               <Route path="/confirmation" element={<Confirmation />} />
               <Route path="/mentions-legales" element={<Legal />} />
@@ -114,6 +116,8 @@ function AppContent() {
                 <Route path="disponibilites" element={<AdminDisponibilites />} />
                 <Route path="prestations" element={<AdminBoutique />} />
                 <Route path="boutique" element={<AdminBoutique />} />
+                <Route path="stock" element={<AdminStock />} />
+                <Route path="commandes" element={<AdminCommandes />} />
                 <Route path="cartes-cadeaux" element={<AdminCartesCadeaux />} />
                 <Route path="typographie" element={<AdminTypographie />} />
                 <Route path="settings" element={<AdminSettings />} />
