@@ -219,7 +219,7 @@ export default function Checkout() {
       }
    };
 
-   const inputClass = "w-full bg-[#0A0A0A] text-gold-light border border-white/10 rounded-2xl p-5 pl-14 italic focus:ring-1 focus:ring-gold outline-none transition-all placeholder:text-gold-light/20";
+   const inputClass = "w-full bg-[#0A0A0A] text-white border border-white/10 rounded-2xl p-5 pl-14 italic focus:ring-1 focus:ring-gold outline-none transition-all placeholder:text-white/20";
    const stepLabel = step === 1 ? 'Vos informations & séjour' : step === 2 ? 'Options & attentions' : 'Conditions & envoi';
 
    return (
@@ -227,7 +227,7 @@ export default function Checkout() {
          initial={{ opacity: 0 }}
          animate={{ opacity: 1 }}
          exit={{ opacity: 0 }}
-         className="bg-[#0A0A0A] min-h-screen pt-48 pb-16 px-4 md:px-8 text-gold-light font-sans selection:bg-gold/30"
+         className="bg-[#0A0A0A] min-h-screen pt-48 pb-16 px-4 md:px-8 text-white font-sans selection:bg-gold/30"
       >
          <div className="container-wide max-w-6xl mx-auto">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20">
@@ -236,11 +236,11 @@ export default function Checkout() {
                <div className="lg:col-span-8 relative z-20">
                   <div className="mb-12 flex items-center justify-between gap-6">
                      <div>
-                        <h1 className="text-2xl md:text-4xl font-serif mb-2 md:mb-4 italic text-gold-light leading-tight">Réservez dès maintenant votre nuit d'exception, et vivez une expérience intense chez <span translate="notranslate">Maison Love Rooms</span></h1>
-                        <p className="text-gold-light/40 italic font-light text-sm md:text-base">Étape {step} sur 3 — {stepLabel}</p>
+                        <h1 className="text-2xl md:text-4xl font-serif mb-2 md:mb-4 italic text-white leading-tight">Réservez dès maintenant votre nuit d'exception, et vivez une expérience intense chez <span translate="notranslate">Maison Love Rooms</span></h1>
+                        <p className="text-white/40 italic font-light text-sm md:text-base">Étape {step} sur 3 — {stepLabel}</p>
                      </div>
                      {step > 1 && (
-                        <button onClick={prevStep} className="flex items-center gap-2 text-gold hover:text-gold-light transition-colors shrink-0">
+                        <button onClick={prevStep} className="flex items-center gap-2 text-gold hover:text-white transition-colors shrink-0">
                            <ArrowLeft size={16} />
                            <span className="text-[10px] uppercase tracking-widest font-bold">Retour</span>
                         </button>
@@ -268,19 +268,19 @@ export default function Checkout() {
                                  <h2 className="text-[10px] uppercase tracking-[0.5em] font-black text-gold mb-6 flex items-center gap-3"><User size={14} /> Informations personnelles</h2>
                                  <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                                     <div className="relative group">
-                                       <User className="absolute left-5 top-1/2 -translate-y-1/2 text-gold-light/20 group-focus-within:text-gold transition-colors" size={18} />
+                                       <User className="absolute left-5 top-1/2 -translate-y-1/2 text-white/20 group-focus-within:text-gold transition-colors" size={18} />
                                        <input type="text" required value={form.clientName} onChange={e => setForm({ ...form, clientName: e.target.value })} placeholder="Nom et prénom *" className={inputClass} />
                                     </div>
                                     <div className="relative group">
-                                       <Phone className="absolute left-5 top-1/2 -translate-y-1/2 text-gold-light/20 group-focus-within:text-gold transition-colors" size={18} />
+                                       <Phone className="absolute left-5 top-1/2 -translate-y-1/2 text-white/20 group-focus-within:text-gold transition-colors" size={18} />
                                        <input type="tel" value={form.clientPhone} onChange={e => setForm({ ...form, clientPhone: e.target.value })} placeholder="Téléphone" className={inputClass} />
                                     </div>
                                     <div className="relative group">
-                                       <Mail className="absolute left-5 top-1/2 -translate-y-1/2 text-gold-light/20 group-focus-within:text-gold transition-colors" size={18} />
+                                       <Mail className="absolute left-5 top-1/2 -translate-y-1/2 text-white/20 group-focus-within:text-gold transition-colors" size={18} />
                                        <input type="email" required value={form.clientEmail} onChange={e => setForm({ ...form, clientEmail: e.target.value })} placeholder="Adresse e-mail *" className={inputClass} />
                                     </div>
                                     <div className="relative group">
-                                       <MapPin className="absolute left-5 top-1/2 -translate-y-1/2 text-gold-light/20 group-focus-within:text-gold transition-colors" size={18} />
+                                       <MapPin className="absolute left-5 top-1/2 -translate-y-1/2 text-white/20 group-focus-within:text-gold transition-colors" size={18} />
                                        <input type="text" value={form.clientAddress} onChange={e => setForm({ ...form, clientAddress: e.target.value })} placeholder="Adresse postale" className={inputClass} />
                                     </div>
                                  </div>
@@ -291,7 +291,7 @@ export default function Checkout() {
 
                                  {formulesList.length > 0 && (
                                     <div className="mb-8">
-                                       <label className="text-[10px] uppercase tracking-widest font-bold text-gold-light/40 mb-4 block">Formule</label>
+                                       <label className="text-[10px] uppercase tracking-widest font-bold text-white/40 mb-4 block">Formule</label>
                                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                           {formulesList.map(f => {
                                              const active = activeFormula?.name === f.name;
@@ -299,8 +299,8 @@ export default function Checkout() {
                                                 <button type="button" key={f.name} onClick={() => setFormula(f.name)}
                                                    className={`p-5 rounded-2xl border text-left transition-all flex items-center justify-between gap-3 ${active ? 'border-gold bg-gold/5 shadow-[0_0_20px_rgba(188,155,93,0.1)]' : 'border-white/10 bg-white/[0.02] hover:border-gold/30'}`}>
                                                    <span className="space-y-1">
-                                                      <span className="block font-serif text-lg text-gold-light">{f.name}</span>
-                                                      <span className="block text-[10px] uppercase tracking-widest text-gold-light/30 font-bold">{f.price}€ {f.billingType === 'forfait' ? 'forfait' : '/ nuit'}</span>
+                                                      <span className="block font-serif text-lg text-white">{f.name}</span>
+                                                      <span className="block text-[10px] uppercase tracking-widest text-white/30 font-bold">{f.price}€ {f.billingType === 'forfait' ? 'forfait' : '/ nuit'}</span>
                                                    </span>
                                                    <span className={`w-5 h-5 rounded-full border flex items-center justify-center shrink-0 ${active ? 'border-gold' : 'border-white/20'}`}>
                                                       <span className={`w-2.5 h-2.5 rounded-full bg-gold transition-opacity ${active ? 'opacity-100' : 'opacity-0'}`} />
@@ -312,7 +312,7 @@ export default function Checkout() {
                                     </div>
                                  )}
 
-                                 <label className="text-[10px] uppercase tracking-widest font-bold text-gold-light/40 mb-4 block">Suite souhaitée *</label>
+                                 <label className="text-[10px] uppercase tracking-widest font-bold text-white/40 mb-4 block">Suite souhaitée *</label>
                                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
                                     {suitesList.map(suite => {
                                        const active = form.suiteName === suite.name;
@@ -320,8 +320,8 @@ export default function Checkout() {
                                           <button type="button" key={suite.name} onClick={() => setForm({ ...form, suiteName: suite.name })}
                                              className={`p-5 rounded-2xl border text-left transition-all flex items-center justify-between gap-3 ${active ? 'border-gold bg-gold/5 shadow-[0_0_20px_rgba(188,155,93,0.1)]' : 'border-white/10 bg-white/[0.02] hover:border-gold/30'}`}>
                                              <span className="space-y-1">
-                                                <span translate="no" className="notranslate block font-serif text-lg text-gold-light">{suite.name}</span>
-                                                <span className="block text-[10px] uppercase tracking-widest text-gold-light/30 font-bold">dès {suite.price}€ / nuit</span>
+                                                <span translate="no" className="notranslate block font-serif text-lg text-white">{suite.name}</span>
+                                                <span className="block text-[10px] uppercase tracking-widest text-white/30 font-bold">dès {suite.price}€ / nuit</span>
                                              </span>
                                              <span className={`w-5 h-5 rounded-full border flex items-center justify-center shrink-0 ${active ? 'border-gold' : 'border-white/20'}`}>
                                                 <span className={`w-2.5 h-2.5 rounded-full bg-gold transition-opacity ${active ? 'opacity-100' : 'opacity-0'}`} />
@@ -333,23 +333,23 @@ export default function Checkout() {
 
                                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                                     <div className="space-y-3 relative z-30">
-                                       <label className="text-[10px] uppercase tracking-widest font-bold text-gold-light/40 block">Date d'arrivée *</label>
+                                       <label className="text-[10px] uppercase tracking-widest font-bold text-white/40 block">Date d'arrivée *</label>
                                        <CustomDatePicker value={form.checkIn} onChange={val => setForm({ ...form, checkIn: val })} minDate={today} />
                                     </div>
                                     <div className="space-y-3 relative z-20">
-                                       <label className="text-[10px] uppercase tracking-widest font-bold text-gold-light/40 block">Date de départ *</label>
+                                       <label className="text-[10px] uppercase tracking-widest font-bold text-white/40 block">Date de départ *</label>
                                        <CustomDatePicker value={form.checkOut} onChange={val => setForm({ ...form, checkOut: val })} minDate={form.checkIn || today} />
                                     </div>
                                  </div>
 
                                  <div className="space-y-3 mb-8">
-                                    <label className="text-[10px] uppercase tracking-widest font-bold text-gold-light/40 flex items-center gap-2"><Clock size={12} /> Heure d'arrivée estimée</label>
+                                    <label className="text-[10px] uppercase tracking-widest font-bold text-white/40 flex items-center gap-2"><Clock size={12} /> Heure d'arrivée estimée</label>
                                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                                        {ARRIVAL_TIMES.map(time => {
                                           const active = form.arrivalTime === time;
                                           return (
                                              <button type="button" key={time} onClick={() => setForm({ ...form, arrivalTime: active ? '' : time })}
-                                                className={`py-4 rounded-2xl border text-sm font-serif transition-all ${active ? 'border-gold bg-gold/5 text-gold' : 'border-white/10 bg-white/[0.02] text-gold-light/70 hover:border-gold/30'}`}>
+                                                className={`py-4 rounded-2xl border text-sm font-serif transition-all ${active ? 'border-gold bg-gold/5 text-gold' : 'border-white/10 bg-white/[0.02] text-white/70 hover:border-gold/30'}`}>
                                                 {time}
                                              </button>
                                           );
@@ -358,13 +358,13 @@ export default function Checkout() {
                                  </div>
 
                                  <div className="space-y-3">
-                                    <label className="text-[10px] uppercase tracking-widest font-bold text-gold-light/40 flex items-center gap-2"><Users size={12} /> Nombre de personnes</label>
+                                    <label className="text-[10px] uppercase tracking-widest font-bold text-white/40 flex items-center gap-2"><Users size={12} /> Nombre de personnes</label>
                                     <div className="grid grid-cols-2 gap-3 max-w-xs">
                                        {[1, 2].map(n => {
                                           const active = form.numberOfPersons === n;
                                           return (
                                              <button type="button" key={n} onClick={() => setForm({ ...form, numberOfPersons: n })}
-                                                className={`py-4 rounded-2xl border text-sm font-serif transition-all ${active ? 'border-gold bg-gold/5 text-gold' : 'border-white/10 bg-white/[0.02] text-gold-light/70 hover:border-gold/30'}`}>
+                                                className={`py-4 rounded-2xl border text-sm font-serif transition-all ${active ? 'border-gold bg-gold/5 text-gold' : 'border-white/10 bg-white/[0.02] text-white/70 hover:border-gold/30'}`}>
                                                 {n} personne{n > 1 ? 's' : ''}
                                              </button>
                                           );
@@ -387,7 +387,7 @@ export default function Checkout() {
                            <motion.div key="step2" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-10 relative z-10">
                               <div>
                                  <h2 className="text-[10px] uppercase tracking-[0.5em] font-black text-gold mb-2 flex items-center gap-3"><Sparkles size={14} /> Options & Services</h2>
-                                 <p className="text-sm italic text-gold-light/40 mb-6">Souhaitez-vous ajouter une option ?</p>
+                                 <p className="text-sm italic text-white/40 mb-6">Souhaitez-vous ajouter une option ?</p>
                                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                     {OPTIONS.map(opt => {
                                        const active = selectedOptions.includes(opt);
@@ -397,12 +397,12 @@ export default function Checkout() {
                                              <span className={`w-5 h-5 rounded-md border flex items-center justify-center shrink-0 ${active ? 'border-gold bg-gold text-[#0A0A0A]' : 'border-white/20'}`}>
                                                 {active && <Check size={12} strokeWidth={3} />}
                                              </span>
-                                             <span className="text-sm text-gold-light/80">{opt}</span>
+                                             <span className="text-sm text-white/80">{opt}</span>
                                           </button>
                                        );
                                     })}
                                  </div>
-                                 <input type="text" value={form.optionOther} onChange={e => setForm({ ...form, optionOther: e.target.value })} placeholder="Autre option (précisez)…" className="mt-4 w-full bg-[#0A0A0A] text-gold-light border border-white/10 rounded-2xl p-4 px-5 italic focus:ring-1 focus:ring-gold outline-none transition-all placeholder:text-gold-light/20" />
+                                 <input type="text" value={form.optionOther} onChange={e => setForm({ ...form, optionOther: e.target.value })} placeholder="Autre option (précisez)…" className="mt-4 w-full bg-[#0A0A0A] text-white border border-white/10 rounded-2xl p-4 px-5 italic focus:ring-1 focus:ring-gold outline-none transition-all placeholder:text-white/20" />
                               </div>
 
                               <div className="pt-8 border-t border-white/5">
@@ -416,18 +416,18 @@ export default function Checkout() {
                                              <span className={`w-5 h-5 rounded-full border flex items-center justify-center shrink-0 ${active ? 'border-gold' : 'border-white/20'}`}>
                                                 <span className={`w-2.5 h-2.5 rounded-full bg-gold transition-opacity ${active ? 'opacity-100' : 'opacity-0'}`} />
                                              </span>
-                                             <span className="text-sm text-gold-light/80">{occ}</span>
+                                             <span className="text-sm text-white/80">{occ}</span>
                                           </button>
                                        );
                                     })}
                                  </div>
                                  {form.occasion === 'Autre' && (
-                                    <input type="text" value={form.occasionOther} onChange={e => setForm({ ...form, occasionOther: e.target.value })} placeholder="Précisez l'occasion…" className="mt-4 w-full bg-[#0A0A0A] text-gold-light border border-white/10 rounded-2xl p-4 px-5 italic focus:ring-1 focus:ring-gold outline-none transition-all placeholder:text-gold-light/20" />
+                                    <input type="text" value={form.occasionOther} onChange={e => setForm({ ...form, occasionOther: e.target.value })} placeholder="Précisez l'occasion…" className="mt-4 w-full bg-[#0A0A0A] text-white border border-white/10 rounded-2xl p-4 px-5 italic focus:ring-1 focus:ring-gold outline-none transition-all placeholder:text-white/20" />
                                  )}
 
                                  <div className="space-y-3 mt-8">
-                                    <label className="text-[10px] uppercase tracking-widest font-bold text-gold-light/40 block">Commentaires ou demandes particulières</label>
-                                    <textarea rows={4} value={form.comments} onChange={e => setForm({ ...form, comments: e.target.value })} placeholder="Une surprise à préparer, une attention particulière…" className="w-full bg-[#0A0A0A] text-gold-light border border-white/10 rounded-2xl p-5 italic focus:ring-1 focus:ring-gold outline-none transition-all resize-none placeholder:text-gold-light/20" />
+                                    <label className="text-[10px] uppercase tracking-widest font-bold text-white/40 block">Commentaires ou demandes particulières</label>
+                                    <textarea rows={4} value={form.comments} onChange={e => setForm({ ...form, comments: e.target.value })} placeholder="Une surprise à préparer, une attention particulière…" className="w-full bg-[#0A0A0A] text-white border border-white/10 rounded-2xl p-5 italic focus:ring-1 focus:ring-gold outline-none transition-all resize-none placeholder:text-white/20" />
                                  </div>
                               </div>
 
@@ -452,7 +452,7 @@ export default function Checkout() {
                                              <span className={`mt-0.5 w-5 h-5 rounded-md border flex items-center justify-center shrink-0 transition-colors ${checked ? 'border-gold bg-gold text-[#0A0A0A]' : 'border-white/20 group-hover:border-gold/50'}`}>
                                                 {checked && <Check size={12} strokeWidth={3} />}
                                              </span>
-                                             <span className="text-sm text-gold-light/60 leading-relaxed">{c.label} <span className="text-gold">*</span></span>
+                                             <span className="text-sm text-white/60 leading-relaxed">{c.label} <span className="text-gold">*</span></span>
                                           </button>
                                        );
                                     })}
@@ -461,7 +461,7 @@ export default function Checkout() {
 
                               <div className="flex items-start gap-4 p-6 bg-gold/5 border border-gold/20 rounded-2xl">
                                  <CheckCircle2 size={20} className="text-gold shrink-0 mt-0.5" />
-                                 <p className="text-sm italic text-gold-light/60 leading-relaxed">
+                                 <p className="text-sm italic text-white/60 leading-relaxed">
                                     Aucun paiement en ligne : votre demande est envoyée à notre conciergerie, qui vous recontacte rapidement pour confirmer la disponibilité et finaliser votre réservation.
                                  </p>
                               </div>
@@ -483,7 +483,7 @@ export default function Checkout() {
                      <div className="bg-[#121212] border border-white/5 p-8 sm:p-10 rounded-[2.5rem] relative shadow-2xl overflow-hidden">
                         <div className="absolute -top-20 -right-20 w-40 h-40 bg-gold/10 blur-[80px] rounded-full pointer-events-none" />
 
-                        <h3 className="text-xl sm:text-2xl font-serif mb-6 sm:mb-10 pb-4 border-b border-white/5 text-gold-light relative z-10">Votre séjour</h3>
+                        <h3 className="text-xl sm:text-2xl font-serif mb-6 sm:mb-10 pb-4 border-b border-white/5 text-white relative z-10">Votre séjour</h3>
                         <div className="space-y-8 relative z-10">
                            <div className="flex gap-6">
                               <div className="w-24 h-24 bg-[#0A0A0A] relative overflow-hidden rounded-2xl border border-white/10">
@@ -491,45 +491,45 @@ export default function Checkout() {
                               </div>
                               <div className="space-y-2">
                                  <span translate="no" className="notranslate text-[10px] uppercase tracking-widest font-black text-gold">{form.suiteName || 'À choisir'}</span>
-                                 <span className="block italic text-gold-light/40 text-[10px] uppercase tracking-widest font-bold">{activeFormula ? activeFormula.name : `${form.numberOfPersons} personne${form.numberOfPersons > 1 ? 's' : ''}`}</span>
-                                 <span className="block font-serif text-lg text-gold-light">{unitPrice}€ <span className="text-[10px] italic text-gold-light/30">{isForfait ? 'forfait' : '/ nuit'}</span></span>
+                                 <span className="block italic text-white/40 text-[10px] uppercase tracking-widest font-bold">{activeFormula ? activeFormula.name : `${form.numberOfPersons} personne${form.numberOfPersons > 1 ? 's' : ''}`}</span>
+                                 <span className="block font-serif text-lg text-white">{unitPrice}€ <span className="text-[10px] italic text-white/30">{isForfait ? 'forfait' : '/ nuit'}</span></span>
                               </div>
                            </div>
 
                            <div className="space-y-4 pt-8 border-t border-white/5">
-                              <div className="flex justify-between text-xs italic text-gold-light/40">
+                              <div className="flex justify-between text-xs italic text-white/40">
                                  <span>{isForfait ? 'Forfait' : `Nuitée x ${nights}`}</span>
-                                 <span className="font-serif text-gold-light/80">{form.suiteName ? unitPrice * billedNights : 0}€</span>
+                                 <span className="font-serif text-white/80">{form.suiteName ? unitPrice * billedNights : 0}€</span>
                               </div>
 
                               {selectedOptions.map(optName => (
-                                 <div key={optName} className="flex justify-between text-xs italic text-gold-light/40">
+                                 <div key={optName} className="flex justify-between text-xs italic text-white/40">
                                     <span>{optName}</span>
-                                    <span className="font-serif text-gold-light/80">à définir</span>
+                                    <span className="font-serif text-white/80">à définir</span>
                                  </div>
                               ))}
 
                               <div className="flex justify-between items-center pt-6 border-t border-white/10 text-2xl font-serif">
-                                 <span className="text-gold-light">Estimation</span>
+                                 <span className="text-white">Estimation</span>
                                  <span className="text-gold">{estimatedTotal}€</span>
                               </div>
-                              <p className="text-[10px] italic text-gold-light/30 leading-relaxed">Tarif hébergement indicatif (hors options). Le total définitif vous est confirmé par notre équipe.</p>
+                              <p className="text-[10px] italic text-white/30 leading-relaxed">Tarif hébergement indicatif (hors options). Le total définitif vous est confirmé par notre équipe.</p>
                            </div>
                         </div>
                      </div>
 
-                     <div className="flex items-center justify-center gap-4 text-gold-light/20">
+                     <div className="flex items-center justify-center gap-4 text-white/20">
                         <ShieldCheck size={16} />
                         <span className="text-[9px] uppercase tracking-[0.3em] font-bold">Réservation 100% Confidentielle</span>
                      </div>
 
                      <div className="bg-[#121212] border border-white/5 p-8 sm:p-10 rounded-[2.5rem] relative shadow-xl overflow-hidden space-y-4">
                         <h4 className="text-lg font-serif text-gold italic">Demande particulière ?</h4>
-                        <p className="text-sm text-gold-light/50 font-light leading-relaxed">
+                        <p className="text-sm text-white/50 font-light leading-relaxed">
                            Vous préparez une surprise, un cadeau ou une attention spéciale ? Écrivez-nous avant votre réservation : nous vous dirons simplement ce qui est possible et comment l’organiser.
                         </p>
                         <h4 className="text-lg font-serif text-gold italic">Besoin d'un conseil ?</h4>
-                        <p className="text-sm text-gold-light/50 font-light leading-relaxed">
+                        <p className="text-sm text-white/50 font-light leading-relaxed">
                            Nous sommes joignables par email ou téléphone.
                         </p>
                      </div>

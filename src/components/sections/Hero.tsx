@@ -47,12 +47,12 @@ export default function Hero() {
             >
 
 
-              <h1 className="text-5xl md:text-7xl lg:text-[5.5rem] leading-[1.1] tracking-tight text-gold-light font-serif max-w-xl">
+              <h1 className="text-5xl md:text-7xl lg:text-[5.5rem] leading-[1.1] tracking-tight text-white font-serif max-w-xl">
                 Érotisme <br />
-                <span className="italic text-gold-light/40">et plaisir.</span>
+                <span className="italic text-white/40">et plaisir.</span>
               </h1>
 
-              <p className="max-w-md text-lg md:text-xl font-light text-gold-light/40 leading-relaxed font-sans border-l border-white/10 pl-8">
+              <p className="max-w-md text-lg md:text-xl font-light text-white/70 leading-relaxed font-sans border-l border-white/10 pl-8">
                 Maison Love Rooms vous propose deux love room imaginées pour les amoureux qui veulent s'évader le temps d'une soirée dans un cocon de douceur et d'exotisme.
               </p>
             </motion.div>
@@ -74,7 +74,7 @@ export default function Hero() {
 
               <a
                 href="/experience"
-                className="group flex items-center justify-between gap-8 px-10 py-5 rounded-full border border-white/20 bg-white/5 text-gold-light/80 hover:bg-white hover:text-noir transition-all duration-500"
+                className="group flex items-center justify-between gap-8 px-10 py-5 rounded-full border border-white/20 bg-white/5 text-white/80 hover:bg-white hover:text-noir transition-all duration-500"
               >
                 <span className="text-[11px] font-bold uppercase tracking-[0.2em]">Découvrir l'expérience</span>
                 <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />

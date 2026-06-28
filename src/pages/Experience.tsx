@@ -264,7 +264,7 @@ export default function Experience() {
             transition={{ delay: 0.4 }}
             className="text-center"
           >
-            <div className="flex flex-col md:flex-row gap-8 md:gap-16 justify-center text-gold-light/80">
+            <div className="flex flex-col md:flex-row gap-8 md:gap-16 justify-center text-white/80">
               <div className="space-y-2">
                 <p className="text-sm uppercase tracking-widest font-light opacity-70">Arrivée</p>
                 <p className="text-lg md:text-xl font-serif">À partir de {checkInTime}</p>
@@ -296,7 +296,7 @@ export default function Experience() {
                 key={i}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                className="bg-gradient-to-br from-white via-[#FAF9F6] to-white p-6 md:p-8 rounded-2xl md:rounded-3xl space-y-3 text-center border border-gold/10 shadow-sm hover:shadow-md hover:border-gold/30 transition-all duration-500"
+                className="bg-gradient-to-br from-white via-[#EFE6D2] to-white p-6 md:p-8 rounded-2xl md:rounded-3xl space-y-3 text-center border border-gold/10 shadow-sm hover:shadow-md hover:border-gold/30 transition-all duration-500"
               >
                 <div className="text-gold flex justify-center">{step.icon}</div>
                 <h3 className="text-lg font-serif text-noir">{step.title}</h3>
@@ -321,7 +321,7 @@ export default function Experience() {
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: idx * 0.12 }}
-                className={`relative p-8 md:p-10 rounded-2xl md:rounded-3xl border flex flex-col h-full transition-all duration-500 ${formule.popular ? 'bg-white border-gold/40 shadow-lg hover:shadow-xl' : 'bg-white border-gold/10 hover:border-gold/20 shadow-sm'}`}
+                className={`relative p-8 md:p-10 rounded-2xl md:rounded-3xl border flex flex-col h-full transition-all duration-500 ${formule.popular ? 'bg-gold/5 border-gold/40 shadow-lg hover:shadow-xl' : 'bg-gold/4 border-gold/10 hover:border-gold/20 shadow-sm'}`}
               >
                 {formule.popular && (
                   <div className="absolute -top-5 left-1/2 -translate-x-1/2 bg-gold text-noir px-6 py-2 rounded-full text-[8px] uppercase tracking-[0.3em] font-black shadow-lg flex items-center gap-2">
@@ -331,19 +331,19 @@ export default function Experience() {
 
                 <div className="mb-6 text-center md:text-left flex flex-col justify-start">
                   <h3 className="text-2xl md:text-3xl font-serif text-noir mb-2">{formule.name}</h3>
-                  <p className="text-noir/40 font-serif italic text-xs md:text-sm leading-relaxed">{formule.description}</p>
+                  <p className="text-noir/80 font-serif italic text-xs md:text-sm leading-relaxed">{formule.description}</p>
                 </div>
 
                 <div className="mb-8 flex justify-center md:justify-start">
                   <div className="flex items-baseline gap-2">
                     <span className="text-5xl md:text-6xl font-serif text-noir">{formule.price}</span>
-                    <span className="text-noir/30 text-sm font-serif italic">/ nuit</span>
+                    <span className="text-noir/70 text-sm font-serif italic">/ nuit</span>
                   </div>
                 </div>
 
                 <ul className="space-y-2.5 mb-8 flex-1">
                   {formule.features.map((feature) => (
-                    <li key={feature} className="flex items-start gap-2 text-noir/50">
+                    <li key={feature} className="flex items-start gap-2 text-noir/80">
                       <div className="mt-0.5 w-3.5 h-3.5 rounded-full border border-gold/40 flex items-center justify-center text-gold shrink-0">
                         <Check size={7} />
                       </div>
@@ -402,7 +402,7 @@ export default function Experience() {
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ delay: 0.06 * idx }}
-                    className="group bg-[#FAF9F6] border border-noir/[0.04] rounded-[2rem] overflow-hidden flex flex-col shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-500"
+                    className="group bg-gold/15 border border-noir/[0.04] rounded-[2rem] overflow-hidden flex flex-col shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-500"
                   >
                     <div className="relative h-56 overflow-hidden">
                       <img
@@ -411,7 +411,7 @@ export default function Experience() {
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                       />
                       {soldOut ? (
-                        <div className="absolute top-4 right-4 bg-noir/80 text-gold-light text-[10px] uppercase tracking-widest font-bold px-3 py-1.5 rounded-full">
+                        <div className="absolute top-4 right-4 bg-noir/80 text-white text-[10px] uppercase tracking-widest font-bold px-3 py-1.5 rounded-full">
                           Rupture de stock
                         </div>
                       ) : product.stock <= 3 ? (
@@ -432,7 +432,7 @@ export default function Experience() {
                           disabled={soldOut}
                           className={`px-6 py-3 rounded-full text-[11px] tracking-[0.3em] font-bold transition-all duration-500 ${soldOut
                             ? 'bg-noir/5 text-noir/30 cursor-not-allowed'
-                            : 'bg-noir text-gold-light hover:bg-gold hover:text-noir'}`}
+                            : 'bg-noir text-white hover:bg-gold hover:text-noir'}`}
                         >
                           {soldOut ? 'Indisponible' : 'Commander'}
                         </button>
@@ -526,7 +526,7 @@ export default function Experience() {
                       transition={{ delay: 0.08 * idx }}
                       className="group relative"
                     >
-                      <div className="bg-[#FAF9F6] border border-noir/[0.04] rounded-[2rem] pt-14 px-6 pb-10 flex flex-col items-center h-full relative z-10 group-hover:-translate-y-2 group-hover:border-gold/30 shadow-sm hover:shadow-xl transition-all duration-500">
+                      <div className="bg-gold/15 border border-noir/[0.04] rounded-[2rem] pt-14 px-6 pb-10 flex flex-col items-center h-full relative z-10 group-hover:-translate-y-2 group-hover:border-gold/30 shadow-sm hover:shadow-xl transition-all duration-500">
                         <div className="absolute bottom-0 left-[10%] right-[10%] h-[3px] bg-gradient-to-r from-transparent via-gold to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-t-full" />
 
                         <div className="absolute -top-14 left-1/2 transform -translate-x-1/2">
@@ -549,7 +549,7 @@ export default function Experience() {
                           <div className="text-3xl font-serif text-gold">
                             {card.price}€
                           </div>
-                          <p className="text-noir/50 text-sm leading-relaxed px-2">
+                          <p className="text-noir/70 text-sm leading-relaxed px-2">
                             {card.description}
                           </p>
                         </div>
@@ -558,7 +558,7 @@ export default function Experience() {
                           {card.features.map((feature, i) => (
                             <div key={i} className="flex items-start gap-3">
                               <div className="w-1.5 h-1.5 rounded-full bg-gold mt-1.5 flex-shrink-0" />
-                              <span className="text-sm text-noir/70">{feature}</span>
+                              <span className="text-sm text-noir/90">{feature}</span>
                             </div>
                           ))}
                         </div>
@@ -678,7 +678,7 @@ export default function Experience() {
                   </p>
                   <button
                     onClick={() => setOrderProduct(null)}
-                    className="px-8 py-4 rounded-full bg-noir text-gold-light text-[10px] uppercase tracking-[0.3em] font-bold hover:bg-gold hover:text-noir transition-all duration-500"
+                    className="px-8 py-4 rounded-full bg-noir text-white text-[10px] uppercase tracking-[0.3em] font-bold hover:bg-gold hover:text-noir transition-all duration-500"
                   >
                     Fermer
                   </button>
@@ -726,7 +726,7 @@ export default function Experience() {
                   <button
                     type="submit"
                     disabled={orderSubmitting}
-                    className="w-full py-4 rounded-full bg-noir text-gold-light text-[10px] uppercase tracking-[0.3em] font-bold hover:bg-gold hover:text-noir transition-all duration-500 disabled:opacity-50"
+                    className="w-full py-4 rounded-full bg-noir text-white text-[10px] uppercase tracking-[0.3em] font-bold hover:bg-gold hover:text-noir transition-all duration-500 disabled:opacity-50"
                   >
                     {orderSubmitting ? 'Envoi en cours...' : 'Valider la commande'}
                   </button>

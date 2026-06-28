@@ -25,7 +25,7 @@ export default function Contact() {
   }, []);
 
   return (
-    <section id="contact" className="pt-12 md:pt-20 pb-24 md:pb-40 bg-[#FAF9F6] relative overflow-hidden">
+    <section id="contact" className="pt-12 md:pt-20 pb-24 md:pb-40 bg-page relative overflow-hidden">
       {/* Decorative background elements */}
       <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-gold/5 blur-[120px] rounded-full -translate-y-1/2 translate-x-1/4 pointer-events-none" />
       <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-gold/5 blur-[100px] rounded-full translate-y-1/2 -translate-x-1/4 pointer-events-none" />
@@ -51,7 +51,7 @@ export default function Contact() {
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
               transition={{ delay: 0.2 }}
-              className="text-noir/40 font-serif italic text-lg md:text-xl max-w-md leading-relaxed"
+              className="text-noir/70 font-serif italic text-lg md:text-xl max-w-md leading-relaxed"
             >
               Besoin d'une précision avant de réserver ? Nous sommes disponibles pour vous répondre.
             </motion.p>
@@ -73,8 +73,8 @@ export default function Contact() {
                     <item.icon size={18} />
                   </div>
                   <div>
-                    <p className="text-[9px] uppercase tracking-widest text-noir/20 font-black mb-1">{item.label}</p>
-                    <p className="text-noir/60 font-sans font-light">{item.value}</p>
+                    <p className="text-[9px] uppercase tracking-widest text-noir/70 font-black mb-1">{item.label}</p>
+                    <p className="text-noir/70 font-sans font-light">{item.value}</p>
                   </div>
                 </motion.div>
               ))}
@@ -85,13 +85,13 @@ export default function Contact() {
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             whileInView={{ opacity: 1, scale: 1 }}
-            className="bg-white border border-noir/[0.03] p-10 md:p-14 rounded-[3rem] shadow-xl relative"
+            className="bg-gold/5 border border-gold/[0.7] p-10 md:p-14 rounded-[3rem] shadow-xl relative"
           >
             <form className="space-y-8" onSubmit={(e) => e.preventDefault()}>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 {/* Name Input */}
                 <div className="relative group">
-                  <label className={`absolute left-0 transition-all duration-500 pointer-events-none text-[10px] uppercase tracking-widest font-black ${focused === 'name' ? '-top-6 text-gold opacity-100' : 'top-1 text-noir/20 opacity-60'}`}>
+                  <label className={`absolute left-0 transition-all duration-500 pointer-events-none text-[10px] uppercase tracking-widest font-black ${focused === 'name' ? '-top-6 text-gold opacity-100' : 'top-1 text-noir/90 opacity-60'}`}>
                     Votre Nom <span className="text-gold">*</span>
                   </label>
                   <input
@@ -106,7 +106,7 @@ export default function Contact() {
 
                 {/* Email Input */}
                 <div className="relative group">
-                  <label className={`absolute left-0 transition-all duration-500 pointer-events-none text-[10px] uppercase tracking-widest font-black ${focused === 'email' ? '-top-6 text-gold opacity-100' : 'top-1 text-noir/20 opacity-60'}`}>
+                  <label className={`absolute left-0 transition-all duration-500 pointer-events-none text-[10px] uppercase tracking-widest font-black ${focused === 'email' ? '-top-6 text-gold opacity-100' : 'top-1 text-noir/90 opacity-60'}`}>
                     Votre Email <span className="text-gold">*</span>
                   </label>
                   <input
@@ -122,7 +122,7 @@ export default function Contact() {
 
               {/* Subject Input */}
               <div className="relative group">
-                <label className={`absolute left-0 transition-all duration-500 pointer-events-none text-[10px] uppercase tracking-widest font-black ${focused === 'subject' ? '-top-6 text-gold opacity-100' : 'top-1 text-noir/20 opacity-60'}`}>
+                <label className={`absolute left-0 transition-all duration-500 pointer-events-none text-[10px] uppercase tracking-widest font-black ${focused === 'subject' ? '-top-6 text-gold opacity-100' : 'top-1 text-noir/90 opacity-60'}`}>
                   Objet de votre demande
                 </label>
                 <input
@@ -136,7 +136,7 @@ export default function Contact() {
 
               {/* Message Input */}
               <div className="relative group">
-                <label className={`absolute left-0 transition-all duration-500 pointer-events-none text-[10px] uppercase tracking-widest font-black ${focused === 'message' ? '-top-6 text-gold opacity-100' : 'top-1 text-noir/20 opacity-60'}`}>
+                <label className={`absolute left-0 transition-all duration-500 pointer-events-none text-[10px] uppercase tracking-widest font-black ${focused === 'message' ? '-top-6 text-gold opacity-100' : 'top-1 text-noir/90 opacity-60'}`}>
                   Votre Message <span className="text-gold">*</span>
                 </label>
                 <textarea
@@ -144,7 +144,7 @@ export default function Contact() {
                   required
                   onFocus={() => setFocused('message')}
                   onBlur={(e) => setFocused(e.target.value ? 'message' : null)}
-                  className="w-full bg-transparent border-b border-noir/10 py-2 text-noir font-light focus:outline-none focus:border-gold transition-colors duration-500 resize-none"
+                  className="w-full bg-transparent border-b border-noir/20 py-2 text-noir font-light focus:outline-none focus:border-gold transition-colors duration-500 resize-none"
                 />
                 <div className={`absolute bottom-0 left-0 h-[1px] bg-gold transition-all duration-700 ${focused === 'message' ? 'w-full' : 'w-0'}`} />
               </div>
@@ -152,7 +152,7 @@ export default function Contact() {
               {/* Submit Button */}
               <button
                 type="submit"
-                className="group w-full relative py-6 bg-gold text-noir text-[11px] font-bold uppercase tracking-[0.4em] rounded-full overflow-hidden transition-all duration-500 shadow-2xl hover:shadow-gold/20 flex items-center justify-center gap-4"
+                className="group w-full relative py-6 bg-gold text-noir text-[11px] font-bold uppercase tracking-[0.4em] rounded-full overflow-hidden transition-all duration-500 shadow-2xl hover:shadow-gold/20 hover:text-white flex items-center justify-center gap-4"
               >
                 <div className="absolute inset-0 bg-noir translate-y-[101%] group-hover:translate-y-0 transition-transform duration-500" />
                 <span className="relative z-10">Envoyer</span>

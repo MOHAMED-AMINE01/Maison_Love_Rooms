@@ -29,7 +29,7 @@ export default function Navbar() {
   return (
     <>
 
-      <nav className={`fixed top-8 left-1/2 -translate-x-1/2 w-[95%] max-w-[1400px] z-[110] transition-all duration-700 ${scrolled ? 'bg-white/80 backdrop-blur-2xl py-0 shadow-[0_20px_50px_-15px_rgba(0,0,0,0.05)] rounded-full border border-noir/5' : 'bg-transparent py-2'}`}>
+      <nav className={`fixed top-8 left-1/2 -translate-x-1/2 w-[95%] max-w-[1400px] z-[110] transition-all duration-700 ${scrolled ? 'bg-gold/30 backdrop-blur-3xl py-0 shadow-[0_20px_50px_-15px_rgba(0,0,0,0.05)] rounded-full border border-noir/5' : 'bg-transparent py-2'}`}>
         <div className="container-wide flex items-center justify-between px-10">
           {/* Logo */}
           <Link to="/" className="relative z-[110] group">
@@ -46,7 +46,7 @@ export default function Navbar() {
               <NavLink key={link.name} link={link} scrolled={scrolled} />
             ))}
             <div className={`h-4 w-px mx-2 transition-colors duration-700 ${scrolled ? 'bg-noir/10' : 'bg-white/20'}`} />
-            <Link to="/checkout" className={`${scrolled ? 'bg-noir text-gold-light shadow-lg' : 'bg-white/20 backdrop-blur-md border border-white/30 text-gold-light'} px-8 py-3 rounded-full text-[13px] tracking-[0.3em] font-bold hover:bg-gold hover:text-noir transition-all duration-500`}>
+            <Link to="/checkout" className={`${scrolled ? 'bg-noir text-white shadow-lg' : 'bg-white/20 backdrop-blur-md border border-white/30 text-white'} px-8 py-3 rounded-full text-[13px] tracking-[0.3em] font-bold hover:bg-gold hover:text-noir transition-all duration-500`}>
               Réserver
             </Link>
           </div>
@@ -54,7 +54,7 @@ export default function Navbar() {
           {/* Mobile Toggle */}
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className={`md:hidden relative z-[130] p-2 transition-colors ${scrolled || isOpen ? (isOpen ? 'text-gold-light' : 'text-noir') : 'text-gold-light'} hover:text-gold`}
+            className={`md:hidden relative z-[130] p-2 transition-colors ${scrolled || isOpen ? (isOpen ? 'text-white' : 'text-noir') : 'text-white'} hover:text-gold`}
           >
             {isOpen ? <X size={32} /> : <Menu size={28} />}
           </button>
@@ -82,7 +82,7 @@ export default function Navbar() {
               </Link>
               <button
                 onClick={() => setIsOpen(false)}
-                className="p-2 text-gold-light hover:text-gold transition-colors bg-white/5 rounded-full"
+                className="p-2 text-white hover:text-gold transition-colors bg-white/5 rounded-full"
               >
                 <X size={28} />
               </button>
@@ -139,7 +139,7 @@ function NavLink({ link, onClick, isMobile, scrolled }: { link: any, onClick?: (
     <Comp
       {...props}
       onClick={onClick}
-      className={`relative group inline-block overflow-hidden transition-colors ${isMobile ? 'text-4xl font-serif italic py-2 text-gold-light' : `text-[14px] font-serif tracking-[0.2em] ${scrolled ? 'text-noir hover:text-gold' : 'text-gold-light hover:text-gold'}`}`}
+      className={`relative group inline-block overflow-hidden transition-colors ${isMobile ? 'text-4xl font-serif italic py-2 text-white' : `text-[14px] font-serif tracking-[0.2em] ${scrolled ? 'text-noir hover:text-gold' : 'text-white hover:text-gold'}`}`}
     >
       <span className="relative z-10">{link.name}</span>
       <span className="absolute bottom-0 left-0 w-0 h-[1px] bg-gold group-hover:w-full transition-all duration-500" />

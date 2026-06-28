@@ -74,7 +74,7 @@ export default function SuiteDetail() {
       return (
          <div className="min-h-screen flex items-center justify-center bg-black">
             <div className="text-center">
-               <h1 className="text-3xl font-serif mb-6 text-gold-light">Suite introuvable</h1>
+               <h1 className="text-3xl font-serif mb-6 text-white">Suite introuvable</h1>
                <Link to="/" className="text-gold font-bold uppercase tracking-widest text-xs">Retour à l'accueil</Link>
             </div>
          </div>
@@ -98,7 +98,7 @@ export default function SuiteDetail() {
    const currentPrice = selectedFormule ? Number(selectedFormule.price) : (formula === 'complete' ? completePrice : basePrice);
 
    return (
-      <div className="bg-[#050505] min-h-screen selection:bg-amber-500/30 text-gold-light overflow-x-hidden">
+      <div className="bg-[#050505] min-h-screen selection:bg-amber-500/30 text-white overflow-x-hidden">
 
          <main>
 
@@ -124,14 +124,14 @@ export default function SuiteDetail() {
                      <h1 translate="no" className="notranslate text-5xl md:text-[6vw] font-serif leading-[0.9] tracking-tighter italic">
                         {suite.name}
                      </h1>
-                     <p className="text-lg md:text-2xl text-gold-light/60 font-serif italic max-w-2xl mx-auto pt-4 md:pt-8">
+                     <p className="text-lg md:text-2xl text-white/60 font-serif italic max-w-2xl mx-auto pt-4 md:pt-8">
                         "{suite.description}"
                      </p>
                   </motion.div>
                </div>
 
                {/* Scroll Indicator */}
-               <div className="absolute bottom-8 md:bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3 md:gap-4 text-gold-light/30">
+               <div className="absolute bottom-8 md:bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3 md:gap-4 text-white/30">
                   <span className="text-[7px] md:text-[8px] uppercase tracking-[0.5em] font-black">Découvrir l'écrin</span>
                   <div className="w-px h-8 md:h-12 bg-gradient-to-b from-amber-500 to-transparent" />
                </div>
@@ -191,7 +191,7 @@ export default function SuiteDetail() {
                               {suite.presentationTitle}
                            </h2>
                         )}
-                        <div className="space-y-3 md:space-y-4 text-sm md:text-base text-gold-light/60 font-serif leading-relaxed">
+                        <div className="space-y-3 md:space-y-4 text-sm md:text-base text-white/60 font-serif leading-relaxed">
                            {suite.longDescription?.split('\n\n').map((paragraph: string, i: number) => (
                               <p key={i}>{paragraph}</p>
                            ))}
@@ -223,7 +223,7 @@ export default function SuiteDetail() {
                                  className="flex items-center gap-2.5 p-2.5 md:p-3 rounded-lg border border-white/5 hover:border-gold/30 hover:bg-gold/5 transition-all duration-300 group backdrop-blur-sm"
                               >
                                  <span className="text-amber-500 text-sm md:text-base group-hover:scale-125 transition-transform flex-shrink-0">◆</span>
-                                 <span className="text-gold-light/70 font-serif text-xs md:text-sm leading-tight">{feature}</span>
+                                 <span className="text-white/70 font-serif text-xs md:text-sm leading-tight">{feature}</span>
                               </motion.div>
                            ))}
                         </div>
@@ -249,7 +249,7 @@ export default function SuiteDetail() {
                                     className="flex items-center gap-2.5 p-2.5 md:p-3 rounded-lg border border-white/5 hover:border-gold/30 hover:bg-gold/5 transition-all duration-300 group backdrop-blur-sm"
                                  >
                                     <span className="text-amber-500 text-sm md:text-base group-hover:scale-125 transition-transform flex-shrink-0">✦</span>
-                                    <span className="text-gold-light/70 font-serif text-xs md:text-sm leading-tight group-hover:text-gold-light/90 transition-colors">{atout}</span>
+                                    <span className="text-white/70 font-serif text-xs md:text-sm leading-tight group-hover:text-white/90 transition-colors">{atout}</span>
                                  </motion.div>
                               ))}
                            </div>
@@ -273,12 +273,12 @@ export default function SuiteDetail() {
                         {/* Price & Availability */}
                         <div className="flex flex-col sm:flex-row items-center justify-center gap-6 md:gap-10 pt-2 md:pt-4">
                            <div className="space-y-2">
-                              <span className="text-[7px] md:text-[8px] uppercase text-gold-light/30 tracking-widest font-black block">À partir de</span>
+                              <span className="text-[7px] md:text-[8px] uppercase text-white/30 tracking-widest font-black block">À partir de</span>
                               <p className="text-3xl md:text-4xl font-serif text-amber-500">{basePrice}€</p>
                            </div>
                            <div className="hidden sm:block w-px h-12 md:h-16 bg-white/10" />
                            <div className="space-y-2">
-                              <span className="text-[7px] md:text-[8px] uppercase text-gold-light/30 tracking-widest font-black block">Disponibilité</span>
+                              <span className="text-[7px] md:text-[8px] uppercase text-white/30 tracking-widest font-black block">Disponibilité</span>
                               <p className={`text-sm md:text-base font-black uppercase flex items-center justify-center gap-2 tracking-widest ${suite.status === 'en_maintenance' ? 'text-amber-500' : 'text-green-500'}`}>
                                  <span className={`w-2 h-2 rounded-full animate-pulse ${suite.status === 'en_maintenance' ? 'bg-amber-500' : 'bg-green-500'}`} />
                                  {suite.status === 'en_maintenance' ? 'En Maintenance' : 'Disponible'}
@@ -290,7 +290,7 @@ export default function SuiteDetail() {
                      {/* Formula Selection Grid */}
                      <div className="bg-[#050505] p-6 md:p-8 rounded-[1.5rem] md:rounded-[2.5rem] border border-white/10">
                         <div className="space-y-6">
-                           <label className="text-[7px] md:text-[8px] uppercase tracking-[0.4em] font-black text-gold-light/30 text-center block w-full">Choisir votre expérience</label>
+                           <label className="text-[7px] md:text-[8px] uppercase tracking-[0.4em] font-black text-white/30 text-center block w-full">Choisir votre expérience</label>
 
                            {/* Formulas in Grid - 4 items */}
                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
@@ -317,14 +317,14 @@ export default function SuiteDetail() {
                                           )}
 
                                           <div className={`space-y-1 ${isPopular ? 'pt-3' : ''}`}>
-                                             <p className={`text-sm md:text-base font-serif transition-colors ${isSelected ? 'text-gold' : 'text-gold-light/80'}`}>
+                                             <p className={`text-sm md:text-base font-serif transition-colors ${isSelected ? 'text-gold' : 'text-white/80'}`}>
                                                 {formule.name}
                                              </p>
-                                             <p className={`text-2xl md:text-3xl font-serif ${isSelected ? 'text-gold' : 'text-gold-light'}`}>
+                                             <p className={`text-2xl md:text-3xl font-serif ${isSelected ? 'text-gold' : 'text-white'}`}>
                                                 {price}
                                              </p>
                                           </div>
-                                          <p className="text-[10px] text-gold-light/40 font-light leading-snug h-6 overflow-hidden">
+                                          <p className="text-[10px] text-white/40 font-light leading-snug h-6 overflow-hidden">
                                              {formule.description}
                                           </p>
                                        </motion.button>
@@ -340,8 +340,8 @@ export default function SuiteDetail() {
                                        className={`group p-4 md:p-5 rounded-lg md:rounded-xl border transition-all duration-400 text-center space-y-2.5 ${formula === 'essentielle' ? 'border-gold/50 bg-gold/8 shadow-lg' : 'border-white/10 bg-white/[0.02] hover:border-white/20'}`}
                                     >
                                        <div className="space-y-1">
-                                          <p className={`text-sm md:text-base font-serif ${formula === 'essentielle' ? 'text-gold' : 'text-gold-light/80'}`}>Essentielle</p>
-                                          <p className={`text-2xl md:text-3xl font-serif ${formula === 'essentielle' ? 'text-gold' : 'text-gold-light'}`}>{basePrice}€</p>
+                                          <p className={`text-sm md:text-base font-serif ${formula === 'essentielle' ? 'text-gold' : 'text-white/80'}`}>Essentielle</p>
+                                          <p className={`text-2xl md:text-3xl font-serif ${formula === 'essentielle' ? 'text-gold' : 'text-white'}`}>{basePrice}€</p>
                                        </div>
                                     </motion.button>
 
@@ -358,8 +358,8 @@ export default function SuiteDetail() {
                                           </span>
                                        </div>
                                        <div className="space-y-1 pt-3">
-                                          <p className={`text-sm md:text-base font-serif ${formula === 'complete' ? 'text-gold' : 'text-gold-light/80'}`}>Complète</p>
-                                          <p className={`text-2xl md:text-3xl font-serif ${formula === 'complete' ? 'text-gold' : 'text-gold-light'}`}>{completePrice}€</p>
+                                          <p className={`text-sm md:text-base font-serif ${formula === 'complete' ? 'text-gold' : 'text-white/80'}`}>Complète</p>
+                                          <p className={`text-2xl md:text-3xl font-serif ${formula === 'complete' ? 'text-gold' : 'text-white'}`}>{completePrice}€</p>
                                        </div>
                                     </motion.button>
                                  </>
@@ -389,7 +389,7 @@ export default function SuiteDetail() {
                            <span className="relative z-10 block">Confirmer ({currentPrice * nights}€)</span>
                         </motion.button>
 
-                        <div className="flex items-center justify-center gap-2 text-gold-light/30">
+                        <div className="flex items-center justify-center gap-2 text-white/30">
                            <ShieldCheck size={14} />
                            <p className="text-[7px] md:text-[8px] uppercase tracking-widest font-bold italic">Confidentialité garantie</p>
                         </div>
@@ -418,7 +418,7 @@ export default function SuiteDetail() {
                            <div className="bg-white/5 p-8 md:p-10 rounded-xl md:rounded-2xl border border-white/10 flex flex-col justify-center items-center text-center gap-4 md:gap-6 min-h-[280px] md:min-h-[350px]">
                               <Sparkles className="text-amber-500" size={28} strokeWidth={1} />
 
-                              <h3 className="text-center text-sm md:text-base text-gold-light/60 font-serif italic">
+                              <h3 className="text-center text-sm md:text-base text-white/60 font-serif italic">
                                  {suite.callToAction}
                               </h3>
                            </div>

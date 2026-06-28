@@ -28,7 +28,7 @@ export default function Suites() {
   }, []);
 
   return (
-    <section id="suites" className="py-20 md:py-32 bg-[#FAF9F6] overflow-hidden">
+    <section id="suites" className="py-20 md:py-32 bg-page overflow-hidden">
       <div className="container-wide">
         <div className="flex flex-col md:flex-row items-center justify-between mb-16 md:mb-24 gap-8 px-4">
           <div className="max-w-2xl space-y-6 text-center md:text-start">
@@ -36,7 +36,7 @@ export default function Suites() {
               Nos love rooms <span className="italic text-gold">pensées pour deux</span>
             </h2>
           </div>
-          <p className="text-noir/40 font-serif italic text-lg md:text-xl max-w-sm border-l border-gold/30 pl-8 text-center md:text-start">
+          <p className="text-noir/80 font-serif italic text-lg md:text-xl max-w-sm border-l border-gold/30 pl-8 text-center md:text-start">
             Chaque chambre a été imaginée pour créer une vraie parenthèse à deux : plus d'intimité, plus de confort, moins de quotidien.
           </p>
         </div>
@@ -82,12 +82,12 @@ export default function Suites() {
                   </div>
 
                   {suite.tagline && (
-                    <p className="text-xl md:text-2xl font-serif italic text-gold/60 leading-tight">
+                    <p className="text-xl md:text-2xl font-serif italic text-gold/80 leading-tight">
                       {suite.tagline}
                     </p>
                   )}
 
-                  <p className="text-lg md:text-xl text-noir/50 leading-relaxed font-light">
+                  <p className="text-lg md:text-xl text-noir/70 leading-relaxed font-light">
                     {suite.description}
                   </p>
                 </div>
@@ -96,7 +96,7 @@ export default function Suites() {
                   {suite.features.map((feature) => (
                     <span
                       key={feature}
-                      className="px-5 py-2.5 rounded-full border border-noir/5 bg-white text-[9px] uppercase tracking-[0.2em] font-bold text-noir/40 hover:text-gold hover:border-gold transition-colors"
+                      className="px-5 py-2.5 rounded-full border border-noir/5 bg-gold/20 text-[9px] uppercase tracking-[0.2em] font-bold text-noir/80 hover:text-gold hover:border-gold transition-colors"
                     >
                       {feature}
                     </span>
@@ -107,7 +107,7 @@ export default function Suites() {
                   to={`/suite/${suite.id}`}
                   className="inline-flex items-center gap-6 group"
                 >
-                  <div className="w-14 h-14 rounded-full bg-noir flex items-center justify-center text-gold-light group-hover:bg-gold group-hover:text-noir transition-all duration-500 shadow-xl">
+                  <div className="w-14 h-14 rounded-full bg-noir flex items-center justify-center text-white group-hover:bg-gold group-hover:text-noir transition-all duration-500 shadow-xl">
                     <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
                   </div>
                   <span className="text-[10px] uppercase tracking-[0.4em] font-black text-noir border-b border-transparent group-hover:border-gold transition-all">

@@ -42,7 +42,7 @@ export default function FAQ() {
   }, []);
 
   return (
-    <section id="faq" className="pt-24 md:pt-48 pb-12 md:pb-20 mx-3 bg-[#FAF9F6] border-t border-noir/5">
+    <section id="faq" className="pt-24 md:pt-48 pb-12 md:pb-20 mx-3 bg-page border-t border-noir/5">
       <div className="container-wide px-4 md:px-8">
 
         {/* Header centré (au-dessus) */}
@@ -90,7 +90,7 @@ export default function FAQ() {
                       exit={{ height: 0, opacity: 0 }}
                       transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
                     >
-                      <p className="text-lg text-noir/50 font-serif italic leading-relaxed pr-12">
+                      <p className="text-lg text-noir/70 font-serif italic leading-relaxed pr-12">
                         {faq.answer}
                       </p>
                     </motion.div>
