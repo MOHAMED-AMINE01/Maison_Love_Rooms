@@ -33,7 +33,7 @@ export default function Ritual() {
           <div className="lg:col-span-6 lg:pl-12 space-y-8 md:space-y-12 text-center lg:text-left order-1">
             <motion.div style={{ opacity }}>
 
-              <h2 className="text-4xl md:text-6xl font-serif text-white leading-[1.2] md:leading-[1.1] tracking-tight">
+              <h2 className="text-4xl md:text-6xl font-serif text-gold-light leading-[1.2] md:leading-[1.1] tracking-tight">
                 Le concept <br />
                 <span className="bg-gradient-to-r from-gold via-gold/80 to-gold bg-clip-text text-transparent italic font-light">Maison Love Rooms</span>
               </h2>
@@ -45,27 +45,27 @@ export default function Ritual() {
               transition={{ delay: 0.2 }}
               className="space-y-8 max-w-lg mx-auto lg:mx-0"
             >
-              <p className="text-white/60 text-base md:text-lg leading-relaxed font-light">
-                Plus qu'une chambre, un cocon de douceur et d'exotisme. Nous avons imaginé chaque détail pour que votre séjour soit une parenthèse hors du temps, loin des regards indiscrets.
+              <p className="text-gold-light/60 text-base md:text-lg leading-relaxed font-light">
+                Le temps d'une nuit, ou plus, vous quittez votre rythme habituel pour entrer dans un espace pensé pour deux : une ambiance soignée, une intimité totale, des équipements privatifs et tout ce qu'il faut pour profiter du moment sans avoir à tout organiser.
               </p>
 
               {/* Feature Grid - Improved Mobile Layout */}
               <div className="grid grid-cols-2 gap-x-4 gap-y-8 md:gap-8 pt-4 md:pt-8 border-t border-white/5">
                 <div className="space-y-1 md:space-y-2 group">
-                  <span className="text-2xl md:text-3xl font-serif text-gold group-hover:scale-110 transition-transform block">100%</span>
-                  <p className="text-[8px] md:text-[10px] uppercase tracking-widest text-white/40 font-bold">Privatif & Sécurisé</p>
+                  <span className="text-lg md:text-2xl font-serif text-gold group-hover:scale-105 transition-transform block leading-tight">100 % privatif</span>
+                  <p className="text-[8px] md:text-[10px] uppercase tracking-widest text-gold-light/40 font-bold">Rien que vous deux</p>
                 </div>
                 <div className="space-y-1 md:space-y-2 group">
-                  <span className="text-2xl md:text-3xl font-serif text-gold group-hover:scale-110 transition-transform block">24/7</span>
-                  <p className="text-[8px] md:text-[10px] uppercase tracking-widest text-white/40 font-bold">Conciergerie dédiée</p>
+                  <span className="text-lg md:text-2xl font-serif text-gold group-hover:scale-105 transition-transform block leading-tight">Centre-Val de Loire</span>
+                  <p className="text-[8px] md:text-[10px] uppercase tracking-widest text-gold-light/40 font-bold">Sans partir loin</p>
                 </div>
                 <div className="space-y-1 md:space-y-2 group">
-                  <span className="text-2xl md:text-3xl font-serif text-gold group-hover:scale-110 transition-transform block">0</span>
-                  <p className="text-[8px] md:text-[10px] uppercase tracking-widest text-white/40 font-bold">Vis-à-vis total</p>
+                  <span className="text-lg md:text-2xl font-serif text-gold group-hover:scale-105 transition-transform block leading-tight">Une nuit ou plus</span>
+                  <p className="text-[8px] md:text-[10px] uppercase tracking-widest text-gold-light/40 font-bold">À votre rythme</p>
                 </div>
                 <div className="space-y-1 md:space-y-2 group">
-                  <span className="text-2xl md:text-3xl font-serif text-gold group-hover:scale-110 transition-transform block">Tours</span>
-                  <p className="text-[8px] md:text-[10px] uppercase tracking-widest text-white/40 font-bold">Cœur de ville</p>
+                  <span className="text-lg md:text-2xl font-serif text-gold group-hover:scale-105 transition-transform block leading-tight">Tout est prêt</span>
+                  <p className="text-[8px] md:text-[10px] uppercase tracking-widest text-gold-light/40 font-bold">Arrivez, profitez</p>
                 </div>
               </div>
 

@@ -31,7 +31,12 @@ import { adminFetch } from '../../utils/apiClient';
 interface SuiteData {
    _id?: string;
    name: string;
+   tagline?: string;
    description: string;
+   longDescription?: string;
+   presentationTitle?: string;
+   atouts?: string;
+   callToAction?: string;
    pricePerNight: number;
    features: string[];
    status: string;
@@ -68,7 +73,12 @@ export default function AdminChambres() {
    const [openStatusDropdown, setOpenStatusDropdown] = useState(false);
    const [formData, setFormData] = useState<SuiteData>({
       name: '',
+      tagline: '',
       description: '',
+      longDescription: '',
+      presentationTitle: '',
+      atouts: '',
+      callToAction: '',
       pricePerNight: 189,
       features: ['Balnéo Privative', 'Champagne Inclus'],
       status: 'disponible',
@@ -124,7 +134,12 @@ export default function AdminChambres() {
       setEditId(null);
       setFormData({
          name: '',
+         tagline: '',
          description: '',
+         longDescription: '',
+         presentationTitle: '',
+         atouts: '',
+         callToAction: '',
          pricePerNight: 189,
          features: ['Balnéo Privative', 'Champagne Inclus'],
          status: 'disponible',
@@ -138,7 +153,12 @@ export default function AdminChambres() {
       setEditId(suite._id || null);
       setFormData({
          name: suite.name,
+         tagline: suite.tagline || '',
          description: suite.description,
+         longDescription: suite.longDescription || '',
+         presentationTitle: suite.presentationTitle || '',
+         atouts: suite.atouts || '',
+         callToAction: suite.callToAction || '',
          pricePerNight: suite.pricePerNight,
          features: suite.features || [],
          status: suite.status || 'disponible',
@@ -503,6 +523,17 @@ export default function AdminChambres() {
                                           placeholder="Ex: Love Story"
                                        />
                                     </div>
+                                    <div className="space-y-2">
+                                       <label className="text-xs text-white/40 font-bold uppercase tracking-widest">Sous-titre (accroche)</label>
+                                       <input
+                                          type="text"
+                                          value={formData.tagline || ''}
+                                          onChange={e => setFormData({ ...formData, tagline: e.target.value })}
+                                          className="w-full bg-white/[0.03] border border-white/[0.05] rounded-xl px-4 py-3 text-sm focus:border-gold/30 transition-all font-serif italic text-white outline-none"
+                                          placeholder="Ex: Un cocon discret pour se retrouver à deux, idéale pour une nuit calme et complice."
+                                       />
+                                       <p className="text-[10px] text-white/30 leading-relaxed">Courte phrase affichée sous le nom de la chambre sur l'accueil et la page de la chambre.</p>
+                                    </div>
                                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                                        <div className="space-y-2">
                                           <label className="text-xs text-white/40 font-bold uppercase tracking-widest">Prix par Nuit (€)</label>
@@ -587,6 +618,43 @@ export default function AdminChambres() {
                                           onChange={e => setFormData({ ...formData, description: e.target.value })}
                                           className="w-full h-32 bg-white/[0.03] border border-white/[0.05] rounded-xl px-4 py-3 text-sm focus:border-gold/30 transition-all resize-none font-serif italic text-white outline-none"
                                           placeholder="Une invitation au voyage, élégante et raffinée..."
+                                       />
+                                    </div>
+                                    <div className="space-y-2">
+                                       <label className="text-xs text-white/40 font-bold uppercase tracking-widest">Titre de Présentation</label>
+                                       <input
+                                          type="text"
+                                          value={formData.presentationTitle}
+                                          onChange={e => setFormData({ ...formData, presentationTitle: e.target.value })}
+                                          className="w-full bg-white/[0.03] border border-white/[0.05] rounded-xl px-4 py-3 text-sm focus:border-gold/30 transition-all font-serif text-white outline-none"
+                                          placeholder="Ex: Gatsby Love Room – Luxe, Glamour & Séduction"
+                                       />
+                                    </div>
+                                    <div className="space-y-2">
+                                       <label className="text-xs text-white/40 font-bold uppercase tracking-widest">Texte de Présentation (Long)</label>
+                                       <textarea
+                                          value={formData.longDescription}
+                                          onChange={e => setFormData({ ...formData, longDescription: e.target.value })}
+                                          className="w-full h-48 bg-white/[0.03] border border-white/[0.05] rounded-xl px-4 py-3 text-sm focus:border-gold/30 transition-all resize-none font-serif text-white outline-none"
+                                          placeholder="Le long texte de présentation avec plusieurs paragraphes..."
+                                       />
+                                    </div>
+                                    <div className="space-y-2">
+                                       <label className="text-xs text-white/40 font-bold uppercase tracking-widest">Atouts (Description des équipements)</label>
+                                       <textarea
+                                          value={formData.atouts}
+                                          onChange={e => setFormData({ ...formData, atouts: e.target.value })}
+                                          className="w-full h-20 bg-white/[0.03] border border-white/[0.05] rounded-xl px-4 py-3 text-sm focus:border-gold/30 transition-all resize-none font-serif text-white outline-none"
+                                          placeholder="Ex: Balnéo privative Ambiance inspirée des Années Folles Éclairage tamisé..."
+                                       />
+                                    </div>
+                                    <div className="space-y-2">
+                                       <label className="text-xs text-white/40 font-bold uppercase tracking-widest">Appel à l'Action (Call-to-Action)</label>
+                                       <textarea
+                                          value={formData.callToAction}
+                                          onChange={e => setFormData({ ...formData, callToAction: e.target.value })}
+                                          className="w-full h-16 bg-white/[0.03] border border-white/[0.05] rounded-xl px-4 py-3 text-sm focus:border-gold/30 transition-all resize-none font-serif text-white outline-none"
+                                          placeholder="Ex: Laissez-vous transporter dans un univers où le luxe, la passion et l'élégance se mêlent..."
                                        />
                                     </div>
                                  </div>

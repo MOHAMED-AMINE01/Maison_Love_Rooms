@@ -9,7 +9,12 @@ export interface IBlockedDate {
 
 export interface ISuite extends Document {
   name: string;
+  tagline: string;
   description: string;
+  longDescription: string;
+  presentationTitle: string;
+  atouts: string;
+  callToAction: string;
   pricePerNight: number;
   features: string[];
   status: 'disponible' | 'en_maintenance';
@@ -27,7 +32,12 @@ const blockedDateSchema = new Schema<IBlockedDate>({
 const suiteSchema = new Schema<ISuite>(
   {
     name: { type: String, required: true, unique: true },
+    tagline: { type: String, default: '' },
     description: { type: String, required: true },
+    longDescription: { type: String, default: '' },
+    presentationTitle: { type: String, default: '' },
+    atouts: { type: String, default: '' },
+    callToAction: { type: String, default: '' },
     pricePerNight: { type: Number, required: true },
     features: [{ type: String }],
     status: {

@@ -6,6 +6,7 @@ import Reservation from './models/Reservation';
 import Service from './models/Service';
 import Settings from './models/Settings';
 import Product from './models/Product';
+import Faq from './models/Faq';
 
 export const seedDatabase = async () => {
   try {
@@ -43,6 +44,10 @@ export const seedDatabase = async () => {
         {
           name: "Love Story",
           description: "Une parenthèse enchantée dans un univers inspiré des années folles. Élégance, raffinement et luxe discret définissent cet écrin pensé pour les amoureux en quête d'exception.",
+          presentationTitle: "Love Story – Luxe, Glamour & Séduction",
+          longDescription: "Bienvenue dans la Love Story, un écrin de raffinement inspiré de l'élégance des Années Folles. Pensée pour les couples en quête d'une expérience unique, cette suite vous plonge dans une atmosphère feutrée où le glamour, le romantisme et la sensualité se rencontrent.\n\nDès votre arrivée, vous serez séduits par les lumières tamisées, les voilages délicats, les touches de noir et de rouge profond ainsi que les détails élégants qui rappellent l'univers prestigieux du célèbre Gatsby. Chaque élément a été imaginé pour créer une ambiance intime, mystérieuse et envoûtante.\n\nProfitez d'un moment de détente absolue dans une baignéo privative avant de vous installer dans le salon cosy, conçu pour favoriser les échanges, la complicité et les instants de partage. Les jeux de lumière, les bougies et le mobilier soigneusement sélectionné offrent un cadre chaleureux propice à l'évasion.\n\nPour enrichir votre expérience, la Love Story dispose également d'équipements dédiés aux amoureux, tels qu'un fauteuil tantra, une balançoire spécialement pensé pour explorer votre complicité dans un environnement élégant, discret et raffiné.\n\nQue vous souhaitiez célébrer un anniversaire, une occasion spéciale, surprendre votre partenaire ou simplement vous offrir une parenthèse à deux, cette suite vous promet une expérience inoubliable où chaque détail invite au lâcher-prise et à la connexion.",
+          atouts: "Balnéo privative\nAmbiance inspirée des Années Folles\nÉclairage tamisé et atmosphère romantique\nSalon cosy et intimiste\nFauteuil tantra\nDécoration glamour et élégante\nCadre idéal pour les couples et les occasions spéciales",
+          callToAction: "Laissez-vous transporter dans un univers où le luxe, la passion et l'élégance se mêlent pour créer des souvenirs inoubliables.",
           pricePerNight: 189,
           features: ["Balnéo Privative", "Douche en duo", "Décoration Chic", "Kitchenette", "Champagne Inclus"],
           status: "disponible",
@@ -57,6 +62,10 @@ export const seedDatabase = async () => {
         {
           name: "Baguerra",
           description: "Laissez-vous transporter par l'exotisme de la suite Baguerra. Une immersion totale dans un décor végétal luxuriant pour une évasion sauvage et sensuelle au cœur de la ville.",
+          presentationTitle: "Baguerra – Exotisme, Luxe & Sérénité",
+          longDescription: "Bienvenue à Baguerra, où l'exotisme rencontre l'élégance. Cette suite est une véritable jungle urbaine, conçue pour les couples en quête d'aventure et de sensualité dans un cadre luxe. Dès votre arrivée, vous serez plongés dans une atmosphère sauvage et envoûtante, loin des contraintes du quotidien.\n\nLa décoration luxuriante de Baguerra crée une immersion totale dans un univers végétal sophistiqué. Des plantes généreuses, des teintes de vert profond et des éléments naturels combinés à des touches minimalistes modernes créent une harmonie parfaite entre nature brute et confort premium.\n\nVous disposerez d'un spa privatif pour vous détendre en toute intimité, d'une cuisine indépendante équipée pour préparer vos repas, et d'une ambiance immersive qui enveloppe chaque instant. Les jeux de lumière tamisée et la musique ambiante renforcent cette sensation d'évasion et de connexion.\n\nChaque détail a été pensé pour créer une expérience sensorielle unique, où le luxe discret règne en maître. Les finitions haut de gamme, les matières nobles et les équipements premium transforment votre séjour en une aventure inoubliable.\n\nQue ce soit pour célébrer un moment spécial, fuir le stress quotidien ou redécouvrir votre partenaire dans un cadre enchanteur, Baguerra vous promet une parenthèse magique où la nature, le luxe et la sensualité se conjuguent harmonieusement.",
+          atouts: "Spa privatif\nDécoration jungle luxuriante\nCuisine indépendante équipée\nAmbiance immersive et musicale\nLumières tamisées sophistiquées\nMatières nobles et finitions haut de gamme\nÉquipements premium pour couples en quête d'aventure",
+          callToAction: "Laissez-vous transporter dans une jungle d'élégance où chaque moment invite à la détente, la complicité et la redécouverte.",
           pricePerNight: 189,
           features: ["Spa Privatif", "Décoration Jungle", "Cuisine Indépendante", "Ambiance Immersive", "Champagne Inclus"],
           status: "disponible",
@@ -171,6 +180,7 @@ export const seedDatabase = async () => {
         imageUrl: "https://images.unsplash.com/photo-1578683010236-d716f9a3f461?q=80&w=2000&auto=format&fit=crop",
         status: "actif",
         category: "Formules",
+        billingType: "par_nuit",
         features: [
           "Arrivée 18h / Départ 11h",
           "Accès Balnéo privatif illimité",
@@ -189,6 +199,7 @@ export const seedDatabase = async () => {
         imageUrl: "https://images.unsplash.com/photo-1598928506311-c55ded91a20c?q=80&w=2000&auto=format&fit=crop",
         status: "actif",
         category: "Formules",
+        billingType: "par_nuit",
         features: [
           "Tout le contenu de l'Essentielle",
           "1/2 Bouteille de soft / Eau pétillante",
@@ -282,6 +293,48 @@ export const seedDatabase = async () => {
       console.log('Produits de démonstration insérés avec succès.');
     } else {
       console.log('Produits déjà existants. Conservation des données.');
+    }
+
+    // 7. Insertion des FAQ par défaut si aucune FAQ (éditables ensuite depuis le BO)
+    console.log('Vérification des FAQ dans MongoDB...');
+    const faqCount = await Faq.countDocuments();
+    if (faqCount === 0) {
+      console.log('Aucune FAQ trouvée, insertion des FAQ par défaut...');
+      await Faq.insertMany([
+        {
+          question: "Comment se déroule l'arrivée ?",
+          answer: "Pour préserver votre intimité, l'arrivée se fait en autonomie. Le jour de votre réservation, vous recevez un code d'accès par SMS et email pour entrer dans votre suite à l'heure prévue.",
+          order: 1,
+          status: 'actif',
+        },
+        {
+          question: "La confidentialité est-elle réellement garantie ?",
+          answer: "Absolument. Nous avons conçu l'expérience Maison Love Rooms pour qu'aucun contact physique ne soit nécessaire. L'entrée est privée, sans réception ni personnel visible, vous garantissant une intimité absolue.",
+          order: 2,
+          status: 'actif',
+        },
+        {
+          question: "Quels sont les tarifs et formules proposés ?",
+          answer: "Nos tarifs débutent à 189€ la nuit avec une bouteille de champagne offerte. Nous proposons également une formule complète à 299€ incluant champagne, softs, décoration romantique, plateau repas et petit-déjeuner gourmand.",
+          order: 3,
+          status: 'actif',
+        },
+        {
+          question: "Quels sont les équipements inclus dans les chambres ?",
+          answer: "Chaque suite dispose d'un espace bien-être privé (Balnéo pour Love Story, Spa pour Baguerra), d'un lit King Size, d'une cuisine équipée, et d'un système audio Bluetooth pour créer votre propre atmosphère.",
+          order: 4,
+          status: 'actif',
+        },
+        {
+          question: "Y a-t-il une durée minimum de réservation ?",
+          answer: "La durée de réservation est d'une nuit minimum et de deux nuits maximum, afin de préserver l'exclusivité et la qualité de préparation de nos écrins.",
+          order: 5,
+          status: 'actif',
+        },
+      ]);
+      console.log('Les 5 FAQ par défaut ont été insérées dans MongoDB.');
+    } else {
+      console.log(`${faqCount} FAQ déjà existante(s). Conservation des données.`);
     }
 
     console.log('Synchronisation des données statiques terminée avec succès !');

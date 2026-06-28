@@ -117,11 +117,11 @@
   }
 
   .btn-primary {
-    @apply relative overflow-hidden px-10 py-5 bg-noir text-white text-[10px] uppercase tracking-[0.4em] font-bold hover:bg-gold transition-all duration-700;
+    @apply relative overflow-hidden px-10 py-5 bg-noir text-gold-light text-[10px] uppercase tracking-[0.4em] font-bold hover:bg-gold hover:text-noir transition-all duration-700;
   }
 
   .btn-outline {
-    @apply relative overflow-hidden px-10 py-5 border border-noir/10 text-noir text-[10px] uppercase tracking-[0.4em] font-bold hover:bg-noir hover:text-white transition-all duration-700;
+    @apply relative overflow-hidden px-10 py-5 border border-noir/10 text-noir text-[10px] uppercase tracking-[0.4em] font-bold hover:bg-noir hover:text-gold-light transition-all duration-700;
   }
 
   .line-divider {

@@ -6,7 +6,8 @@ import {
   createReservation,
   getSettings,
   getPublicProducts,
-  createOrder
+  createOrder,
+  getPublicFaqs
 } from '../controllers/adminController';
 
 const router = express.Router();
@@ -25,5 +26,8 @@ router.post('/reservations', createReservation);
 // Routes publiques pour la boutique (produits actifs + création de commande)
 router.get('/products', getPublicProducts);
 router.post('/orders', createOrder);
+
+// Route publique pour la FAQ (questions actives)
+router.get('/faqs', getPublicFaqs);
 
 export default router;

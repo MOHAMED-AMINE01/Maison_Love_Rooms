@@ -14,6 +14,7 @@ interface GiftCardData {
   features: string[];
   status: 'actif' | 'inactif';
   badge?: string;
+  cta?: string;
 }
 
 export default function AdminCartesCadeaux() {
@@ -39,6 +40,7 @@ export default function AdminCartesCadeaux() {
     imageUrl: '',
     features: [] as string[],
     badge: '',
+    cta: '',
     status: 'actif' as 'actif' | 'inactif',
   });
 
@@ -88,6 +90,7 @@ export default function AdminCartesCadeaux() {
       imageUrl: '',
       features: [],
       badge: '',
+      cta: '',
       status: 'actif',
     });
     setEditingCard(null);
@@ -107,6 +110,7 @@ export default function AdminCartesCadeaux() {
       imageUrl: card.imageUrl,
       features: card.features,
       badge: card.badge || '',
+      cta: card.cta || '',
       status: card.status,
     });
     setIsModalOpen(true);
@@ -179,6 +183,7 @@ export default function AdminCartesCadeaux() {
       imageUrl: formData.imageUrl,
       features: formData.features.filter(f => f.trim()),
       badge: formData.badge || undefined,
+      cta: formData.cta || undefined,
       status: formData.status,
     };
 
@@ -435,6 +440,19 @@ export default function AdminCartesCadeaux() {
                       placeholder="Ex: Populaire"
                     />
                   </div>
+                </div>
+
+                {/* CTA (texte du bouton) */}
+                <div>
+                  <label className="block text-sm font-bold text-white mb-2">Texte du bouton (CTA)</label>
+                  <input
+                    type="text"
+                    value={formData.cta}
+                    onChange={(e) => setFormData({ ...formData, cta: e.target.value })}
+                    className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-gold"
+                    placeholder="Ex: Offrir le pack, Ajouter le bouquet…"
+                  />
+                  <p className="text-xs text-white/40 mt-1.5">Libellé affiché sur le bouton de la carte sur le site (différent d'une carte à l'autre).</p>
                 </div>
 
                 {/* Image Upload */}

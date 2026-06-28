@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Moon, Check, Clock, Star, ChevronLeft, ChevronRight, DoorOpen, KeyRound, Car, Gift, Heart, ShoppingBag, X } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { API_URL } from '../constants';
 
 const FORMULES = [
@@ -50,6 +51,7 @@ interface GiftCardData {
   imageUrl: string;
   features: string[];
   badge?: string;
+  cta?: string;
   status: 'actif' | 'inactif';
 }
 
@@ -232,7 +234,7 @@ export default function Experience() {
       className="bg-page min-h-screen font-sans selection:bg-gold/30"
     >
       {/* Hero Section - Balanced height */}
-      <section className="relative h-[70vh] md:h-[60vh] flex items-center overflow-hidden">
+      <section className="relative h-[55vh] md:h-[50vh] flex items-center overflow-hidden">
         <motion.div
           initial={{ scale: 1.1 }}
           animate={{ scale: 1 }}
@@ -262,7 +264,7 @@ export default function Experience() {
             transition={{ delay: 0.4 }}
             className="text-center"
           >
-            <div className="flex flex-col md:flex-row gap-8 md:gap-16 justify-center text-white/80">
+            <div className="flex flex-col md:flex-row gap-8 md:gap-16 justify-center text-gold-light/80">
               <div className="space-y-2">
                 <p className="text-sm uppercase tracking-widest font-light opacity-70">Arrivée</p>
                 <p className="text-lg md:text-xl font-serif">À partir de {checkInTime}</p>
@@ -278,27 +280,27 @@ export default function Experience() {
       </section>
 
       {/* Arrival Ritual Section - Minimalist & Compact */}
-      <section className="py-12 md:py-24 bg-page border-b border-noir/5">
+      <section className="py-12 md:py-16 bg-page border-b border-gold/10">
         <div className="container-wide px-6 md:px-12">
-          <div className="text-center mb-12 md:mb-20">
-            <h2 className="text-3xl md:text-5xl font-serif text-noir">Le <span className="italic text-gold">rituel</span> d'arrivée</h2>
+          <div className="text-center mb-10 md:mb-14">
+            <h2 className="text-3xl md:text-4xl font-serif text-noir">Votre arrivée en toute <span className="italic text-gold">simplicité</span></h2>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-10">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5 md:gap-6">
             {[
-              { icon: <DoorOpen size={32} strokeWidth={1} />, title: "Accès indépendant", desc: "L'accès à votre hébergement est indépendant, sécurisé et autonome." },
-              { icon: <KeyRound size={32} strokeWidth={1} />, title: "Code d'accès", desc: "Le jour de votre arrivée, nous vous communiquons un code unique qui vous permettra de rentrer, de façon sécurisée et en toute autonomie." },
-              { icon: <Car size={32} strokeWidth={1} />, title: "Stationnement", desc: "Vous pouvez ainsi vous garer gratuitement et facilement sur une place réservée." }
+              { icon: <DoorOpen size={28} strokeWidth={1} />, title: "Accès indépendant", desc: "L'accès à votre hébergement est indépendant, sécurisé et autonome." },
+              { icon: <KeyRound size={28} strokeWidth={1} />, title: "Code d'accès", desc: "Le jour de votre arrivée, nous vous communiquons un code unique qui vous permettra de rentrer, de façon sécurisée et en toute autonomie." },
+              { icon: <Car size={28} strokeWidth={1} />, title: "Stationnement", desc: "Vous pouvez ainsi vous garer gratuitement et facilement sur une place réservée." }
             ].map((step, i) => (
               <motion.div
                 key={i}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                className="bg-[#FAF9F6] p-10 md:p-12 rounded-[3.5rem] space-y-4 text-center border border-noir/[0.02] shadow-sm hover:shadow-lg transition-all duration-700"
+                className="bg-gradient-to-br from-white via-[#FAF9F6] to-white p-6 md:p-8 rounded-2xl md:rounded-3xl space-y-3 text-center border border-gold/10 shadow-sm hover:shadow-md hover:border-gold/30 transition-all duration-500"
               >
                 <div className="text-gold flex justify-center">{step.icon}</div>
-                <h3 className="text-xl font-serif text-noir">{step.title}</h3>
-                <p className="text-[13px] text-noir/50 font-light leading-relaxed max-w-[240px] mx-auto">{step.desc}</p>
+                <h3 className="text-lg font-serif text-noir">{step.title}</h3>
+                <p className="text-[12px] text-noir/50 font-light leading-relaxed">{step.desc}</p>
               </motion.div>
             ))}
           </div>
@@ -306,53 +308,53 @@ export default function Experience() {
       </section>
 
       {/* Formules - Compact Premium Section */}
-      <section className="py-20 md:py-32 bg-page relative overflow-hidden">
+      <section className="py-16 md:py-20 bg-page relative overflow-hidden border-t border-gold/10">
         <div className="container-wide px-6 md:px-12 relative z-10">
-          <div className="text-center mb-8 md:mb-12 space-y-4">
-            <h2 className="text-4xl md:text-6xl font-serif text-noir leading-none">Nos <span className="italic text-gold">offres</span></h2>
+          <div className="text-center mb-6 md:mb-10 space-y-2">
+            <h2 className="text-3xl md:text-5xl font-serif text-noir leading-none">Nos <span className="italic text-gold">formules</span></h2>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8 lg:gap-10 pt-8 items-start">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8 items-start">
             {formulesList.map((formule, idx) => (
               <motion.div
                 key={formule.name}
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: idx * 0.12 }}
-                className={`relative p-10 md:p-12 rounded-[3.5rem] border border-noir/[0.05] flex flex-col h-full ${formule.popular ? 'bg-white border-gold/30 shadow-xl' : 'bg-white'}`}
+                className={`relative p-8 md:p-10 rounded-2xl md:rounded-3xl border flex flex-col h-full transition-all duration-500 ${formule.popular ? 'bg-white border-gold/40 shadow-lg hover:shadow-xl' : 'bg-white border-gold/10 hover:border-gold/20 shadow-sm'}`}
               >
                 {formule.popular && (
-                  <div className="absolute -top-5 left-1/2 -translate-x-1/2 bg-gold text-white px-6 py-2 rounded-full text-[8px] uppercase tracking-[0.3em] font-black shadow-lg flex items-center gap-2">
+                  <div className="absolute -top-5 left-1/2 -translate-x-1/2 bg-gold text-noir px-6 py-2 rounded-full text-[8px] uppercase tracking-[0.3em] font-black shadow-lg flex items-center gap-2">
                     <Star size={10} fill="white" /> Recommandé
                   </div>
                 )}
 
-                <div className="mb-8 text-center md:text-left md:min-h-[140px] flex flex-col justify-start">
-                  <h3 className="text-3xl md:text-4xl font-serif text-noir mb-4">{formule.name}</h3>
-                  <p className="text-noir/40 font-serif italic text-sm leading-relaxed">{formule.description}</p>
+                <div className="mb-6 text-center md:text-left flex flex-col justify-start">
+                  <h3 className="text-2xl md:text-3xl font-serif text-noir mb-2">{formule.name}</h3>
+                  <p className="text-noir/40 font-serif italic text-xs md:text-sm leading-relaxed">{formule.description}</p>
                 </div>
 
-                <div className="mb-10 flex justify-center md:justify-start">
+                <div className="mb-8 flex justify-center md:justify-start">
                   <div className="flex items-baseline gap-2">
-                    <span className="text-6xl md:text-7xl font-serif text-noir">{formule.price}</span>
-                    <span className="text-noir/30 text-base font-serif italic">/ nuitée</span>
+                    <span className="text-5xl md:text-6xl font-serif text-noir">{formule.price}</span>
+                    <span className="text-noir/30 text-sm font-serif italic">/ nuit</span>
                   </div>
                 </div>
 
-                <ul className="space-y-4 mb-16 flex-1">
+                <ul className="space-y-2.5 mb-8 flex-1">
                   {formule.features.map((feature) => (
-                    <li key={feature} className="flex items-start gap-3 text-noir/50">
-                      <div className="mt-1.5 w-4 h-4 rounded-full border border-gold/30 flex items-center justify-center text-gold shrink-0">
-                        <Check size={8} />
+                    <li key={feature} className="flex items-start gap-2 text-noir/50">
+                      <div className="mt-0.5 w-3.5 h-3.5 rounded-full border border-gold/40 flex items-center justify-center text-gold shrink-0">
+                        <Check size={7} />
                       </div>
-                      <span className="text-sm font-light leading-snug">{feature}</span>
+                      <span className="text-xs font-light leading-relaxed">{feature}</span>
                     </li>
                   ))}
                 </ul>
 
-                <a href="#suites" className={`w-full py-6 rounded-full text-center text-[10px] uppercase tracking-[0.4em] font-black transition-all duration-700 ${formule.popular ? 'bg-gold text-white hover:bg-noir' : 'border border-noir/10 text-noir/60 hover:bg-noir hover:text-white'}`}>
+                <Link to="/checkout" state={{ formula: formule.name }} className={`block w-full py-3.5 rounded-full text-center text-[9px] uppercase tracking-[0.3em] font-bold transition-all duration-500 ${formule.popular ? 'bg-gold text-noir hover:bg-gold-light' : 'border border-gold/20 text-noir/60 hover:bg-noir/5 hover:border-gold/40'}`}>
                   {formule.cta}
-                </a>
+                </Link>
               </motion.div>
             ))}
           </div>
@@ -386,7 +388,7 @@ export default function Experience() {
                 viewport={{ once: true }}
                 className="text-noir/50 max-w-2xl mx-auto text-lg"
               >
-                Une sélection de produits pour prolonger l'expérience Maison Love Rooms chez vous.
+                Des attentions choisies pour enrichir votre séjour, prolonger le moment chez vous ou offrir une touche plus personnelle à votre parenthèse à deux.
               </motion.p>
             </div>
 
@@ -409,11 +411,11 @@ export default function Experience() {
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                       />
                       {soldOut ? (
-                        <div className="absolute top-4 right-4 bg-noir/80 text-white text-[10px] uppercase tracking-widest font-bold px-3 py-1.5 rounded-full">
+                        <div className="absolute top-4 right-4 bg-noir/80 text-gold-light text-[10px] uppercase tracking-widest font-bold px-3 py-1.5 rounded-full">
                           Rupture de stock
                         </div>
                       ) : product.stock <= 3 ? (
-                        <div className="absolute top-4 right-4 bg-gold text-white text-[10px] uppercase tracking-widest font-bold px-3 py-1.5 rounded-full">
+                        <div className="absolute top-4 right-4 bg-gold text-noir text-[10px] uppercase tracking-widest font-bold px-3 py-1.5 rounded-full">
                           Plus que {product.stock}
                         </div>
                       ) : null}
@@ -428,9 +430,9 @@ export default function Experience() {
                         <button
                           onClick={() => openOrderModal(product)}
                           disabled={soldOut}
-                          className={`px-6 py-3 rounded-full text-[10px] uppercase tracking-[0.3em] font-bold transition-all duration-500 ${soldOut
+                          className={`px-6 py-3 rounded-full text-[11px] tracking-[0.3em] font-bold transition-all duration-500 ${soldOut
                             ? 'bg-noir/5 text-noir/30 cursor-not-allowed'
-                            : 'bg-noir text-white hover:bg-gold'}`}
+                            : 'bg-noir text-gold-light hover:bg-gold hover:text-noir'}`}
                         >
                           {soldOut ? 'Indisponible' : 'Commander'}
                         </button>
@@ -472,7 +474,7 @@ export default function Experience() {
                 viewport={{ once: true }}
                 className="text-noir/50 max-w-2xl mx-auto text-lg"
               >
-                Que ce soit pour raviver la flamme, fêter un moment précieux ou simplement vous retrouver, Maison Love Rooms vous promet une parenthèse magique et inoubliable.
+                Offrez du temps, pas un objet. La carte cadeau s'adapte à l'envie : accès love room, séjour, massage ou attention sur place.
               </motion.p>
               <motion.p
                 initial={{ opacity: 0, y: 20 }}
@@ -480,7 +482,7 @@ export default function Experience() {
                 viewport={{ once: true }}
                 className="text-gold max-w-2xl mx-auto text-base italic font-serif"
               >
-                Contactez nous pour en savoir plus et recevoir votre carte cadeau (offerte)
+                Contactez-nous pour préparer votre carte cadeau.
               </motion.p>
             </div>
 
@@ -490,7 +492,7 @@ export default function Experience() {
                 <button
                   onClick={prevGiftPage}
                   aria-label="Cartes précédentes"
-                  className="hidden md:flex absolute left-0 top-1/2 -translate-y-1/2 z-30 w-12 h-12 rounded-full border-2 border-noir/20 bg-white shadow-lg items-center justify-center text-noir hover:text-white hover:bg-gold hover:border-gold transition-all duration-300"
+                  className="hidden md:flex absolute left-0 top-1/2 -translate-y-1/2 z-30 w-12 h-12 rounded-full border-2 border-noir/20 bg-white shadow-lg items-center justify-center text-noir hover:text-noir hover:bg-gold hover:border-gold transition-all duration-300"
                 >
                   <ChevronLeft size={22} />
                 </button>
@@ -500,7 +502,7 @@ export default function Experience() {
                 <button
                   onClick={nextGiftPage}
                   aria-label="Cartes suivantes"
-                  className="hidden md:flex absolute right-0 top-1/2 -translate-y-1/2 z-30 w-12 h-12 rounded-full border-2 border-noir/20 bg-white shadow-lg items-center justify-center text-noir hover:text-white hover:bg-gold hover:border-gold transition-all duration-300"
+                  className="hidden md:flex absolute right-0 top-1/2 -translate-y-1/2 z-30 w-12 h-12 rounded-full border-2 border-noir/20 bg-white shadow-lg items-center justify-center text-noir hover:text-noir hover:bg-gold hover:border-gold transition-all duration-300"
                 >
                   <ChevronRight size={22} />
                 </button>
@@ -533,7 +535,7 @@ export default function Experience() {
                               <img src={card.imageUrl} alt={card.name} className="w-full h-full object-cover" />
                             </div>
                             {card.badge && (
-                              <div className="absolute -top-2 -right-2 bg-gold text-white text-[10px] uppercase tracking-widest font-bold px-3 py-1.5 rounded-full shadow-[0_0_15px_rgba(188,155,93,0.4)] border-2 border-white z-20">
+                              <div className="absolute -top-2 -right-2 bg-gold text-noir text-[10px] uppercase tracking-widest font-bold px-3 py-1.5 rounded-full shadow-[0_0_15px_rgba(188,155,93,0.4)] border-2 border-white z-20">
                                 {card.badge}
                               </div>
                             )}
@@ -561,9 +563,13 @@ export default function Experience() {
                           ))}
                         </div>
 
-                        <button className="w-14 h-14 rounded-full bg-gold hover:bg-gold-light flex items-center justify-center text-noir shadow-[0_0_20px_rgba(188,155,93,0.3)] group-hover:shadow-[0_0_30px_rgba(188,155,93,0.5)] transition-all duration-300">
-                          <Heart size={20} className="fill-current" />
-                        </button>
+                        <a
+                          href="/#contact"
+                          className="flex items-center justify-center gap-2.5 px-7 py-3.5 rounded-full bg-gold hover:bg-gold-light text-noir text-[10px] uppercase tracking-[0.2em] font-black shadow-[0_0_20px_rgba(188,155,93,0.3)] group-hover:shadow-[0_0_30px_rgba(188,155,93,0.5)] transition-all duration-300"
+                        >
+                          <Heart size={15} className="fill-current" />
+                          {card.cta || 'Offrir ce cadeau'}
+                        </a>
                       </div>
                     </motion.div>
                   ))}
@@ -590,14 +596,14 @@ export default function Experience() {
                   <button
                     onClick={prevGiftPage}
                     aria-label="Cartes précédentes"
-                    className="w-12 h-12 rounded-full border border-noir/20 bg-white flex items-center justify-center text-noir active:bg-gold active:text-white transition-all"
+                    className="w-12 h-12 rounded-full border border-noir/20 bg-white flex items-center justify-center text-noir active:bg-gold active:text-noir transition-all"
                   >
                     <ChevronLeft size={22} />
                   </button>
                   <button
                     onClick={nextGiftPage}
                     aria-label="Cartes suivantes"
-                    className="w-12 h-12 rounded-full border border-noir/20 bg-white flex items-center justify-center text-noir active:bg-gold active:text-white transition-all"
+                    className="w-12 h-12 rounded-full border border-noir/20 bg-white flex items-center justify-center text-noir active:bg-gold active:text-noir transition-all"
                   >
                     <ChevronRight size={22} />
                   </button>
@@ -614,7 +620,7 @@ export default function Experience() {
           <motion.div
             initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}
-            className="p-10 md:p-16 bg-gold/[0.1] rounded-[3.5rem] text-white flex flex-col md:flex-row items-center justify-between gap-10 md:gap-16 relative overflow-hidden shadow-xl"
+            className="p-10 md:p-16 bg-gold/[0.1] rounded-[3.5rem] text-noir flex flex-col md:flex-row items-center justify-between gap-10 md:gap-16 relative overflow-hidden shadow-xl"
           >
             <div className="space-y-4 text-center md:text-left z-10">
               <h2 className="text-4xl md:text-5xl font-serif leading-none italic text-noir">Infos pratiques</h2>
@@ -672,7 +678,7 @@ export default function Experience() {
                   </p>
                   <button
                     onClick={() => setOrderProduct(null)}
-                    className="px-8 py-4 rounded-full bg-noir text-white text-[10px] uppercase tracking-[0.3em] font-bold hover:bg-gold transition-all duration-500"
+                    className="px-8 py-4 rounded-full bg-noir text-gold-light text-[10px] uppercase tracking-[0.3em] font-bold hover:bg-gold hover:text-noir transition-all duration-500"
                   >
                     Fermer
                   </button>
@@ -720,7 +726,7 @@ export default function Experience() {
                   <button
                     type="submit"
                     disabled={orderSubmitting}
-                    className="w-full py-4 rounded-full bg-noir text-white text-[10px] uppercase tracking-[0.3em] font-bold hover:bg-gold transition-all duration-500 disabled:opacity-50"
+                    className="w-full py-4 rounded-full bg-noir text-gold-light text-[10px] uppercase tracking-[0.3em] font-bold hover:bg-gold hover:text-noir transition-all duration-500 disabled:opacity-50"
                   >
                     {orderSubmitting ? 'Envoi en cours...' : 'Valider la commande'}
                   </button>

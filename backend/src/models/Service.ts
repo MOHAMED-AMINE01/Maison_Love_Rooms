@@ -8,6 +8,7 @@ export interface IService extends Document {
   status: 'actif' | 'inactif';
   features?: string[];
   isPopular?: boolean;
+  billingType: 'par_nuit' | 'forfait';
   createdAt: Date;
   updatedAt: Date;
 }
@@ -25,6 +26,11 @@ const serviceSchema = new Schema<IService>(
     },
     features: [{ type: String }],
     isPopular: { type: Boolean, default: false },
+    billingType: {
+      type: String,
+      enum: ['par_nuit', 'forfait'],
+      default: 'par_nuit',
+    },
   },
   {
     timestamps: true,

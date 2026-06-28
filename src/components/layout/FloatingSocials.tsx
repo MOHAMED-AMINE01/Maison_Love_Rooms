@@ -50,11 +50,11 @@ export default function FloatingSocials() {
         className="group relative p-[2px] rounded-full transition-all duration-500 hover:shadow-[0_10px_30px_rgba(220,39,67,0.3)]"
         style={{ background: instaGradient }}
       >
-        <div className="w-14 h-14 bg-noir rounded-full flex items-center justify-center text-white transition-all duration-500">
+        <div className="w-14 h-14 bg-noir rounded-full flex items-center justify-center text-gold-light transition-all duration-500">
           <Instagram size={24} strokeWidth={1.5} />
         </div>
         {/* Tooltip */}
-        <div className="absolute right-full mr-6 top-1/2 -translate-y-1/2 px-4 py-2 bg-noir text-white text-[9px] uppercase tracking-[0.3em] font-black rounded-full opacity-0 group-hover:opacity-100 transition-all duration-500 pointer-events-none whitespace-nowrap shadow-xl border border-white/10">
+        <div className="absolute right-full mr-6 top-1/2 -translate-y-1/2 px-4 py-2 bg-noir text-gold-light text-[9px] uppercase tracking-[0.3em] font-black rounded-full opacity-0 group-hover:opacity-100 transition-all duration-500 pointer-events-none whitespace-nowrap shadow-xl border border-white/10">
           Instagram
         </div>
       </motion.a>
@@ -84,7 +84,7 @@ export default function FloatingSocials() {
         </div>
 
         {/* Tooltip */}
-        <div className="absolute right-full mr-6 top-1/2 -translate-y-1/2 px-4 py-2 bg-[#25D366] text-white text-[9px] uppercase tracking-[0.3em] font-black rounded-full opacity-0 group-hover:opacity-100 transition-all duration-500 pointer-events-none whitespace-nowrap shadow-xl">
+        <div className="absolute right-full mr-6 top-1/2 -translate-y-1/2 px-4 py-2 bg-[#25D366] text-gold-light text-[9px] uppercase tracking-[0.3em] font-black rounded-full opacity-0 group-hover:opacity-100 transition-all duration-500 pointer-events-none whitespace-nowrap shadow-xl">
           Conciergerie WhatsApp
         </div>
       </motion.a>

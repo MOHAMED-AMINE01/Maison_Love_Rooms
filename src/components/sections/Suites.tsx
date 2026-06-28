@@ -20,7 +20,7 @@ export default function Suites() {
             price: s.pricePerNight.toString(),
             image: s.imageUrl || '/images/suites/suite-1.jpg',
             features: s.features || [],
-            tagline: s.description.substring(0, 60) + '...'
+            tagline: s.tagline || ''
           })));
         }
       })
@@ -32,12 +32,12 @@ export default function Suites() {
       <div className="container-wide">
         <div className="flex flex-col md:flex-row items-center justify-between mb-16 md:mb-24 gap-8 px-4">
           <div className="max-w-2xl space-y-6 text-center md:text-start">
-            <h2 className="text-5xl md:text-8xl font-serif leading-[0.85] tracking-tighter text-noir">
-              Nos <span className="italic text-gold">chambres</span> premium
+            <h2 className="notranslate text-5xl md:text-8xl font-serif leading-[0.85] tracking-tighter text-noir">
+              Nos love rooms <span className="italic text-gold">pensées pour deux</span>
             </h2>
           </div>
           <p className="text-noir/40 font-serif italic text-lg md:text-xl max-w-sm border-l border-gold/30 pl-8 text-center md:text-start">
-            Chaque suite est une promesse de déconnexion totale et de raffinement absolu.
+            Chaque chambre a été imaginée pour créer une vraie parenthèse à deux : plus d'intimité, plus de confort, moins de quotidien.
           </p>
         </div>
 
@@ -76,7 +76,7 @@ export default function Suites() {
               <div className="w-full lg:w-[45%] space-y-8 md:space-y-10 px-4 md:px-0">
                 <div className="space-y-4 md:space-y-6">
                   <div className="space-y-2">
-                    <h3 className="text-5xl md:text-7xl font-serif text-noir leading-none tracking-tight">
+                    <h3 translate="no" className="notranslate text-5xl md:text-7xl font-serif text-noir leading-none tracking-tight">
                       {suite.name}
                     </h3>
                   </div>
@@ -107,7 +107,7 @@ export default function Suites() {
                   to={`/suite/${suite.id}`}
                   className="inline-flex items-center gap-6 group"
                 >
-                  <div className="w-14 h-14 rounded-full bg-noir flex items-center justify-center text-white group-hover:bg-gold transition-all duration-500 shadow-xl">
+                  <div className="w-14 h-14 rounded-full bg-noir flex items-center justify-center text-gold-light group-hover:bg-gold group-hover:text-noir transition-all duration-500 shadow-xl">
                     <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
                   </div>
                   <span className="text-[10px] uppercase tracking-[0.4em] font-black text-noir border-b border-transparent group-hover:border-gold transition-all">

@@ -7,6 +7,7 @@ export interface IGiftCard extends Document {
   imageUrl: string;
   features: string[];
   badge?: string;
+  cta?: string;
   status: 'actif' | 'inactif';
   createdAt: Date;
   updatedAt: Date;
@@ -20,6 +21,7 @@ const giftCardSchema = new Schema<IGiftCard>(
     imageUrl: { type: String, required: true },
     features: { type: [String], default: [] },
     badge: { type: String },
+    cta: { type: String },
     status: { type: String, enum: ['actif', 'inactif'], default: 'actif' },
   },
   { timestamps: true }

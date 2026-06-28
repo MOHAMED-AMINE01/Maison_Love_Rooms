@@ -23,7 +23,7 @@ export default function Legal() {
          initial={{ opacity: 0 }}
          animate={{ opacity: 1 }}
          exit={{ opacity: 0 }}
-         className="bg-[#0A0A0A] min-h-screen pt-48 pb-32 px-4 md:px-8 text-white font-sans selection:bg-gold/30 relative overflow-hidden"
+         className="bg-[#0A0A0A] min-h-screen pt-48 pb-32 px-4 md:px-8 text-gold-light font-sans selection:bg-gold/30 relative overflow-hidden"
       >
          {/* Decorative Background Glow */}
          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] md:w-[800px] h-[600px] md:h-[800px] bg-gold/5 blur-[150px] rounded-full pointer-events-none z-0" />
@@ -31,16 +31,16 @@ export default function Legal() {
          <div className="container-wide max-w-4xl mx-auto space-y-16 md:space-y-24 relative z-10">
             <div className="space-y-6 text-center">
                <span className="text-[10px] uppercase tracking-[0.8em] text-gold font-bold">{subtitle}</span>
-               <h1 className="text-4xl md:text-7xl font-serif text-white">{title.split('.')[0]}<span className="italic font-light opacity-30">.</span></h1>
+               <h1 className="text-4xl md:text-7xl font-serif text-gold-light">{title.split('.')[0]}<span className="italic font-light opacity-30">.</span></h1>
                <div className="w-px h-16 md:h-24 bg-gradient-to-b from-gold to-transparent mx-auto mt-8" />
             </div>
 
             <div className="bg-[#121212] border border-white/5 rounded-3xl p-8 md:p-16 shadow-2xl">
-               <div className="space-y-8 md:space-y-12 text-white/70 font-light leading-relaxed text-sm md:text-base">
+               <div className="space-y-8 md:space-y-12 text-gold-light/70 font-light leading-relaxed text-sm md:text-base">
                   {isCookies ? (
                      <>
                         <section className="space-y-3">
-                           <h2 className="text-lg md:text-2xl font-serif text-white not-italic">Utilisation des cookies</h2>
+                           <h2 className="text-lg md:text-2xl font-serif text-gold-light not-italic">Utilisation des cookies</h2>
                            <p>Le site utilise des cookies pour :</p>
                            <ul className="list-disc list-inside space-y-2 ml-2">
                               <li>Mesurer l'audience</li>
@@ -55,28 +55,28 @@ export default function Legal() {
                         </section>
 
                         <section className="space-y-3">
-                           <h2 className="text-lg md:text-2xl font-serif text-white not-italic">Sécurité</h2>
+                           <h2 className="text-lg md:text-2xl font-serif text-gold-light not-italic">Sécurité</h2>
                            <p>
                               Maison Love Rooms met en œuvre toutes les mesures techniques et organisationnelles nécessaires pour garantir la sécurité et la confidentialité des données personnelles.
                            </p>
                         </section>
 
                         <section className="space-y-3">
-                           <h2 className="text-lg md:text-2xl font-serif text-white not-italic">Durée de conservation</h2>
+                           <h2 className="text-lg md:text-2xl font-serif text-gold-light not-italic">Durée de conservation</h2>
                            <p>
                               Les cookies sont conservés pour une durée maximale de 13 mois après leur dépôt.
                            </p>
                         </section>
 
                         <section className="space-y-3">
-                           <h2 className="text-lg md:text-2xl font-serif text-white not-italic">Gestion du consentement</h2>
+                           <h2 className="text-lg md:text-2xl font-serif text-gold-light not-italic">Gestion du consentement</h2>
                            <p>
                               Lors de votre première visite, un bandeau de gestion du consentement vous permet d'accepter ou de refuser tout ou partie des cookies. Vous pouvez également gérer les cookies via les paramètres de votre navigateur.
                            </p>
                         </section>
 
                         <section className="space-y-3 pt-4 border-t border-white/10">
-                           <h2 className="text-lg md:text-2xl font-serif text-white not-italic">Contact</h2>
+                           <h2 className="text-lg md:text-2xl font-serif text-gold-light not-italic">Contact</h2>
                            <p>
                               Pour toute question concernant notre politique de cookies, vous pouvez nous contacter à : <span className="text-gold"><a href="mailto:conciergerie@maisonloveroom.fr" className="text-gold hover:text-gold/80 underline">conciergerie@maisonloveroom.fr</a></span>
                            </p>
@@ -85,7 +85,7 @@ export default function Legal() {
                   ) : isPrivacy ? (
                      <>
                         <section className="space-y-3">
-                           <h2 className="text-lg md:text-2xl font-serif text-white not-italic">Introduction</h2>
+                           <h2 className="text-lg md:text-2xl font-serif text-gold-light not-italic">Introduction</h2>
                            <p>
                               La présente politique de confidentialité a pour but d'informer les utilisateurs du site sur la manière dont sont collectées, utilisées et protégées leurs données personnelles.
                            </p>
@@ -95,7 +95,7 @@ export default function Legal() {
                         </section>
 
                         <section className="space-y-3">
-                           <h2 className="text-lg md:text-2xl font-serif text-white not-italic">Responsable du traitement</h2>
+                           <h2 className="text-lg md:text-2xl font-serif text-gold-light not-italic">Responsable du traitement</h2>
                            <p>
                               Le responsable du traitement des données est :
                            </p>
@@ -106,7 +106,7 @@ export default function Legal() {
                         </section>
 
                         <section className="space-y-3">
-                           <h2 className="text-lg md:text-2xl font-serif text-white not-italic">Données collectées</h2>
+                           <h2 className="text-lg md:text-2xl font-serif text-gold-light not-italic">Données collectées</h2>
                            <p>
                               Les données personnelles pouvant être collectées sur le site sont :
                            </p>
@@ -121,7 +121,7 @@ export default function Legal() {
                         </section>
 
                         <section className="space-y-3">
-                           <h2 className="text-lg md:text-2xl font-serif text-white not-italic">Finalités du traitement</h2>
+                           <h2 className="text-lg md:text-2xl font-serif text-gold-light not-italic">Finalités du traitement</h2>
                            <p>
                               Les données sont collectées pour les finalités suivantes :
                            </p>
@@ -133,14 +133,14 @@ export default function Legal() {
                         </section>
 
                         <section className="space-y-3">
-                           <h2 className="text-lg md:text-2xl font-serif text-white not-italic">Destinataires des données</h2>
+                           <h2 className="text-lg md:text-2xl font-serif text-gold-light not-italic">Destinataires des données</h2>
                            <p>
                               Les données collectées sont destinées uniquement à Maison Love Rooms et ne sont jamais cédées, louées ou vendues à des tiers.
                            </p>
                         </section>
 
                         <section className="space-y-3">
-                           <h2 className="text-lg md:text-2xl font-serif text-white not-italic">Durée de conservation</h2>
+                           <h2 className="text-lg md:text-2xl font-serif text-gold-light not-italic">Durée de conservation</h2>
                            <p>
                               Les données personnelles sont conservées :
                            </p>
@@ -151,7 +151,7 @@ export default function Legal() {
                         </section>
 
                         <section className="space-y-3">
-                           <h2 className="text-lg md:text-2xl font-serif text-white not-italic">Droits des utilisateurs</h2>
+                           <h2 className="text-lg md:text-2xl font-serif text-gold-light not-italic">Droits des utilisateurs</h2>
                            <p>
                               Conformément au RGPD, vous disposez des droits suivants concernant vos données personnelles :
                            </p>
@@ -171,7 +171,7 @@ export default function Legal() {
                   ) : (
                      <>
                         <section className="space-y-3">
-                           <h2 className="text-lg md:text-2xl font-serif text-white not-italic">Éditeur du site</h2>
+                           <h2 className="text-lg md:text-2xl font-serif text-gold-light not-italic">Éditeur du site</h2>
                            <p>
                               Le présent site est édité par :
                            </p>
@@ -183,7 +183,7 @@ export default function Legal() {
                         </section>
 
                         <section className="space-y-3">
-                           <h2 className="text-lg md:text-2xl font-serif text-white not-italic">Hébergement du site</h2>
+                           <h2 className="text-lg md:text-2xl font-serif text-gold-light not-italic">Hébergement du site</h2>
                            <p>
                               Le site est hébergé par :
                            </p>
@@ -195,7 +195,7 @@ export default function Legal() {
                         </section>
 
                         <section className="space-y-3">
-                           <h2 className="text-lg md:text-2xl font-serif text-white not-italic">Propriété intellectuelle</h2>
+                           <h2 className="text-lg md:text-2xl font-serif text-gold-light not-italic">Propriété intellectuelle</h2>
                            <p>
                               L'ensemble du contenu du site (textes, images, photos, vidéos, éléments graphiques, logos, structure générale…) est protégé par la législation en vigueur sur la propriété intellectuelle.
                            </p>
@@ -205,7 +205,7 @@ export default function Legal() {
                         </section>
 
                         <section className="space-y-3">
-                           <h2 className="text-lg md:text-2xl font-serif text-white not-italic">Données personnelles</h2>
+                           <h2 className="text-lg md:text-2xl font-serif text-gold-light not-italic">Données personnelles</h2>
                            <p>
                               Des données personnelles peuvent être collectées via le formulaire de contact et par l'utilisation de cookies.
                            </p>
@@ -223,7 +223,7 @@ export default function Legal() {
                         </section>
 
                         <section className="space-y-3">
-                           <h2 className="text-lg md:text-2xl font-serif text-white not-italic">Cookies</h2>
+                           <h2 className="text-lg md:text-2xl font-serif text-gold-light not-italic">Cookies</h2>
                            <p>
                               Le site utilise des cookies pour mesurer l'audience et améliorer l'expérience utilisateur.
                            </p>
@@ -233,7 +233,7 @@ export default function Legal() {
                         </section>
 
                         <section className="space-y-3">
-                           <h2 className="text-lg md:text-2xl font-serif text-white not-italic">Responsabilité</h2>
+                           <h2 className="text-lg md:text-2xl font-serif text-gold-light not-italic">Responsabilité</h2>
                            <p>
                               L'éditeur ne saurait être tenu responsable :
                            </p>
@@ -245,28 +245,28 @@ export default function Legal() {
                         </section>
 
                         <section className="space-y-3">
-                           <h2 className="text-lg md:text-2xl font-serif text-white not-italic">Liens externes</h2>
+                           <h2 className="text-lg md:text-2xl font-serif text-gold-light not-italic">Liens externes</h2>
                            <p>
                               Le site peut contenir des liens vers des sites tiers.<br /> Maison Love Rooms décline toute responsabilité concernant leur contenu ou leur politique de confidentialité.
                            </p>
                         </section>
 
                         <section className="space-y-3">
-                           <h2 className="text-lg md:text-2xl font-serif text-white not-italic">Modification des mentions légales</h2>
+                           <h2 className="text-lg md:text-2xl font-serif text-gold-light not-italic">Modification des mentions légales</h2>
                            <p>
                               Les présentes mentions légales peuvent être modifiées à tout moment pour rester conformes à la réglementation.
                            </p>
                         </section>
 
                         <section className="space-y-3">
-                           <h2 className="text-lg md:text-2xl font-serif text-white not-italic">Droit applicable</h2>
+                           <h2 className="text-lg md:text-2xl font-serif text-gold-light not-italic">Droit applicable</h2>
                            <p>
                               Les présentes mentions légales sont régies par le droit français.<br /> En cas de litige, les tribunaux français seront seuls compétents.
                            </p>
                         </section>
 
                         <section className="space-y-3">
-                           <h2 className="text-lg md:text-2xl font-serif text-white not-italic">Crédits</h2>
+                           <h2 className="text-lg md:text-2xl font-serif text-gold-light not-italic">Crédits</h2>
                            <p>
                               Site web conçu et développé par Fayçal Zighem – Freelance<br />
                               SIRET : 101 365 617 00014
@@ -278,7 +278,7 @@ export default function Legal() {
             </div>
 
             <div className="pt-8 md:pt-12 text-center">
-               <p className="text-[10px] uppercase tracking-[0.4em] font-bold text-white/20">Dernière mise à jour : Juin 2026</p>
+               <p className="text-[10px] uppercase tracking-[0.4em] font-bold text-gold-light/20">Dernière mise à jour : Juin 2026</p>
             </div>
          </div>
       </motion.div>

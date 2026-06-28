@@ -17,6 +17,7 @@ import {
   Package,
   ClipboardList,
   Type,
+  HelpCircle,
   X
 } from "lucide-react";
 import { Link, useLocation, Outlet, useNavigate } from "react-router-dom";
@@ -31,6 +32,7 @@ const SIDEBAR_ITEMS = [
   { icon: Package, label: "Stock & Produits", path: "/admin/stock" },
   { icon: ClipboardList, label: "Commandes", path: "/admin/commandes" },
   { icon: Gift, label: "Cartes Cadeaux", path: "/admin/cartes-cadeaux" },
+  { icon: HelpCircle, label: "FAQ", path: "/admin/faq" },
   { icon: Type, label: "Typographie", path: "/admin/typographie" },
   { icon: Settings, label: "Paramètres", path: "/admin/settings" },
 ];

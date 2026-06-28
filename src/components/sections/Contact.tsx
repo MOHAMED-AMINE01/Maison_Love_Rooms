@@ -42,8 +42,8 @@ export default function Contact() {
                 whileInView={{ opacity: 1, y: 0 }}
                 className="text-5xl md:text-7xl font-serif text-noir leading-tight"
               >
-                Un souhait <br />
-                <span className="italic text-gold">particulier ?</span>
+                Une demande <br />
+                <span className="italic text-gold">particulière ?</span>
               </motion.h2>
             </div>
 
@@ -53,7 +53,7 @@ export default function Contact() {
               transition={{ delay: 0.2 }}
               className="text-noir/40 font-serif italic text-lg md:text-xl max-w-md leading-relaxed"
             >
-              Vous avez des questions ? Besoin d'informations ? Vous souhaitez obtenir des renseignements concernant votre réservation ? Contactez-nous, c'est avec plaisir que nous vous répondrons.
+              Besoin d'une précision avant de réserver ? Nous sommes disponibles pour vous répondre.
             </motion.p>
 
             <div className="space-y-6 pt-4">
@@ -69,7 +69,7 @@ export default function Contact() {
                   transition={{ delay: 0.3 + i * 0.1 }}
                   className="flex items-center gap-6 group cursor-default"
                 >
-                  <div className="w-12 h-12 rounded-full border border-noir/5 flex items-center justify-center text-gold/60 group-hover:bg-gold group-hover:text-white transition-all duration-500 shadow-sm">
+                  <div className="w-12 h-12 rounded-full border border-noir/5 flex items-center justify-center text-gold/60 group-hover:bg-gold group-hover:text-noir transition-all duration-500 shadow-sm">
                     <item.icon size={18} />
                   </div>
                   <div>
@@ -152,7 +152,7 @@ export default function Contact() {
               {/* Submit Button */}
               <button
                 type="submit"
-                className="group w-full relative py-6 bg-gold text-white text-[11px] font-bold uppercase tracking-[0.4em] rounded-full overflow-hidden transition-all duration-500 shadow-2xl hover:shadow-gold/20 flex items-center justify-center gap-4"
+                className="group w-full relative py-6 bg-gold text-noir text-[11px] font-bold uppercase tracking-[0.4em] rounded-full overflow-hidden transition-all duration-500 shadow-2xl hover:shadow-gold/20 flex items-center justify-center gap-4"
               >
                 <div className="absolute inset-0 bg-noir translate-y-[101%] group-hover:translate-y-0 transition-transform duration-500" />
                 <span className="relative z-10">Envoyer</span>

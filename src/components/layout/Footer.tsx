@@ -11,10 +11,10 @@ export default function Footer() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-24 mb-40">
           <div className="lg:col-span-4">
             <Link to="/" className="flex flex-col items-start group mb-12">
-               <span className="text-3xl font-display tracking-[0.3em] font-medium text-white uppercase group-hover:text-gold transition-colors duration-700">Maison</span>
+               <span className="text-3xl font-display tracking-[0.3em] font-medium text-gold-light uppercase group-hover:text-gold transition-colors duration-700">Maison</span>
                <span className="text-[10px] font-sans tracking-[0.8em] text-gold uppercase mt-1 opacity-60">Love Room</span>
             </Link>
-            <p className="max-w-xs text-sm font-light text-white/40 leading-relaxed italic mb-10">
+            <p className="max-w-xs text-sm font-light text-gold-light/40 leading-relaxed italic mb-10">
               L'excellence de l'intimité au cœur de la ville. Une escale sensorielle unique pensée pour l'éveil des sens.
             </p>
             <div className="flex gap-6">
@@ -29,7 +29,7 @@ export default function Footer() {
             <ul className="space-y-6">
               {["Suites", "L'Expérience", "Prestations", "FAQ", "Blog"].map(link => (
                 <li key={link}>
-                  <Link to={`/${link.toLowerCase()}`} className="text-sm font-light text-white/40 hover:text-white transition-colors duration-300 italic">
+                  <Link to={`/${link.toLowerCase()}`} className="text-sm font-light text-gold-light/40 hover:text-gold-light transition-colors duration-300 italic">
                     {link}
                   </Link>
                 </li>
@@ -42,7 +42,7 @@ export default function Footer() {
             <ul className="space-y-6">
               {["Mentions Légales", "CGU / CGV", "Confidentialité", "Cookies"].map(link => (
                 <li key={link}>
-                  <Link to="/legal" className="text-sm font-light text-white/40 hover:text-white transition-colors duration-300 italic">
+                  <Link to="/legal" className="text-sm font-light text-gold-light/40 hover:text-gold-light transition-colors duration-300 italic">
                     {link}
                   </Link>
                 </li>
@@ -56,7 +56,7 @@ export default function Footer() {
                  <Crown size={32} className="text-gold" />
                </div>
                <h4 className="text-2xl font-display italic mb-6">Inscrivez-vous à l'exceptionnel</h4>
-               <p className="text-xs text-white/40 mb-8 leading-relaxed">
+               <p className="text-xs text-gold-light/40 mb-8 leading-relaxed">
                  Recevez en avant-première nos nouvelles suites et offres exclusives.
                </p>
                <div className="relative">
@@ -74,11 +74,11 @@ export default function Footer() {
         </div>
 
         <div className="flex flex-col md:flex-row items-center justify-between pt-12 border-t border-white/5 gap-8">
-           <span className="text-[9px] uppercase tracking-[0.6em] text-white/20">
+           <span className="text-[9px] uppercase tracking-[0.6em] text-gold-light/20">
              © {new Date().getFullYear()} Maison ML Limited • All Rights Reserved
            </span>
            <div className="flex items-center gap-12">
-             <span className="text-[9px] uppercase tracking-[0.6em] text-white/30 hidden md:block">Handcrafted by Excellence</span>
+             <span className="text-[9px] uppercase tracking-[0.6em] text-gold-light/30 hidden md:block">Handcrafted by Excellence</span>
              <div className="flex gap-4">
                 <img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Visa_Inc._logo.svg" className="h-3 w-auto opacity-20 grayscale" alt="Visa" />
                 <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" className="h-3 w-auto opacity-20 grayscale" alt="Mastercard" />

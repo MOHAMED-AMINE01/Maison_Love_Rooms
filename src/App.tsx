@@ -28,6 +28,7 @@ const AdminStock = lazy(() => import("./pages/admin/Stock"));
 const AdminCommandes = lazy(() => import("./pages/admin/Commandes"));
 const AdminCartesCadeaux = lazy(() => import("./pages/admin/CartesCadeaux"));
 const AdminTypographie = lazy(() => import("./pages/admin/Typographie"));
+const AdminFaq = lazy(() => import("./pages/admin/Faq"));
 const AdminSettings = lazy(() => import("./pages/admin/Parametres"));
 
 // Scroll handling component
@@ -120,6 +121,7 @@ function AppContent() {
                 <Route path="commandes" element={<AdminCommandes />} />
                 <Route path="cartes-cadeaux" element={<AdminCartesCadeaux />} />
                 <Route path="typographie" element={<AdminTypographie />} />
+                <Route path="faq" element={<AdminFaq />} />
                 <Route path="settings" element={<AdminSettings />} />
               </Route>
             </Routes>

@@ -3,6 +3,10 @@ export interface Suite {
   name: string;
   tagline?: string;
   description: string;
+  longDescription?: string;
+  presentationTitle?: string;
+  atouts?: string;
+  callToAction?: string;
   price: number;
   image: string;
   images?: string[];

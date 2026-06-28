@@ -33,7 +33,7 @@ export default function Footer() {
     <footer id="footer" className="bg-[#0A0A0A] py-20 md:py-20 relative overflow-hidden border-t border-white/5 selection:bg-gold/30">
       {/* Decorative Branding Background */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] md:w-[800px] h-[600px] md:h-[800px] bg-gold/5 blur-[150px] rounded-full pointer-events-none z-0" />
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[40vw] font-serif italic text-white/[0.02] pointer-events-none select-none z-0">
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[40vw] font-serif italic text-gold-light/[0.02] pointer-events-none select-none z-0">
         MLR
       </div>
 
@@ -47,11 +47,11 @@ export default function Footer() {
                 alt="Maison Love Rooms"
                 loading="lazy"
                 decoding="async"
-                className="h-20 scale-150 md:h-24 brightness-0 invert opacity-80 group-hover:opacity-100 transition-opacity duration-700"
+                className="h-20 scale-150 md:h-24 opacity-80 group-hover:opacity-100 transition-opacity duration-700"
               />
             </Link>
-            <p className="text-white/40 font-serif italic text-lg md:text-xl max-w-md leading-relaxed">
-              Une adresse confidentielle, un service d'excellence hôtelière et une discrétion absolue pour sublimer vos moments les plus précieux au cœur de Tours.
+            <p className="text-gold-light/40 font-serif italic text-lg md:text-xl max-w-md leading-relaxed">
+              Une adresse discrète, pensée pour vos moments à deux, avec un accès simple et une intimité préservée.
             </p>
           </div>
 
@@ -61,11 +61,11 @@ export default function Footer() {
               {[
                 { label: "Accueil", to: "/" },
                 { label: "Nos suites", to: "/#suites" },
-                { label: "Boutique et Prestation", to: "/experience" },
+                { label: "Prestation & Boutique", to: "/experience" },
                 { label: "Foire aux questions", to: "/#faq" }
               ].map((item) => (
                 <li key={item.label}>
-                  <Link to={item.to} className="text-sm font-light text-white/60 hover:text-white transition-all duration-500 flex items-center gap-4 group justify-center md:justify-start">
+                  <Link to={item.to} className="text-sm font-light text-gold-light/60 hover:text-gold-light transition-all duration-500 flex items-center gap-4 group justify-center md:justify-start">
                     <span className="w-0 h-[1px] bg-gold group-hover:w-4 transition-all duration-500 hidden md:block" />
                     <span className="italic font-serif">{item.label}</span>
                   </Link>
@@ -78,18 +78,18 @@ export default function Footer() {
             <h4 className="text-[10px] uppercase tracking-[0.6em] text-gold mb-8 font-bold">Contact & Accès</h4>
             <ul className="space-y-8">
               <li className="space-y-3 flex flex-col items-center md:items-start">
-                <span className="text-[9px] uppercase tracking-[0.3em] text-white/20 font-bold flex items-center gap-2"><Phone size={12} /> Réservations</span>
-                <p className="text-white/80 font-serif italic text-lg hover:text-white transition-colors cursor-pointer">{contactInfo.phone}</p>
+                <span className="text-[9px] uppercase tracking-[0.3em] text-gold-light/20 font-bold flex items-center gap-2"><Phone size={12} /> Réservations</span>
+                <p className="text-gold-light/80 font-serif italic text-lg hover:text-gold-light transition-colors cursor-pointer">{contactInfo.phone}</p>
               </li>
               <li className="space-y-3 flex flex-col items-center md:items-start">
-                <span className="text-[9px] uppercase tracking-[0.3em] text-white/20 font-bold flex items-center gap-2"><Mail size={12} /> Conciergerie</span>
-                <p className="text-white/80 font-serif italic text-lg hover:text-white transition-colors cursor-pointer">{contactInfo.email}</p>
+                <span className="text-[9px] uppercase tracking-[0.3em] text-gold-light/20 font-bold flex items-center gap-2"><Mail size={12} /> Conciergerie</span>
+                <p className="text-gold-light/80 font-serif italic text-lg hover:text-gold-light transition-colors cursor-pointer">{contactInfo.email}</p>
               </li>
             </ul>
           </div>
         </div>
 
-        <div className="pt-10 border-t border-white/5 flex flex-col lg:flex-row justify-between items-center gap-8 text-[10px] uppercase tracking-[0.2em] sm:tracking-[0.4em] font-bold text-white/40 text-center lg:text-left">
+        <div className="pt-10 border-t border-white/5 flex flex-col lg:flex-row justify-between items-center gap-8 text-[10px] uppercase tracking-[0.2em] sm:tracking-[0.4em] font-bold text-gold-light/40 text-center lg:text-left">
           <p>© {new Date().getFullYear()} MAISON LOVE ROOMS • Tous droits réservés</p>
           <div className="flex flex-wrap justify-center gap-4 sm:gap-8 items-center">
             <Link to="/confidentialite" className="hover:text-gold transition-colors">Confidentialité</Link>

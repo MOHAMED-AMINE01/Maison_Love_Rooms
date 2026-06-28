@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { ChevronDown, HelpCircle, Sparkles } from 'lucide-react';
+import { ChevronDown } from 'lucide-react';
+import { API_URL } from '../../constants';
 
 const FAQS = [
   {
-    question: "Comment se déroule l'arrivée dans la suite ?",
-    answer: "Pour une discrétion totale, l'accès se fait de manière 100% autonome. Le jour de votre réservation, vous recevrez un code unique par SMS et email vous permettant de déverrouiller votre suite (Love Story ou Baguerra) à l'heure convenue."
+    question: "Comment se déroule l'arrivée ?",
+    answer: "Pour préserver votre intimité, l’arrivée se fait en autonomie. Le jour de votre réservation, vous recevez un code d’accès par SMS et email pour entrer dans votre suite à l’heure prévue."
   },
   {
     question: "La confidentialité est-elle réellement garantie ?",
@@ -27,76 +28,77 @@ const FAQS = [
 
 export default function FAQ() {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
+  const [faqs, setFaqs] = useState(FAQS);
+
+  useEffect(() => {
+    fetch(`${API_URL}/api/faqs`)
+      .then(res => (res.ok ? res.json() : []))
+      .then(data => {
+        if (Array.isArray(data) && data.length > 0) {
+          setFaqs(data.map((f: any) => ({ question: f.question, answer: f.answer })));
+        }
+      })
+      .catch(() => console.log('Utilisation des FAQ statiques de secours'));
+  }, []);
 
   return (
     <section id="faq" className="pt-24 md:pt-48 pb-12 md:pb-20 mx-3 bg-[#FAF9F6] border-t border-noir/5">
       <div className="container-wide px-4 md:px-8">
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-32">
+        {/* Header centré (au-dessus) */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="text-center mb-14 md:mb-20"
+        >
+          <h2 className="text-5xl md:text-7xl font-serif leading-[0.9] tracking-tighter text-noir">
+            Vos questions, <br />
+            <span className="italic text-gold">nos réponses.</span>
+          </h2>
+        </motion.div>
 
-          {/* Left Column: Editorial Header */}
-          <div className="lg:col-span-5 space-y-12">
-            <motion.div
-              initial={{ opacity: 0, x: -30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              className="space-y-8"
-            >
-
-              <h2 className="text-5xl md:text-7xl text-center md:text-left font-serif leading-[0.85] tracking-tighter text-noir">
-                Vos questions, <br className="hidden md:block" />
-                <span className="italic text-gold">nos réponses.</span>
-              </h2>
-              <p className="text-xl text-noir/40 font-serif italic leading-relaxed max-w-sm text-center md:text-left">
-                "Parce que la sérénité commence par la clarté, nous avons anticipé chacun de vos besoins."
-              </p>
-            </motion.div>
-
-          </div>
-
-          {/* Right Column: Accordion */}
-          <div className="lg:col-span-7">
-            <div className="space-y-4">
-              {FAQS.map((faq, idx) => (
-                <motion.div
-                  key={idx}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: idx * 0.1 }}
-                  className={`border-b border-noir/10 overflow-hidden transition-all duration-500 ${openIndex === idx ? 'pb-8' : 'pb-0'}`}
+        {/* Accordion (en dessous, centré) */}
+        <div className="max-w-3xl mx-auto">
+          <div className="space-y-4">
+            {faqs.map((faq, idx) => (
+              <motion.div
+                key={idx}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: idx * 0.1 }}
+                className={`border-b border-noir/10 overflow-hidden transition-all duration-500 ${openIndex === idx ? 'pb-8' : 'pb-0'}`}
+              >
+                <button
+                  onClick={() => setOpenIndex(openIndex === idx ? null : idx)}
+                  className="w-full py-8 flex items-center justify-between text-left group gap-6"
                 >
-                  <button
-                    onClick={() => setOpenIndex(openIndex === idx ? null : idx)}
-                    className="w-full py-8 flex items-center justify-between text-left group"
-                  >
-                    <span className={`text-xl md:text-2xl font-serif transition-all duration-300 ${openIndex === idx ? 'text-gold' : 'text-noir/80 group-hover:text-noir'}`}>
-                      {faq.question}
-                    </span>
-                    <div className={`transition-transform duration-500 ${openIndex === idx ? 'rotate-180 text-gold' : 'text-noir/30'}`}>
-                      <ChevronDown size={24} strokeWidth={1} />
-                    </div>
-                  </button>
+                  <span className={`text-xl md:text-2xl font-serif transition-all duration-300 ${openIndex === idx ? 'text-gold' : 'text-noir/80 group-hover:text-noir'}`}>
+                    {faq.question}
+                  </span>
+                  <div className={`shrink-0 transition-transform duration-500 ${openIndex === idx ? 'rotate-180 text-gold' : 'text-noir/30'}`}>
+                    <ChevronDown size={24} strokeWidth={1} />
+                  </div>
+                </button>
 
-                  <AnimatePresence>
-                    {openIndex === idx && (
-                      <motion.div
-                        initial={{ height: 0, opacity: 0 }}
-                        animate={{ height: 'auto', opacity: 1 }}
-                        exit={{ height: 0, opacity: 0 }}
-                        transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-                      >
-                        <p className="text-lg text-noir/50 font-serif italic leading-relaxed pr-12">
-                          {faq.answer}
-                        </p>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </motion.div>
-              ))}
-            </div>
+                <AnimatePresence>
+                  {openIndex === idx && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: 'auto', opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+                    >
+                      <p className="text-lg text-noir/50 font-serif italic leading-relaxed pr-12">
+                        {faq.answer}
+                      </p>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </motion.div>
+            ))}
           </div>
-
         </div>
 
       </div>

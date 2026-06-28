@@ -29,7 +29,11 @@ import {
   adjustProductStock,
   deleteProduct,
   getOrders,
-  updateOrder
+  updateOrder,
+  getFaqs,
+  createFaq,
+  updateFaq,
+  deleteFaq
 } from '../controllers/adminController';
 import { protect } from '../middlewares/authMiddleware';
 
@@ -98,6 +102,15 @@ router.patch('/products/:id/stock', protect, adjustProductStock);
 // Liste des commandes passées en ligne + mise à jour (statut / paiement)
 router.get('/orders', protect, getOrders);
 router.patch('/orders/:id', protect, updateOrder);
+
+// Routes pour la FAQ (foire aux questions éditable depuis le BO)
+router.route('/faqs')
+  .get(protect, getFaqs)
+  .post(protect, createFaq);
+
+router.route('/faqs/:id')
+  .put(protect, updateFaq)
+  .delete(protect, deleteFaq);
 
 export default router;
 

@@ -8,6 +8,7 @@ const giftCardSchema = new mongoose.Schema({
   imageUrl: String,
   features: [String],
   badge: String,
+  cta: String,
   status: { type: String, enum: ['actif', 'inactif'], default: 'actif' },
 }, { timestamps: true });
 
@@ -20,6 +21,7 @@ const cardsData = [
     description: "Offrez une nuit magique et inoubliable dans l'une de nos suites luxueuses.",
     imageUrl: "https://images.unsplash.com/photo-1578683010236-d716f9a3f461?q=80&w=1000&auto=format&fit=crop",
     badge: "Populaire",
+    cta: "Offrir une nuit",
     status: 'actif',
     features: ["1 nuitée pour 2 personnes", "Valable dans toutes nos suites", "Accès illimité au Spa privatif", "Valable 1 an"]
   },
@@ -29,6 +31,7 @@ const cardsData = [
     description: "Le cadeau parfait : une nuitée accompagnée de notre sélection d'attentions romantiques.",
     imageUrl: "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?q=80&w=1000&auto=format&fit=crop",
     badge: "Premium",
+    cta: "Offrir le pack",
     status: 'actif',
     features: ["Nuitée exceptionnelle", "Bouteille de Champagne au frais", "Pétales de roses sur le lit", "Départ tardif à 13h"]
   },
@@ -38,6 +41,7 @@ const cardsData = [
     description: "Un bon d'achat flexible, déductible sur la réservation ou les options boutique.",
     imageUrl: "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?q=80&w=1000&auto=format&fit=crop",
     badge: "Flexible",
+    cta: "Offrir la carte",
     status: 'actif',
     features: ["Montant libre utilisable en 1 fois", "Cumulable avec les promotions", "Choix de la suite au moment de réserver", "Valable 1 an"]
   },
@@ -47,6 +51,7 @@ const cardsData = [
     description: "Bouquet élégant composé de fleurs fraîches et parfumées pour marquer le coup.",
     imageUrl: "https://images.unsplash.com/photo-1590073844006-33379778ae09?q=80&w=1000&auto=format&fit=crop",
     badge: "Option",
+    cta: "Ajouter le bouquet",
     status: 'actif',
     features: ["Composition florale premium", "Fleurs de saison fraîches", "Livraison discrète en chambre", "Présentation soignée"]
   }

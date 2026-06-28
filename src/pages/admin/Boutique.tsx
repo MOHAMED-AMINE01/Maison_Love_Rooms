@@ -36,6 +36,7 @@ interface ServiceData {
   status: 'actif' | 'inactif';
   features?: string[];
   isPopular?: boolean;
+  billingType?: 'par_nuit' | 'forfait';
 }
 
 interface ComparisonRowData {
@@ -77,7 +78,8 @@ export default function AdminBoutique() {
     imageUrl: '',
     status: 'actif',
     features: [],
-    isPopular: false
+    isPopular: false,
+    billingType: 'par_nuit'
   });
   const [featuresText, setFeaturesText] = useState('');
   const [uploadingImage, setUploadingImage] = useState(false);
@@ -125,7 +127,8 @@ export default function AdminBoutique() {
       imageUrl: '',
       status: 'actif',
       features: [],
-      isPopular: false
+      isPopular: false,
+      billingType: 'par_nuit'
     });
     setFeaturesText('');
     setIsAdding(true);
@@ -140,7 +143,8 @@ export default function AdminBoutique() {
       imageUrl: srv.imageUrl || '',
       status: srv.status,
       features: srv.features || [],
-      isPopular: srv.isPopular || false
+      isPopular: srv.isPopular || false,
+      billingType: srv.billingType || 'par_nuit'
     });
     setFeaturesText(srv.features?.join('\n') || '');
     setIsAdding(true);
@@ -596,6 +600,27 @@ export default function AdminBoutique() {
                   >
                     <div className={`w-4 h-4 rounded-full bg-white absolute top-1 transition-transform ${formData.isPopular ? 'translate-x-7' : 'translate-x-1'}`} />
                   </button>
+                </div>
+
+                {/* Type de tarif (billingType) */}
+                <div className="space-y-2">
+                  <label className="text-xs uppercase tracking-widest text-white/60 font-bold block">Type de tarif</label>
+                  <p className="text-[10px] text-white/40 mb-2">"Par nuit" est multiplié par le nombre de nuits. "Forfait" est un prix fixe (ex: massage, parenthèse de quelques heures).</p>
+                  <div className="grid grid-cols-2 gap-3">
+                    {[
+                      { value: 'par_nuit', label: 'Par nuit' },
+                      { value: 'forfait', label: 'Forfait fixe' }
+                    ].map((bt) => (
+                      <button
+                        key={bt.value}
+                        type="button"
+                        onClick={() => setFormData({ ...formData, billingType: bt.value as any })}
+                        className={`px-5 py-4 rounded-xl border text-sm font-bold transition-all ${formData.billingType === bt.value ? 'border-gold bg-gold/10 text-gold' : 'border-white/10 bg-[#0D0D0D] text-white/70 hover:border-gold/30'}`}
+                      >
+                        {bt.label}
+                      </button>
+                    ))}
+                  </div>
                 </div>
 
                 {/* Description */}

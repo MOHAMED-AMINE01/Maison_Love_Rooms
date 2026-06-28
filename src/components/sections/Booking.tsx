@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 export default function Booking() {
   return (
-    <section className="section-padding bg-noir text-white text-center relative overflow-hidden">
+    <section className="section-padding bg-noir text-gold-light text-center relative overflow-hidden">
       {/* Background decoration */}
       <div className="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[60vw] h-[60vw] bg-gold blur-[150px] rounded-full" />
@@ -23,23 +23,23 @@ export default function Booking() {
 
           <h2 className="text-6xl md:text-9xl font-serif leading-[0.9] tracking-tighter">
             Votre parenthèse <br />
-            <span className="italic font-light text-white/20 block mt-4">commence ici.</span>
+            <span className="italic font-light text-gold-light/20 block mt-4">commence ici.</span>
           </h2>
 
-          <p className="max-w-xl mx-auto text-lg md:text-xl font-light italic text-white/30 leading-relaxed font-serif">
+          <p className="max-w-xl mx-auto text-lg md:text-xl font-light italic text-gold-light/30 leading-relaxed font-serif">
             Réservez en quelques clics et recevez vos codes d'accès en toute discrétion. L'excellence n'attend plus que vous.
           </p>
 
           <div className="pt-12">
             <Link
               to="/checkout"
-              className="px-16 py-6 bg-gold text-white text-[11px] uppercase tracking-[0.4em] font-bold hover:bg-white hover:text-noir transition-all duration-700 shadow-2xl shadow-gold/20 inline-block rounded-sm"
+              className="px-16 py-6 bg-gold text-noir text-[11px] uppercase tracking-[0.4em] font-bold hover:bg-white hover:text-noir transition-all duration-700 shadow-2xl shadow-gold/20 inline-block rounded-sm"
             >
               Réserver votre suite
             </Link>
           </div>
 
-          <div className="pt-20 flex flex-col items-center gap-4 text-white/10 uppercase tracking-[0.8em] text-[8px] font-bold">
+          <div className="pt-20 flex flex-col items-center gap-4 text-gold-light/10 uppercase tracking-[0.8em] text-[8px] font-bold">
             <span>Maison Love Rooms</span>
             <div className="h-4 w-px bg-white/10" />
             <span>Tours, FR</span>

@@ -10,6 +10,7 @@ import Settings from '../models/Settings';
 import GiftCard from '../models/GiftCard';
 import Product from '../models/Product';
 import Order from '../models/Order';
+import Faq from '../models/Faq';
 
 // @desc    Authentification Admin & génération du token
 // @route   POST /api/admin/login
@@ -163,19 +164,23 @@ export const getReservations = async (req: Request, res: Response) => {
 // @access  Private
 export const createReservation = async (req: Request, res: Response) => {
   try {
-    const { clientName, clientEmail, clientPhone, suiteName, checkIn, checkOut, numberOfPersons, services, specialRequest, internalNote, totalPrice, status } = req.body;
+    const { clientName, clientEmail, clientPhone, clientAddress, suiteName, checkIn, checkOut, arrivalTime, numberOfPersons, services, occasion, specialRequest, internalNote, totalPrice, status, consentGiven } = req.body;
     const reservation = await Reservation.create({
       clientName,
       clientEmail,
       clientPhone,
+      clientAddress,
       suiteName,
       checkIn,
       checkOut,
+      arrivalTime,
       numberOfPersons: numberOfPersons || 2,
       services: services || [],
+      occasion,
       specialRequest,
       internalNote,
       totalPrice,
+      consentGiven: consentGiven || false,
       status: status || 'confirmee'
     });
     res.status(201).json(reservation);
@@ -189,10 +194,10 @@ export const createReservation = async (req: Request, res: Response) => {
 // @access  Private
 export const updateReservation = async (req: Request, res: Response) => {
   try {
-    const { clientName, clientEmail, clientPhone, suiteName, checkIn, checkOut, numberOfPersons, services, specialRequest, internalNote, totalPrice, status } = req.body;
+    const { clientName, clientEmail, clientPhone, clientAddress, suiteName, checkIn, checkOut, arrivalTime, numberOfPersons, services, occasion, specialRequest, internalNote, totalPrice, status, consentGiven } = req.body;
     const reservation = await Reservation.findByIdAndUpdate(
       req.params.id,
-      { clientName, clientEmail, clientPhone, suiteName, checkIn, checkOut, numberOfPersons, services, specialRequest, internalNote, totalPrice, status },
+      { clientName, clientEmail, clientPhone, clientAddress, suiteName, checkIn, checkOut, arrivalTime, numberOfPersons, services, occasion, specialRequest, internalNote, totalPrice, status, consentGiven },
       { new: true }
     );
     if (!reservation) {
@@ -259,10 +264,15 @@ export const getSuiteById = async (req: Request, res: Response) => {
 // @access  Private
 export const createSuite = async (req: Request, res: Response) => {
   try {
-    const { name, description, pricePerNight, features, status, imageUrl, images } = req.body;
+    const { name, tagline, description, longDescription, presentationTitle, atouts, callToAction, pricePerNight, features, status, imageUrl, images } = req.body;
     const suite = await Suite.create({
       name,
+      tagline,
       description,
+      longDescription,
+      presentationTitle,
+      atouts,
+      callToAction,
       pricePerNight,
       features,
       status,
@@ -280,10 +290,10 @@ export const createSuite = async (req: Request, res: Response) => {
 // @access  Private
 export const updateSuite = async (req: Request, res: Response) => {
   try {
-    const { name, description, pricePerNight, features, status, imageUrl, images } = req.body;
+    const { name, tagline, description, longDescription, presentationTitle, atouts, callToAction, pricePerNight, features, status, imageUrl, images } = req.body;
     const suite = await Suite.findByIdAndUpdate(
       req.params.id,
-      { name, description, pricePerNight, features, status, imageUrl, images: images || [] },
+      { name, tagline, description, longDescription, presentationTitle, atouts, callToAction, pricePerNight, features, status, imageUrl, images: images || [] },
       { new: true }
     );
     if (!suite) {
@@ -327,7 +337,7 @@ export const getServices = async (req: Request, res: Response) => {
 // @access  Private
 export const createService = async (req: Request, res: Response) => {
   try {
-    const { name, description, price, imageUrl, status, features, isPopular } = req.body;
+    const { name, description, price, imageUrl, status, features, isPopular, billingType } = req.body;
     const service = await Service.create({
       name,
       description,
@@ -335,7 +345,8 @@ export const createService = async (req: Request, res: Response) => {
       imageUrl,
       status: status || 'actif',
       features: features || [],
-      isPopular: isPopular || false
+      isPopular: isPopular || false,
+      billingType: billingType || 'par_nuit'
     });
     res.status(201).json(service);
   } catch (error: any) {
@@ -348,10 +359,10 @@ export const createService = async (req: Request, res: Response) => {
 // @access  Private
 export const updateService = async (req: Request, res: Response) => {
   try {
-    const { name, description, price, imageUrl, status, features, isPopular } = req.body;
+    const { name, description, price, imageUrl, status, features, isPopular, billingType } = req.body;
     const service = await Service.findByIdAndUpdate(
       req.params.id,
-      { name, description, price, imageUrl, status, features: features || [], isPopular: isPopular || false },
+      { name, description, price, imageUrl, status, features: features || [], isPopular: isPopular || false, billingType: billingType || 'par_nuit' },
       { new: true }
     );
     if (!service) {
@@ -491,12 +502,12 @@ export const getGiftCards = async (req: Request, res: Response) => {
 // @route   POST /api/admin/gift-cards
 // @access  Private
 export const createGiftCard = async (req: Request, res: Response) => {
-  const { name, description, price, imageUrl, features, badge, status } = req.body;
+  const { name, description, price, imageUrl, features, badge, cta, status } = req.body;
   try {
     if (!name || !description || price === undefined || !imageUrl) {
       return res.status(400).json({ message: 'Champs requis manquants' });
     }
-    const card = new GiftCard({ name, description, price, imageUrl, features, badge, status });
+    const card = new GiftCard({ name, description, price, imageUrl, features, badge, cta, status });
     await card.save();
     res.status(201).json(card);
   } catch (error: any) {
@@ -508,7 +519,7 @@ export const createGiftCard = async (req: Request, res: Response) => {
 // @route   PUT /api/admin/gift-cards/:id
 // @access  Private
 export const updateGiftCard = async (req: Request, res: Response) => {
-  const { name, description, price, imageUrl, features, badge, status } = req.body;
+  const { name, description, price, imageUrl, features, badge, cta, status } = req.body;
   try {
     const card = await GiftCard.findById(req.params.id);
     if (!card) {
@@ -520,6 +531,7 @@ export const updateGiftCard = async (req: Request, res: Response) => {
     if (imageUrl) card.imageUrl = imageUrl;
     if (features) card.features = features;
     if (badge !== undefined) card.badge = badge;
+    if (cta !== undefined) card.cta = cta;
     if (status) card.status = status;
     await card.save();
     res.json(card);
@@ -776,6 +788,91 @@ export const updateOrder = async (req: Request, res: Response) => {
     if (paymentStatus) order.paymentStatus = paymentStatus;
     await order.save();
     res.json(order);
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+/* ==========================================================================
+   FAQ (Foire aux questions — éditable depuis le back-office)
+   ========================================================================== */
+
+// @desc    Liste les FAQ actives (site public), triées par ordre d'affichage
+// @route   GET /api/faqs
+// @access  Public
+export const getPublicFaqs = async (req: Request, res: Response) => {
+  try {
+    const faqs = await Faq.find({ status: 'actif' }).sort({ order: 1, createdAt: 1 });
+    res.json(faqs);
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// @desc    Liste toutes les FAQ (admin — voit aussi les inactives)
+// @route   GET /api/admin/faqs
+// @access  Private
+export const getFaqs = async (req: Request, res: Response) => {
+  try {
+    const faqs = await Faq.find().sort({ order: 1, createdAt: 1 });
+    res.json(faqs);
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// @desc    Crée une FAQ
+// @route   POST /api/admin/faqs
+// @access  Private
+export const createFaq = async (req: Request, res: Response) => {
+  const { question, answer, order, status } = req.body;
+  try {
+    if (!question || !answer) {
+      return res.status(400).json({ message: 'Question et réponse requises' });
+    }
+    const faq = await Faq.create({
+      question,
+      answer,
+      order: order !== undefined ? order : 0,
+      status: status || 'actif',
+    });
+    res.status(201).json(faq);
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// @desc    Met à jour une FAQ
+// @route   PUT /api/admin/faqs/:id
+// @access  Private
+export const updateFaq = async (req: Request, res: Response) => {
+  const { question, answer, order, status } = req.body;
+  try {
+    const faq = await Faq.findById(req.params.id);
+    if (!faq) {
+      return res.status(404).json({ message: 'FAQ non trouvée' });
+    }
+    if (question !== undefined) faq.question = question;
+    if (answer !== undefined) faq.answer = answer;
+    if (order !== undefined) faq.order = order;
+    if (status !== undefined) faq.status = status;
+    await faq.save();
+    res.json(faq);
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// @desc    Supprime une FAQ
+// @route   DELETE /api/admin/faqs/:id
+// @access  Private
+export const deleteFaq = async (req: Request, res: Response) => {
+  try {
+    const faq = await Faq.findByIdAndDelete(req.params.id);
+    if (!faq) {
+      return res.status(404).json({ message: 'FAQ non trouvée' });
+    }
+    res.json({ message: 'FAQ supprimée' });
   } catch (error: any) {
     res.status(500).json({ message: error.message });
   }

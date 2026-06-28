@@ -11,9 +11,13 @@ import {
   Download, 
   ArrowRight, 
   X, 
-  User, 
-  Mail, 
-  Phone, 
+  User,
+  Mail,
+  Phone,
+  MapPin,
+  Clock,
+  Heart,
+  ShieldCheck,
   Calendar,
   CreditCard,
   CheckCircle2,
@@ -35,14 +39,18 @@ interface Reservation {
   clientName: string;
   clientEmail: string;
   clientPhone?: string;
+  clientAddress?: string;
   suiteName: string;
   checkIn: string;
   checkOut: string;
+  arrivalTime?: string;
   numberOfPersons: number;
   services: string[];
+  occasion?: string;
   specialRequest?: string;
   internalNote?: string;
   totalPrice: number;
+  consentGiven?: boolean;
   status: 'en_attente' | 'confirmee' | 'validee' | 'annulee' | 'terminee';
   createdAt: string;
 }
@@ -1108,6 +1116,12 @@ export default function AdminReservations() {
                               <a href={`tel:${selectedRes.clientPhone}`} className="text-sm text-white/80 hover:text-gold">{selectedRes.clientPhone}</a>
                            </div>
                          )}
+                         {selectedRes.clientAddress && (
+                           <div className="flex items-start gap-4">
+                              <MapPin size={16} className="text-white/20 mt-0.5" />
+                              <span className="text-sm text-white/80">{selectedRes.clientAddress}</span>
+                           </div>
+                         )}
                       </div>
                    </div>
 
@@ -1129,6 +1143,24 @@ export default function AdminReservations() {
                                <span className="text-sm font-medium">{selectedRes.numberOfPersons} personne(s)</span>
                             </div>
                          </div>
+                         {selectedRes.arrivalTime && (
+                           <div className="space-y-1">
+                              <span className="text-[10px] text-white/30 uppercase font-bold">Heure d'arrivée</span>
+                              <div className="flex items-center gap-2">
+                                 <Clock size={14} className="text-white/40" />
+                                 <span className="text-sm font-medium">{selectedRes.arrivalTime}</span>
+                              </div>
+                           </div>
+                         )}
+                         {selectedRes.occasion && (
+                           <div className="space-y-1">
+                              <span className="text-[10px] text-white/30 uppercase font-bold">Occasion</span>
+                              <div className="flex items-center gap-2">
+                                 <Heart size={14} className="text-gold" />
+                                 <span className="text-sm font-medium">{selectedRes.occasion}</span>
+                              </div>
+                           </div>
+                         )}
                          <div className="col-span-2 space-y-1 border-t border-white/5 pt-4">
                             <span className="text-[10px] text-white/30 uppercase font-bold block mb-1">Période réservée</span>
                             <p className="text-sm text-white/80 font-medium">{formatDate(selectedRes.checkIn)} au {formatDate(selectedRes.checkOut)}</p>
@@ -1165,6 +1197,14 @@ export default function AdminReservations() {
                              <p>{selectedRes.specialRequest}</p>
                            </div>
                         </div>
+                     </div>
+                   )}
+
+                   {/* Consentement du client */}
+                   {selectedRes.consentGiven && (
+                     <div className="flex items-center gap-2 text-xs text-emerald-400/80 pl-2">
+                        <ShieldCheck size={14} />
+                        <span>Conditions & consentement RGPD acceptés par le client</span>
                      </div>
                    )}
 
