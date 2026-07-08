@@ -6,6 +6,10 @@ import Admin from '../models/Admin';
 import Reservation from '../models/Reservation';
 import Suite from '../models/Suite';
 import Service from '../models/Service';
+import Formule from '../models/Formule';
+import { fetchIcalBlocks, buildIcalFeed } from '../utils/ical';
+import { stripe } from '../utils/stripe';
+import { sendEmail } from '../utils/email';
 import Settings from '../models/Settings';
 import GiftCard from '../models/GiftCard';
 import Product from '../models/Product';
@@ -84,6 +88,7 @@ export const getDashboardStats = async (req: Request, res: Response) => {
     const valideeReservations = await Reservation.countDocuments({ status: { $in: ['validee', 'confirmee'] } });
     const attenteReservations = await Reservation.countDocuments({ status: 'en_attente' });
     const annuleeReservations = await Reservation.countDocuments({ status: 'annulee' });
+    const attenteOrders = await Order.countDocuments({ status: 'en_attente' });
 
     // Calcul du chiffre d'affaires (somme des prix des réservations validées, confirmées et terminées)
     const reservationsValidees = await Reservation.find({ status: { $in: ['validee', 'confirmee', 'terminee'] } });
@@ -137,6 +142,7 @@ export const getDashboardStats = async (req: Request, res: Response) => {
       valideeReservations,
       attenteReservations,
       annuleeReservations,
+      attenteOrders,
       totalRevenue,
       tauxOccupation,
       nouveauxClients,
@@ -164,18 +170,21 @@ export const getReservations = async (req: Request, res: Response) => {
 // @access  Private
 export const createReservation = async (req: Request, res: Response) => {
   try {
-    const { clientName, clientEmail, clientPhone, clientAddress, suiteName, checkIn, checkOut, arrivalTime, numberOfPersons, services, occasion, specialRequest, internalNote, totalPrice, status, consentGiven } = req.body;
+    const { clientName, clientEmail, clientPhone, clientAddress, suiteName, formuleName, formulePrice, checkIn, checkOut, arrivalTime, numberOfPersons, services, prestations, occasion, specialRequest, internalNote, totalPrice, status, consentGiven } = req.body;
     const reservation = await Reservation.create({
       clientName,
       clientEmail,
       clientPhone,
       clientAddress,
       suiteName,
+      formuleName,
+      formulePrice,
       checkIn,
       checkOut,
       arrivalTime,
       numberOfPersons: numberOfPersons || 2,
       services: services || [],
+      prestations: prestations || [],
       occasion,
       specialRequest,
       internalNote,
@@ -194,16 +203,61 @@ export const createReservation = async (req: Request, res: Response) => {
 // @access  Private
 export const updateReservation = async (req: Request, res: Response) => {
   try {
-    const { clientName, clientEmail, clientPhone, clientAddress, suiteName, checkIn, checkOut, arrivalTime, numberOfPersons, services, occasion, specialRequest, internalNote, totalPrice, status, consentGiven } = req.body;
-    const reservation = await Reservation.findByIdAndUpdate(
-      req.params.id,
-      { clientName, clientEmail, clientPhone, clientAddress, suiteName, checkIn, checkOut, arrivalTime, numberOfPersons, services, occasion, specialRequest, internalNote, totalPrice, status, consentGiven },
-      { new: true }
-    );
-    if (!reservation) {
+    const { clientName, clientEmail, clientPhone, clientAddress, suiteName, formuleName, formulePrice, checkIn, checkOut, arrivalTime, numberOfPersons, services, prestations, occasion, specialRequest, internalNote, totalPrice, status, consentGiven } = req.body;
+
+    // Chercher la réservation actuelle AVANT la mise à jour pour détecter un passage à "annulee"
+    const existing = await Reservation.findById(req.params.id);
+    if (!existing) {
       return res.status(404).json({ message: 'Réservation non trouvée' });
     }
-    res.json(reservation);
+
+    // ─── Remboursement Stripe automatique ───────────────────────────────────
+    // Si la réservation passe en "annulee" ET qu'elle a été payée via Stripe,
+    // émettre un remboursement complet automatiquement.
+    let refundResult: { id: string; status: string } | null = null;
+    if (
+      status === 'annulee' &&
+      existing.status !== 'annulee' &&
+      existing.paymentStatus === 'paye' &&
+      existing.paymentProvider === 'stripe' &&
+      existing.paymentRef
+    ) {
+      try {
+        // paymentRef contient le Checkout Session ID (cs_...) → récupérer le PaymentIntent
+        const session = await stripe.checkout.sessions.retrieve(existing.paymentRef);
+        const paymentIntentId = typeof session.payment_intent === 'string'
+          ? session.payment_intent
+          : session.payment_intent?.id;
+
+        if (paymentIntentId) {
+          const refund = await stripe.refunds.create({
+            payment_intent: paymentIntentId,
+            // Pas de montant spécifié = remboursement total
+          });
+          refundResult = { id: refund.id, status: refund.status ?? 'unknown' };
+          // Marquer comme remboursé en BDD
+          existing.paymentStatus = 'rembourse';
+        }
+      } catch (stripeErr: any) {
+        // Ne pas bloquer l'annulation si Stripe échoue, mais le signaler
+        console.error('[Stripe] Échec du remboursement automatique:', stripeErr.message);
+        // On continue quand même l'annulation de la réservation en BDD
+      }
+    }
+    // ─────────────────────────────────────────────────────────────────────────
+
+    // Appliquer les modifications
+    const fields: any = { clientName, clientEmail, clientPhone, clientAddress, suiteName, formuleName, formulePrice, checkIn, checkOut, arrivalTime, numberOfPersons, services, prestations, occasion, specialRequest, internalNote, totalPrice, consentGiven };
+    if (status) fields.status = status;
+    if (existing.paymentStatus === 'rembourse') fields.paymentStatus = 'rembourse';
+
+    const reservation = await Reservation.findByIdAndUpdate(
+      req.params.id,
+      fields,
+      { new: true }
+    );
+
+    res.json({ reservation, refund: refundResult });
   } catch (error: any) {
     res.status(500).json({ message: error.message });
   }
@@ -264,7 +318,7 @@ export const getSuiteById = async (req: Request, res: Response) => {
 // @access  Private
 export const createSuite = async (req: Request, res: Response) => {
   try {
-    const { name, tagline, description, longDescription, presentationTitle, atouts, callToAction, pricePerNight, features, status, imageUrl, images } = req.body;
+    const { name, tagline, description, longDescription, presentationTitle, atouts, callToAction, pricePerNight, features, status, imageUrl, images, icalUrls } = req.body;
     const suite = await Suite.create({
       name,
       tagline,
@@ -277,7 +331,8 @@ export const createSuite = async (req: Request, res: Response) => {
       features,
       status,
       imageUrl,
-      images: images || []
+      images: images || [],
+      icalUrls: icalUrls || { airbnb: '', booking: '' }
     });
     res.status(201).json(suite);
   } catch (error: any) {
@@ -290,10 +345,12 @@ export const createSuite = async (req: Request, res: Response) => {
 // @access  Private
 export const updateSuite = async (req: Request, res: Response) => {
   try {
-    const { name, tagline, description, longDescription, presentationTitle, atouts, callToAction, pricePerNight, features, status, imageUrl, images } = req.body;
+    const { name, tagline, description, longDescription, presentationTitle, atouts, callToAction, pricePerNight, features, status, imageUrl, images, icalUrls } = req.body;
+    const updateFields: any = { name, tagline, description, longDescription, presentationTitle, atouts, callToAction, pricePerNight, features, status, imageUrl, images: images || [] };
+    if (icalUrls !== undefined) updateFields.icalUrls = icalUrls;
     const suite = await Suite.findByIdAndUpdate(
       req.params.id,
-      { name, tagline, description, longDescription, presentationTitle, atouts, callToAction, pricePerNight, features, status, imageUrl, images: images || [] },
+      updateFields,
       { new: true }
     );
     if (!suite) {
@@ -337,7 +394,7 @@ export const getServices = async (req: Request, res: Response) => {
 // @access  Private
 export const createService = async (req: Request, res: Response) => {
   try {
-    const { name, description, price, imageUrl, status, features, isPopular, billingType } = req.body;
+    const { name, description, price, imageUrl, status, features, isPopular, billingType, category, allowQuantity, maxQuantity, pricingUnit, variants, order } = req.body;
     const service = await Service.create({
       name,
       description,
@@ -346,7 +403,13 @@ export const createService = async (req: Request, res: Response) => {
       status: status || 'actif',
       features: features || [],
       isPopular: isPopular || false,
-      billingType: billingType || 'par_nuit'
+      billingType: billingType || 'par_nuit',
+      category: category || '',
+      allowQuantity: allowQuantity || false,
+      maxQuantity: maxQuantity || 1,
+      pricingUnit: pricingUnit || 'forfait',
+      variants: variants || [],
+      order: order || 0
     });
     res.status(201).json(service);
   } catch (error: any) {
@@ -359,10 +422,21 @@ export const createService = async (req: Request, res: Response) => {
 // @access  Private
 export const updateService = async (req: Request, res: Response) => {
   try {
-    const { name, description, price, imageUrl, status, features, isPopular, billingType } = req.body;
+    const { name, description, price, imageUrl, status, features, isPopular, billingType, category, allowQuantity, maxQuantity, pricingUnit, variants, order } = req.body;
     const service = await Service.findByIdAndUpdate(
       req.params.id,
-      { name, description, price, imageUrl, status, features: features || [], isPopular: isPopular || false, billingType: billingType || 'par_nuit' },
+      {
+        name, description, price, imageUrl, status,
+        features: features || [],
+        isPopular: isPopular || false,
+        billingType: billingType || 'par_nuit',
+        category: category || '',
+        allowQuantity: allowQuantity || false,
+        maxQuantity: maxQuantity || 1,
+        pricingUnit: pricingUnit || 'forfait',
+        variants: variants || [],
+        order: order || 0
+      },
       { new: true }
     );
     if (!service) {
@@ -443,6 +517,265 @@ export const deleteService = async (req: Request, res: Response) => {
     res.json({ message: 'Service supprimé avec succès' });
   } catch (error: any) {
     res.status(500).json({ message: error.message });
+  }
+};
+
+// ==========================================================================
+// FORMULES — offre principale du tunnel (rattachée à une suite)
+// ==========================================================================
+
+// @desc    Obtenir toutes les formules (admin : actives + inactives)
+// @route   GET /api/admin/formules
+// @access  Private
+export const getFormules = async (req: Request, res: Response) => {
+  try {
+    const formules = await Formule.find().sort({ order: 1, createdAt: 1 });
+    res.json(formules);
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// @desc    Obtenir les formules actives (site public)
+// @route   GET /api/formules
+// @access  Public
+export const getPublicFormules = async (req: Request, res: Response) => {
+  try {
+    const filter: any = { status: 'actif' };
+    if (req.query.suiteName) filter.suiteName = String(req.query.suiteName);
+    const formules = await Formule.find(filter).sort({ order: 1, createdAt: 1 });
+    res.json(formules);
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// @desc    Créer une formule
+// @route   POST /api/admin/formules
+// @access  Private
+export const createFormule = async (req: Request, res: Response) => {
+  try {
+    const { name, suiteName, description, price, billingType, features, imageUrl, images, isPopular, status, order } = req.body;
+    const formule = await Formule.create({
+      name,
+      suiteName: suiteName || '',
+      description: description || '',
+      price,
+      billingType: billingType || 'nuit',
+      features: features || [],
+      imageUrl: imageUrl || '',
+      images: images || [],
+      isPopular: isPopular || false,
+      status: status || 'actif',
+      order: order || 0,
+    });
+    res.status(201).json(formule);
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// @desc    Mettre à jour une formule
+// @route   PUT /api/admin/formules/:id
+// @access  Private
+export const updateFormule = async (req: Request, res: Response) => {
+  try {
+    const { name, suiteName, description, price, billingType, features, imageUrl, images, isPopular, status, order } = req.body;
+    const formule = await Formule.findByIdAndUpdate(
+      req.params.id,
+      {
+        name, suiteName, description, price,
+        billingType: billingType || 'nuit',
+        features: features || [],
+        imageUrl, images: images || [],
+        isPopular: isPopular || false,
+        status, order: order || 0,
+      },
+      { new: true }
+    );
+    if (!formule) {
+      return res.status(404).json({ message: 'Formule non trouvée' });
+    }
+    res.json(formule);
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// @desc    Supprimer une formule
+// @route   DELETE /api/admin/formules/:id
+// @access  Private
+export const deleteFormule = async (req: Request, res: Response) => {
+  try {
+    const formule = await Formule.findByIdAndDelete(req.params.id);
+    if (!formule) {
+      return res.status(404).json({ message: 'Formule non trouvée' });
+    }
+    res.json({ message: 'Formule supprimée avec succès' });
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// @desc    Vérifier la disponibilité d'une suite sur une période
+// @route   GET /api/availability?suiteName=..&checkIn=..&checkOut=..
+// @access  Public
+// Croise les dates bloquées manuellement (Suite.blockedDates) et les réservations
+// actives (confirmée / validée) pour éviter les doublons.
+export const getAvailability = async (req: Request, res: Response) => {
+  try {
+    const suiteName = String(req.query.suiteName || '');
+    const checkInStr = String(req.query.checkIn || '');
+    const checkOutStr = String(req.query.checkOut || '');
+
+    if (!suiteName || !checkInStr || !checkOutStr) {
+      return res.status(400).json({ available: false, reason: 'Paramètres manquants (suiteName, checkIn, checkOut).' });
+    }
+
+    const checkIn = new Date(checkInStr);
+    const checkOut = new Date(checkOutStr);
+    if (isNaN(checkIn.getTime()) || isNaN(checkOut.getTime())) {
+      return res.status(400).json({ available: false, reason: 'Dates invalides.' });
+    }
+    if (checkOut.getTime() <= checkIn.getTime()) {
+      return res.status(400).json({ available: false, reason: 'La date de départ doit être postérieure à la date d\'arrivée.' });
+    }
+
+    // Chevauchement de deux intervalles [aStart, aEnd) et [bStart, bEnd)
+    const overlaps = (aStart: Date, aEnd: Date, bStart: Date, bEnd: Date) =>
+      aStart.getTime() < bEnd.getTime() && bStart.getTime() < aEnd.getTime();
+
+    const suite = await Suite.findOne({ name: suiteName });
+    if (!suite) {
+      return res.status(404).json({ available: false, reason: 'Suite introuvable.' });
+    }
+    if (suite.status !== 'disponible') {
+      return res.json({ available: false, reason: 'Cette suite est actuellement en maintenance.' });
+    }
+
+    // 1. Dates bloquées manuellement (ou importées iCal en Phase 3)
+    for (const bd of suite.blockedDates) {
+      if (overlaps(checkIn, checkOut, new Date(bd.startDate), new Date(bd.endDate))) {
+        return res.json({ available: false, reason: bd.reason || 'Période indisponible.' });
+      }
+    }
+
+    // 2. Réservations actives sur la même suite
+    const reservations = await Reservation.find({
+      suiteName,
+      status: { $in: ['confirmee', 'validee'] },
+    });
+    for (const r of reservations) {
+      if (overlaps(checkIn, checkOut, new Date(r.checkIn), new Date(r.checkOut))) {
+        return res.json({ available: false, reason: 'Ces dates sont déjà réservées.' });
+      }
+    }
+
+    return res.json({ available: true });
+  } catch (error: any) {
+    res.status(500).json({ available: false, reason: error.message });
+  }
+};
+
+// ==========================================================================
+// SYNCHRONISATION iCal (Airbnb / Booking) — anti-doublon
+// ==========================================================================
+
+// Fonction autonome pour synchroniser une seule suite
+export async function syncSingleSuite(suite: any): Promise<Record<string, number | string>> {
+  const sources: ('airbnb' | 'booking')[] = ['airbnb', 'booking'];
+  const summary: Record<string, number | string> = {};
+  // On garde les blocages manuels ; les blocages importés sont recalculés à chaque synchro.
+  let kept = suite.blockedDates.filter((bd: any) => (bd.source || 'manuel') === 'manuel');
+
+  for (const source of sources) {
+    const url = suite.icalUrls?.[source];
+    if (!url) {
+      summary[source] = 'non configuré';
+      continue;
+    }
+    try {
+      const blocks = await fetchIcalBlocks(url, source);
+      kept = kept.concat(blocks as any);
+      summary[source] = blocks.length;
+    } catch (e: any) {
+      summary[source] = `erreur: ${e.message}`;
+    }
+  }
+
+  suite.blockedDates = kept as any;
+  await suite.save();
+  return summary;
+}
+
+// @desc    Synchroniser les calendriers iCal d'une suite (import Airbnb/Booking)
+// @route   POST /api/admin/suites/:id/sync-ical
+// @access  Private
+export const syncSuiteIcal = async (req: Request, res: Response) => {
+  try {
+    const suite = await Suite.findById(req.params.id);
+    if (!suite) return res.status(404).json({ message: 'Suite non trouvée' });
+
+    const summary = await syncSingleSuite(suite);
+    res.json({ message: 'Synchronisation terminée', summary, suite });
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// Fonction globale pour synchroniser toutes les suites (utilisée par le cron/intervalle)
+export const syncAllSuitesIcal = async () => {
+  console.log(`[iCal Sync] Démarrage de la synchronisation globale...`);
+  try {
+    const suites = await Suite.find();
+    for (const suite of suites) {
+      if (suite.icalUrls?.airbnb || suite.icalUrls?.booking) {
+        console.log(`[iCal Sync] Synchro de la suite : ${suite.name}`);
+        const summary = await syncSingleSuite(suite);
+        console.log(`[iCal Sync] Résultat pour ${suite.name} :`, summary);
+      }
+    }
+    console.log(`[iCal Sync] Fin de la synchronisation globale.`);
+  } catch (error: any) {
+    console.error(`[iCal Sync] Erreur lors de la synchronisation globale:`, error.message);
+  }
+};
+
+// @desc    Mettre à jour uniquement les URLs iCal d'une suite (sans toucher au reste)
+// @route   PATCH /api/admin/suites/:id/ical
+// @access  Private
+export const updateSuiteIcalUrls = async (req: Request, res: Response) => {
+  try {
+    const { icalUrls } = req.body;
+    const suite = await Suite.findByIdAndUpdate(
+      req.params.id,
+      { icalUrls: { airbnb: icalUrls?.airbnb || '', booking: icalUrls?.booking || '' } },
+      { new: true }
+    );
+    if (!suite) return res.status(404).json({ message: 'Suite non trouvée' });
+    res.json(suite);
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// @desc    Exporter les réservations d'une suite au format iCal (.ics)
+// @route   GET /api/ical/:id
+// @access  Public (URL à coller dans Airbnb / Booking)
+export const exportSuiteIcal = async (req: Request, res: Response) => {
+  try {
+    const suite = await Suite.findById(req.params.id);
+    if (!suite) return res.status(404).send('Suite non trouvée');
+    const reservations = await Reservation.find({
+      suiteName: suite.name,
+      status: { $in: ['confirmee', 'validee'] },
+    }).select('_id checkIn checkOut');
+    const feed = buildIcalFeed(suite.name, reservations as any);
+    res.setHeader('Content-Type', 'text/calendar; charset=utf-8');
+    res.setHeader('Content-Disposition', `inline; filename="${suite.name.replace(/\s+/g, '-').toLowerCase()}.ics"`);
+    res.send(feed);
+  } catch (error: any) {
+    res.status(500).send(error.message);
   }
 };
 
@@ -682,7 +1015,7 @@ export const deleteProduct = async (req: Request, res: Response) => {
 // @route   POST /api/orders
 // @access  Public
 export const createOrder = async (req: Request, res: Response) => {
-  const { items, customerName, customerEmail, customerPhone } = req.body;
+  const { items, customerName, customerEmail, customerPhone, note, customerAddress, customerPostalCode, customerCity, fulfillment } = req.body;
   try {
     if (!Array.isArray(items) || items.length === 0) {
       return res.status(400).json({ message: 'Aucun produit dans la commande' });
@@ -728,6 +1061,7 @@ export const createOrder = async (req: Request, res: Response) => {
 
       decremented.push({ id, qty });
       orderItems.push({
+        itemType: 'product',
         product: updated._id,
         name: updated.name,
         price: updated.price,
@@ -741,6 +1075,11 @@ export const createOrder = async (req: Request, res: Response) => {
       customerName,
       customerEmail,
       customerPhone,
+      customerAddress,
+      customerPostalCode,
+      customerCity,
+      fulfillment: fulfillment || 'retrait',
+      note,
       total,
       status: 'en_attente',
       paymentStatus: 'non_paye',
@@ -751,6 +1090,233 @@ export const createOrder = async (req: Request, res: Response) => {
   } catch (error: any) {
     res.status(500).json({ message: error.message });
   }
+};
+
+// @desc    Créer une demande de carte cadeau (même système de commandes, sans stock)
+// @route   POST /api/gift-card-orders
+// @access  Public
+export const createGiftCardOrder = async (req: Request, res: Response) => {
+  const { giftCardId, customerName, customerEmail, customerPhone, note, recipientName, customerAddress, customerPostalCode, customerCity, fulfillment } = req.body;
+  try {
+    if (!giftCardId) {
+      return res.status(400).json({ message: 'Carte cadeau manquante' });
+    }
+    if (!customerName || !customerEmail) {
+      return res.status(400).json({ message: 'Coordonnées client manquantes' });
+    }
+    const card = await GiftCard.findOne({ _id: giftCardId, status: 'actif' });
+    if (!card) {
+      return res.status(404).json({ message: 'Carte cadeau introuvable ou indisponible' });
+    }
+
+    const order = await Order.create({
+      items: [{ itemType: 'giftcard', name: `Carte cadeau — ${card.name}`, price: card.price, quantity: 1 }],
+      customerName,
+      customerEmail,
+      customerPhone,
+      customerAddress,
+      customerPostalCode,
+      customerCity,
+      fulfillment: fulfillment || 'retrait',
+      recipientName,
+      note,
+      total: card.price,
+      status: 'en_attente',
+      paymentStatus: 'non_paye',
+      paymentProvider: 'aucun',
+    });
+
+    res.status(201).json(order);
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+/* ==========================================================================
+   PAIEMENT STRIPE (Boutique + Cartes cadeaux)
+   ========================================================================== */
+
+// @desc    Créer une session de paiement Stripe pour une commande existante
+// @route   POST /api/payments/session
+// @access  Public
+export const createCheckoutSession = async (req: Request, res: Response) => {
+  try {
+    const { orderId } = req.body;
+    const order = await Order.findById(orderId);
+    if (!order) return res.status(404).json({ message: 'Commande introuvable' });
+    if (order.paymentStatus === 'paye') return res.status(400).json({ message: 'Commande déjà payée' });
+
+    const origin = (req.headers.origin as string) || (process.env.FRONTEND_URL?.split(',')[0]) || 'http://localhost:3000';
+    const isGift = order.items.some((i: any) => i.itemType === 'giftcard');
+    const returnPath = isGift ? '/cartes-cadeaux' : '/boutique';
+
+    const line_items = order.items.map((i: any) => ({
+      price_data: {
+        currency: 'eur',
+        product_data: { name: i.name },
+        unit_amount: Math.round(i.price * 100),
+      },
+      quantity: i.quantity,
+    }));
+
+    const session = await stripe.checkout.sessions.create({
+      mode: 'payment',
+      line_items,
+      customer_email: order.customerEmail,
+      metadata: { orderId: String(order._id) },
+      success_url: `${origin}${returnPath}?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${origin}${returnPath}?canceled=1`,
+    });
+
+    order.paymentProvider = 'stripe';
+    order.paymentRef = session.id;
+    await order.save();
+
+    res.json({ url: session.url });
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// Marque une commande comme payée + confirmée (idempotent).
+const markOrderPaid = async (orderId: string, sessionId: string) => {
+  const order = await Order.findById(orderId);
+  if (order && order.paymentStatus !== 'paye') {
+    order.paymentStatus = 'paye';
+    order.status = 'confirmee';
+    order.paymentProvider = 'stripe';
+    order.paymentRef = sessionId;
+    await order.save();
+  }
+  return order;
+};
+
+// @desc    Vérifier une session au retour de Stripe (fonctionne sans webhook)
+// @route   GET /api/payments/verify?session_id=...
+// @access  Public
+export const verifyCheckoutSession = async (req: Request, res: Response) => {
+  try {
+    const sessionId = String(req.query.session_id || '');
+    if (!sessionId) return res.status(400).json({ message: 'session_id manquant' });
+    const session = await stripe.checkout.sessions.retrieve(sessionId);
+    const paid = session.payment_status === 'paid';
+    let order = null;
+    if (paid && session.metadata?.orderId) {
+      order = await markOrderPaid(session.metadata.orderId, session.id);
+    }
+    res.json({ paid, order });
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// @desc    Créer une session de paiement Stripe pour une réservation existante
+// @route   POST /api/payments/reservation-session
+// @access  Public
+export const createReservationCheckoutSession = async (req: Request, res: Response) => {
+  try {
+    const { reservationId } = req.body;
+    const reservation = await Reservation.findById(reservationId);
+    if (!reservation) return res.status(404).json({ message: 'Réservation introuvable' });
+    if (reservation.paymentStatus === 'paye') return res.status(400).json({ message: 'Réservation déjà payée' });
+
+    const origin = (req.headers.origin as string) || (process.env.FRONTEND_URL?.split(',')[0]) || 'http://localhost:5173';
+
+    const checkInStr = new Date(reservation.checkIn).toLocaleDateString('fr-FR');
+    const checkOutStr = new Date(reservation.checkOut).toLocaleDateString('fr-FR');
+
+    const line_items = [
+      {
+        price_data: {
+          currency: 'eur',
+          product_data: {
+            name: `Réservation ${reservation.suiteName} — ${reservation.formuleName || 'Formule'}`,
+            description: `Du ${checkInStr} au ${checkOutStr}`,
+          },
+          unit_amount: Math.round(reservation.totalPrice * 100),
+        },
+        quantity: 1,
+      },
+    ];
+
+    const session = await stripe.checkout.sessions.create({
+      mode: 'payment',
+      line_items,
+      customer_email: reservation.clientEmail,
+      metadata: { reservationId: String(reservation._id) },
+      success_url: `${origin}/confirmation?session_id={CHECKOUT_SESSION_ID}&type=reservation`,
+      cancel_url: `${origin}/checkout?canceled=1&reservation_id=${reservation._id}`,
+    });
+
+    reservation.paymentProvider = 'stripe';
+    reservation.paymentRef = session.id;
+    await reservation.save();
+
+    res.json({ url: session.url });
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// Marque une réservation comme payée + confirmée (idempotent).
+const markReservationPaid = async (reservationId: string, sessionId: string) => {
+  const reservation = await Reservation.findById(reservationId);
+  if (reservation && reservation.paymentStatus !== 'paye') {
+    reservation.paymentStatus = 'paye';
+    reservation.status = 'confirmee';
+    reservation.paymentProvider = 'stripe';
+    reservation.paymentRef = sessionId;
+    await reservation.save();
+  }
+  return reservation;
+};
+
+// @desc    Vérifier une session de réservation au retour de Stripe (sans webhook)
+// @route   GET /api/payments/verify-reservation?session_id=...
+// @access  Public
+export const verifyReservationSession = async (req: Request, res: Response) => {
+  try {
+    const sessionId = String(req.query.session_id || '');
+    if (!sessionId) return res.status(400).json({ message: 'session_id manquant' });
+    const session = await stripe.checkout.sessions.retrieve(sessionId);
+    const paid = session.payment_status === 'paid';
+    let reservation = null;
+    if (paid && session.metadata?.reservationId) {
+      reservation = await markReservationPaid(session.metadata.reservationId, session.id);
+    }
+    res.json({ paid, reservation });
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// @desc    Webhook Stripe (source de vérité en production)
+// @route   POST /api/stripe/webhook
+// @access  Public (signé)
+export const stripeWebhook = async (req: Request, res: Response) => {
+  const sig = req.headers['stripe-signature'] as string;
+  const whSecret = process.env.STRIPE_WEBHOOK_SECRET;
+  let event: any;
+  try {
+    if (whSecret) {
+      event = stripe.webhooks.constructEvent(req.body, sig, whSecret);
+    } else {
+      // Pas de secret configuré (dev) : on parse sans vérifier la signature.
+      event = JSON.parse(req.body.toString());
+    }
+  } catch (err: any) {
+    return res.status(400).send(`Webhook Error: ${err.message}`);
+  }
+
+  if (event.type === 'checkout.session.completed') {
+    const session = event.data.object;
+    if (session.metadata?.orderId) {
+      await markOrderPaid(session.metadata.orderId, session.id);
+    } else if (session.metadata?.reservationId) {
+      await markReservationPaid(session.metadata.reservationId, session.id);
+    }
+  }
+  res.json({ received: true });
 };
 
 // @desc    Liste les commandes (admin)
@@ -767,6 +1333,7 @@ export const getOrders = async (req: Request, res: Response) => {
 
 // @desc    Met à jour le statut / le paiement d'une commande.
 //          Si la commande passe à « annulee », le stock des produits est réapprovisionné.
+//          Si la commande était payée via Stripe, un remboursement automatique est émis.
 // @route   PATCH /api/admin/orders/:id
 // @access  Private
 export const updateOrder = async (req: Request, res: Response) => {
@@ -784,10 +1351,61 @@ export const updateOrder = async (req: Request, res: Response) => {
       }
     }
 
+    // ─── Remboursement Stripe automatique ───────────────────────────────────
+    // Si la commande passe en "annulee" ET qu'elle a été payée via Stripe,
+    // émettre un remboursement complet automatiquement.
+    let refundResult: { id: string; status: string } | null = null;
+    if (
+      status === 'annulee' &&
+      order.status !== 'annulee' &&
+      order.paymentStatus === 'paye' &&
+      order.paymentProvider === 'stripe' &&
+      order.paymentRef
+    ) {
+      try {
+        // paymentRef contient le Checkout Session ID (cs_...) → récupérer le PaymentIntent
+        const session = await stripe.checkout.sessions.retrieve(order.paymentRef);
+        const paymentIntentId = typeof session.payment_intent === 'string'
+          ? session.payment_intent
+          : session.payment_intent?.id;
+
+        if (paymentIntentId) {
+          const refund = await stripe.refunds.create({
+            payment_intent: paymentIntentId,
+            // Pas de montant spécifié = remboursement total
+          });
+          refundResult = { id: refund.id, status: refund.status ?? 'unknown' };
+          // Marquer comme remboursé en BDD
+          order.paymentStatus = 'rembourse';
+        }
+      } catch (stripeErr: any) {
+        // Ne pas bloquer l'annulation si Stripe échoue, mais le signaler
+        console.error('[Stripe] Échec du remboursement automatique (commande):', stripeErr.message);
+        // On continue quand même l'annulation de la commande en BDD
+      }
+    }
+    // ─────────────────────────────────────────────────────────────────────────
+
     if (status) order.status = status;
-    if (paymentStatus) order.paymentStatus = paymentStatus;
+    // Ne pas écraser 'rembourse' si on vient de le définir via Stripe
+    if (paymentStatus && order.paymentStatus !== 'rembourse') order.paymentStatus = paymentStatus;
     await order.save();
-    res.json(order);
+    res.json({ order, refund: refundResult });
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// @desc    Supprimer une commande de l'historique
+// @route   DELETE /api/admin/orders/:id
+// @access  Private
+export const deleteOrder = async (req: Request, res: Response) => {
+  try {
+    const order = await Order.findByIdAndDelete(req.params.id);
+    if (!order) {
+      return res.status(404).json({ message: 'Commande non trouvée' });
+    }
+    res.json({ message: 'Commande supprimée avec succès' });
   } catch (error: any) {
     res.status(500).json({ message: error.message });
   }
@@ -890,3 +1508,55 @@ export const logoutAdmin = (req: Request, res: Response) => {
   res.json({ message: 'Déconnexion réussie' });
 };
 
+/* ==========================================================================
+   Contact Form (Public)
+   ========================================================================== */
+
+// @desc    Gère la soumission du formulaire de contact (envoi d'un email à l'administrateur)
+// @route   POST /api/contact
+// @access  Public
+export const submitContactForm = async (req: Request, res: Response) => {
+  const { name, email, subject, message } = req.body;
+
+  if (!name || !email || !message) {
+    return res.status(400).json({ message: 'Veuillez remplir les champs obligatoires (nom, email, message).' });
+  }
+
+  try {
+    const htmlContent = `
+      <div style="font-family: 'Helvetica Neue', Arial, sans-serif; max-width: 600px; margin: 0 auto; background-color: #0f0f0f; color: #ffffff; padding: 40px; border-radius: 10px; border: 1px solid #c7a17a;">
+        <div style="text-align: center; margin-bottom: 30px;">
+          <h1 style="font-family: 'Times New Roman', Times, serif; color: #c7a17a; font-size: 28px; font-weight: normal; margin: 0; letter-spacing: 2px; text-transform: uppercase;">Maison Love Rooms</h1>
+          <p style="color: #c7a17a; font-size: 12px; letter-spacing: 4px; margin-top: 5px; text-transform: uppercase;">Nouveau Message</p>
+        </div>
+        
+        <div style="background-color: rgba(255, 255, 255, 0.05); padding: 25px; border-radius: 8px; margin-bottom: 30px;">
+          <p style="margin: 0 0 15px 0; font-size: 14px;"><strong style="color: #c7a17a; text-transform: uppercase; letter-spacing: 1px; font-size: 11px;">Nom du client :</strong><br/><span style="font-size: 16px; margin-top: 5px; display: inline-block;">${name}</span></p>
+          <p style="margin: 0 0 15px 0; font-size: 14px;"><strong style="color: #c7a17a; text-transform: uppercase; letter-spacing: 1px; font-size: 11px;">Email de contact :</strong><br/><a href="mailto:${email}" style="color: #ffffff; text-decoration: none; font-size: 16px; margin-top: 5px; display: inline-block;">${email}</a></p>
+          <p style="margin: 0; font-size: 14px;"><strong style="color: #c7a17a; text-transform: uppercase; letter-spacing: 1px; font-size: 11px;">Sujet de la demande :</strong><br/><span style="font-size: 16px; margin-top: 5px; display: inline-block;">${subject || 'Non spécifié'}</span></p>
+        </div>
+        
+        <div style="border-top: 1px solid rgba(199, 161, 122, 0.3); padding-top: 30px;">
+          <strong style="color: #c7a17a; text-transform: uppercase; letter-spacing: 1px; font-size: 11px; display: block; margin-bottom: 15px;">Message :</strong>
+          <p style="white-space: pre-wrap; font-size: 15px; line-height: 1.6; color: #e0e0e0; margin: 0; padding: 20px; background-color: rgba(0,0,0,0.3); border-left: 3px solid #c7a17a; border-radius: 4px;">${message}</p>
+        </div>
+        
+        <div style="text-align: center; margin-top: 40px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1);">
+          <p style="color: #888; font-size: 11px;">Cet email a été envoyé depuis le formulaire de contact de Maison Love Room.</p>
+        </div>
+      </div>
+    `;
+
+    await sendEmail({
+      to: process.env.EMAIL_USER as string, // L'email de destination (le même que l'expéditeur)
+      subject: `[Contact] ${subject || 'Nouvelle demande'} de ${name}`,
+      html: htmlContent,
+      replyTo: email, // Permet à l'admin de répondre directement au client
+    });
+
+    res.status(200).json({ message: 'Message envoyé avec succès.' });
+  } catch (error: any) {
+    console.error('Erreur lors de l\'envoi du formulaire de contact :', error);
+    res.status(500).json({ message: 'Erreur lors de l\'envoi du message.', error: error.message });
+  }
+};

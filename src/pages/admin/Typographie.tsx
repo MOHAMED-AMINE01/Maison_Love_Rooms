@@ -110,11 +110,10 @@ export default function AdminTypographie() {
                       key={theme.id}
                       type="button"
                       onClick={() => setSelected(theme.id)}
-                      className={`group relative text-left rounded-2xl border p-8 transition-all duration-300 overflow-hidden ${
-                        isSelected
+                      className={`group relative text-left rounded-2xl border p-8 transition-all duration-300 overflow-hidden ${isSelected
                           ? 'border-gold bg-gradient-to-br from-gold/10 to-transparent shadow-xl shadow-gold/5'
                           : 'border-white/[0.06] bg-white/[0.02] hover:border-white/20 hover:bg-white/[0.03]'
-                      }`}
+                        }`}
                     >
                       {/* Badge sélection / actif */}
                       <div className="flex items-start justify-between gap-4 mb-6">
@@ -137,11 +136,10 @@ export default function AdminTypographie() {
                           </p>
                         </div>
                         <div
-                          className={`w-7 h-7 rounded-full flex-shrink-0 flex items-center justify-center border transition-all ${
-                            isSelected
+                          className={`w-7 h-7 rounded-full flex-shrink-0 flex items-center justify-center border transition-all ${isSelected
                               ? 'bg-gold border-gold text-black'
                               : 'border-white/20 text-transparent group-hover:border-white/40'
-                          }`}
+                            }`}
                         >
                           <Check size={16} strokeWidth={3} />
                         </div>
@@ -153,7 +151,7 @@ export default function AdminTypographie() {
                           className="text-3xl leading-tight text-white"
                           style={{ fontFamily: theme.serif }}
                         >
-                          Érotisme <span className="italic text-white/40">et plaisir.</span>
+                          Sensualité <span className="italic text-white/40">et plaisir.</span>
                         </p>
                         <p
                           className="text-sm text-white/50 leading-relaxed"

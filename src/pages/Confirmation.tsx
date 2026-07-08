@@ -2,10 +2,81 @@ import React from 'react';
 import { motion } from 'motion/react';
 import { Link, useLocation } from 'react-router-dom';
 import { CheckCircle2, Mail, ShieldCheck, ArrowRight, Download } from 'lucide-react';
+import { API_URL } from '../constants';
 
 export default function Confirmation() {
    const { state } = useLocation();
-   const data = (state as any) || {};
+   const [loading, setLoading] = React.useState(false);
+   const [error, setError] = React.useState('');
+   const [reservationData, setReservationData] = React.useState<any>(null);
+
+   React.useEffect(() => {
+      const params = new URLSearchParams(window.location.search);
+      const sessionId = params.get('session_id');
+      const type = params.get('type');
+      if (sessionId && type === 'reservation') {
+         setLoading(true);
+         fetch(`${API_URL}/api/payments/verify-reservation?session_id=${sessionId}`)
+            .then(res => res.json())
+            .then(resData => {
+               if (resData.paid && resData.reservation) {
+                  const r = resData.reservation;
+                  const calculatedNights = Math.max(
+                     1,
+                     Math.round((new Date(r.checkOut).getTime() - new Date(r.checkIn).getTime()) / (1000 * 60 * 60 * 24))
+                  );
+                  setReservationData({
+                     reference: r._id ? `ML-${String(r._id).slice(-6).toUpperCase()}` : 'ML-CONFIRME',
+                     suiteName: r.suiteName,
+                     clientName: r.clientName,
+                     email: r.clientEmail,
+                     phone: r.clientPhone,
+                     checkIn: r.checkIn,
+                     checkOut: r.checkOut,
+                     arrivalTime: r.arrivalTime,
+                     numberOfPersons: r.numberOfPersons,
+                     formula: r.formuleName,
+                     prestations: r.prestations || [],
+                     services: r.services || [],
+                     occasion: r.occasion,
+                     total: r.totalPrice,
+                     nights: calculatedNights,
+                     isPaid: true
+                  });
+               } else {
+                  setError("Le paiement n'a pas pu être vérifié.");
+               }
+            })
+            .catch(() => setError("Erreur lors de la vérification du paiement."))
+            .finally(() => setLoading(false));
+      }
+   }, []);
+
+   if (loading) {
+      return (
+         <div className="bg-[#0A0A0A] min-h-screen flex items-center justify-center text-white font-sans">
+            <div className="text-center space-y-4">
+               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gold mx-auto"></div>
+               <p className="text-gold tracking-widest text-xs uppercase font-bold">Vérification de votre paiement...</p>
+            </div>
+         </div>
+      );
+   }
+
+   if (error) {
+      return (
+         <div className="bg-[#0A0A0A] min-h-screen flex items-center justify-center text-white font-sans">
+            <div className="text-center space-y-6 max-w-md p-8 bg-[#121212] border border-white/10 rounded-3xl">
+               <p className="text-red-500 font-bold">{error}</p>
+               <Link to="/" className="inline-block bg-gold text-[#0A0A0A] font-bold px-6 py-3 rounded-full hover:bg-white transition-colors">
+                  Retour à l'accueil
+               </Link>
+            </div>
+         </div>
+      );
+   }
+
+   const data = reservationData || (state as any) || {};
    const reference = data.reference || 'ML-EN-ATTENTE';
    const suiteName = data.suiteName || 'Votre suite';
    const email = data.email;
@@ -18,9 +89,17 @@ export default function Confirmation() {
 
    const buildReceiptHtml = () => {
       const services: string[] = Array.isArray(data.services) ? data.services : [];
+      const prestations: any[] = Array.isArray(data.prestations) ? data.prestations : [];
       const row = (label: string, value: string) =>
          `<tr><td class="label">${esc(label)}</td><td class="value">${esc(value)}</td></tr>`;
-      const optionsRows = services.map(s => row('Option', s)).join('');
+      const optionsRows = prestations.length > 0
+         ? prestations.map(p => row(`${p.name}${p.quantity > 1 ? ` × ${p.quantity}` : ''}`, `${p.lineTotal}€`)).join('')
+         : services.map(s => row('Option', s)).join('');
+
+      const noteText = data.isPaid
+         ? "Réservation confirmée et réglée par carte bancaire. Un e-mail de confirmation contenant vos codes d'accès vous a été envoyé. Notre conciergerie reste à votre entière disposition pour préparer au mieux votre venue."
+         : "Demande de réservation enregistrée — statut « en attente ». Aucun paiement en ligne n'a été effectué. Notre conciergerie vous recontacte rapidement pour confirmer la disponibilité et finaliser votre séjour. Le montant indiqué est une estimation (hébergement, hors options).";
+
       return `<!doctype html>
 <html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Reçu ${esc(reference)} — Maison Love Rooms</title>
@@ -66,10 +145,10 @@ export default function Confirmation() {
         ${optionsRows}
       </table>
       <div class="total">
-        <span class="lbl">Estimation${data.nights ? ` (${data.nights} nuit${data.nights > 1 ? 's' : ''})` : ''}</span>
+        <span class="lbl">${data.isPaid ? 'Total Payé' : 'Estimation'}${data.nights ? ` (${data.nights} nuit${data.nights > 1 ? 's' : ''})` : ''}</span>
         <span class="amt">${data.total != null ? esc(data.total) + '€' : '—'}</span>
       </div>
-      <p class="note">Demande de réservation enregistrée — statut « en attente ». Aucun paiement en ligne n'a été effectué. Notre conciergerie vous recontacte rapidement pour confirmer la disponibilité et finaliser votre séjour. Le montant indiqué est une estimation (hébergement, hors options).</p>
+      <p class="note">${esc(noteText)}</p>
     </div>
     <div class="foot">Maison Love Rooms · Reçu généré le ${new Date().toLocaleDateString('fr-FR')} · Document non contractuel</div>
   </div>

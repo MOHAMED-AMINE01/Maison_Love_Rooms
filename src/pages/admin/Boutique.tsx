@@ -27,6 +27,11 @@ import {
   Image as ImageIcon
 } from "lucide-react";
 
+interface VariantData {
+  label: string;
+  price: number;
+}
+
 interface ServiceData {
   _id?: string;
   name: string;
@@ -37,7 +42,19 @@ interface ServiceData {
   features?: string[];
   isPopular?: boolean;
   billingType?: 'par_nuit' | 'forfait';
+  // Champs Prestation
+  category?: string;
+  allowQuantity?: boolean;
+  maxQuantity?: number;
+  pricingUnit?: 'par_unite' | 'forfait' | 'par_nuit';
+  variants?: VariantData[];
 }
+
+const PRICING_UNIT_LABELS: Record<string, string> = {
+  par_unite: 'Par unité',
+  forfait: 'Forfait (pour le séjour)',
+  par_nuit: 'Par nuit',
+};
 
 interface ComparisonRowData {
   label: string;
@@ -74,12 +91,17 @@ export default function AdminBoutique() {
   const [formData, setFormData] = useState<ServiceData>({
     name: '',
     description: '',
-    price: 189,
+    price: 30,
     imageUrl: '',
     status: 'actif',
     features: [],
     isPopular: false,
-    billingType: 'par_nuit'
+    billingType: 'par_nuit',
+    category: '',
+    allowQuantity: false,
+    maxQuantity: 1,
+    pricingUnit: 'forfait',
+    variants: []
   });
   const [featuresText, setFeaturesText] = useState('');
   const [uploadingImage, setUploadingImage] = useState(false);
@@ -123,12 +145,17 @@ export default function AdminBoutique() {
     setFormData({
       name: '',
       description: '',
-      price: 189,
+      price: 30,
       imageUrl: '',
       status: 'actif',
       features: [],
       isPopular: false,
-      billingType: 'par_nuit'
+      billingType: 'par_nuit',
+      category: '',
+      allowQuantity: false,
+      maxQuantity: 1,
+      pricingUnit: 'forfait',
+      variants: []
     });
     setFeaturesText('');
     setIsAdding(true);
@@ -144,7 +171,12 @@ export default function AdminBoutique() {
       status: srv.status,
       features: srv.features || [],
       isPopular: srv.isPopular || false,
-      billingType: srv.billingType || 'par_nuit'
+      billingType: srv.billingType || 'par_nuit',
+      category: srv.category || '',
+      allowQuantity: srv.allowQuantity || false,
+      maxQuantity: srv.maxQuantity || 1,
+      pricingUnit: srv.pricingUnit || 'forfait',
+      variants: srv.variants || []
     });
     setFeaturesText(srv.features?.join('\n') || '');
     setIsAdding(true);
@@ -289,8 +321,8 @@ export default function AdminBoutique() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4 bg-admin-card p-6 border border-admin-border rounded-xl shadow-xl">
         <div className="space-y-2">
-          <span className="text-[10px] uppercase tracking-widest text-gold font-bold">Produits & Services</span>
-          <h2 className="text-3xl sm:text-4xl font-serif">Boutique & Prestations</h2>
+          <span className="text-[10px] uppercase tracking-widest text-gold font-bold">Options du tunnel</span>
+          <h2 className="text-3xl sm:text-4xl font-serif">Prestations</h2>
         </div>
 
         <button
@@ -602,24 +634,77 @@ export default function AdminBoutique() {
                   </button>
                 </div>
 
-                {/* Type de tarif (billingType) */}
+                {/* Catégorie */}
                 <div className="space-y-2">
-                  <label className="text-xs uppercase tracking-widest text-white/60 font-bold block">Type de tarif</label>
-                  <p className="text-[10px] text-white/40 mb-2">"Par nuit" est multiplié par le nombre de nuits. "Forfait" est un prix fixe (ex: massage, parenthèse de quelques heures).</p>
-                  <div className="grid grid-cols-2 gap-3">
-                    {[
-                      { value: 'par_nuit', label: 'Par nuit' },
-                      { value: 'forfait', label: 'Forfait fixe' }
-                    ].map((bt) => (
-                      <button
-                        key={bt.value}
-                        type="button"
-                        onClick={() => setFormData({ ...formData, billingType: bt.value as any })}
-                        className={`px-5 py-4 rounded-xl border text-sm font-bold transition-all ${formData.billingType === bt.value ? 'border-gold bg-gold/10 text-gold' : 'border-white/10 bg-[#0D0D0D] text-white/70 hover:border-gold/30'}`}
-                      >
-                        {bt.label}
+                  <label className="text-xs uppercase tracking-widest text-white/60 font-bold block">Catégorie</label>
+                  <input
+                    type="text"
+                    value={formData.category}
+                    onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                    placeholder="ex: Massage & Bien-être, Restauration, Décoration…"
+                    className="w-full bg-[#0D0D0D] border border-white/10 focus:border-gold rounded-xl px-5 py-4 text-sm text-white placeholder:text-white/20 outline-none transition-all shadow-inner"
+                  />
+                  <p className="text-[10px] text-white/40">Regroupe la prestation dans le tunnel de réservation.</p>
+                </div>
+
+                {/* Unité de tarification */}
+                <div className="space-y-2">
+                  <label className="text-xs uppercase tracking-widest text-white/60 font-bold block">Unité de tarification</label>
+                  <p className="text-[10px] text-white/40 mb-2">"Par unité" se multiplie par la quantité, "Par nuit" par le nombre de nuits, "Forfait" est un prix fixe pour le séjour.</p>
+                  <div className="grid grid-cols-3 gap-3">
+                    {(['par_unite', 'forfait', 'par_nuit'] as const).map((pu) => (
+                      <button key={pu} type="button" onClick={() => setFormData({ ...formData, pricingUnit: pu })}
+                        className={`px-3 py-4 rounded-xl border text-xs font-bold transition-all ${formData.pricingUnit === pu ? 'border-gold bg-gold/10 text-gold' : 'border-white/10 bg-[#0D0D0D] text-white/70 hover:border-gold/30'}`}>
+                        {PRICING_UNIT_LABELS[pu]}
                       </button>
                     ))}
+                  </div>
+                </div>
+
+                {/* Quantité */}
+                <div className="flex items-center justify-between bg-[#0D0D0D] border border-white/10 rounded-xl px-5 py-4 shadow-inner">
+                  <div className="space-y-1">
+                    <label className="text-sm text-white font-bold block">Autoriser une quantité</label>
+                    <p className="text-[10px] text-white/40">Le client pourra choisir combien il en veut (ex: 2 planches).</p>
+                  </div>
+                  <button type="button" onClick={() => setFormData({ ...formData, allowQuantity: !formData.allowQuantity })}
+                    className={`w-12 h-6 rounded-full transition-colors relative ${formData.allowQuantity ? 'bg-gold' : 'bg-white/10'}`}>
+                    <div className={`w-4 h-4 rounded-full bg-white absolute top-1 transition-transform ${formData.allowQuantity ? 'translate-x-7' : 'translate-x-1'}`} />
+                  </button>
+                </div>
+                {formData.allowQuantity && (
+                  <div className="space-y-2">
+                    <label className="text-xs uppercase tracking-widest text-white/60 font-bold block">Quantité maximum</label>
+                    <div className="flex items-center bg-[#0D0D0D] border border-white/10 rounded-xl overflow-hidden shadow-inner w-1/2">
+                      <button type="button" onClick={() => setFormData({ ...formData, maxQuantity: Math.max(1, (formData.maxQuantity || 1) - 1) })} className="px-4 py-3 text-white/40 hover:text-gold border-r border-white/5"><Minus size={16} /></button>
+                      <input type="number" min="1" value={formData.maxQuantity} onChange={(e) => setFormData({ ...formData, maxQuantity: Math.max(1, Number(e.target.value)) })}
+                        className="w-full bg-transparent px-4 py-3 text-center text-white outline-none font-serif [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" />
+                      <button type="button" onClick={() => setFormData({ ...formData, maxQuantity: (formData.maxQuantity || 1) + 1 })} className="px-4 py-3 text-white/40 hover:text-gold border-l border-white/5"><Plus size={16} /></button>
+                    </div>
+                  </div>
+                )}
+
+                {/* Variantes (choix spécifique) */}
+                <div className="space-y-2">
+                  <label className="text-xs uppercase tracking-widest text-white/60 font-bold block">Choix spécifiques (variantes)</label>
+                  <p className="text-[10px] text-white/40 mb-2">Ex: massage "Solo" / "Duo", chacun avec son prix. Le prix de la variante remplace le prix de base. Laissez vide s'il n'y a pas de choix.</p>
+                  <div className="space-y-2">
+                    {(formData.variants || []).map((v, i) => (
+                      <div key={i} className="flex items-center gap-2">
+                        <input type="text" value={v.label} placeholder="Libellé (ex: Duo)"
+                          onChange={(e) => { const nv = [...(formData.variants || [])]; nv[i] = { ...nv[i], label: e.target.value }; setFormData({ ...formData, variants: nv }); }}
+                          className="flex-1 bg-[#0D0D0D] border border-white/10 focus:border-gold rounded-xl px-4 py-3 text-sm text-white placeholder:text-white/20 outline-none" />
+                        <input type="number" min="0" value={v.price} placeholder="Prix"
+                          onChange={(e) => { const nv = [...(formData.variants || [])]; nv[i] = { ...nv[i], price: Number(e.target.value) }; setFormData({ ...formData, variants: nv }); }}
+                          className="w-24 bg-[#0D0D0D] border border-white/10 focus:border-gold rounded-xl px-4 py-3 text-sm text-white placeholder:text-white/20 outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" />
+                        <button type="button" onClick={() => { const nv = (formData.variants || []).filter((_, idx) => idx !== i); setFormData({ ...formData, variants: nv }); }}
+                          className="p-3 rounded-lg bg-white/[0.02] border border-white/[0.05] hover:bg-rose-500/20 hover:text-rose-400 text-white/60"><Trash2 size={14} /></button>
+                      </div>
+                    ))}
+                    <button type="button" onClick={() => setFormData({ ...formData, variants: [...(formData.variants || []), { label: '', price: formData.price }] })}
+                      className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-white/10 text-white/70 hover:border-gold hover:text-gold text-xs font-bold uppercase tracking-widest transition-all">
+                      <Plus size={14} /> Ajouter une variante
+                    </button>
                   </div>
                 </div>
 

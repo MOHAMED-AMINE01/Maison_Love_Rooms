@@ -5,7 +5,16 @@ import { API_URL } from '../../constants';
 
 export default function Contact() {
   const [focused, setFocused] = useState<string | null>(null);
-  const [email, setEmail] = useState("privilege@maisonloveroom.fr");
+  const [adminEmail, setAdminEmail] = useState("privilege@maisonloveroom.fr");
+
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    subject: '',
+    message: ''
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [statusMessage, setStatusMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
 
   useEffect(() => {
     const getSettings = async () => {
@@ -14,7 +23,7 @@ export default function Contact() {
         if (res.ok) {
           const data = await res.json();
           if (data.email) {
-            setEmail(data.email);
+            setAdminEmail(data.email);
           }
         }
       } catch (err) {
@@ -23,6 +32,41 @@ export default function Contact() {
     };
     getSettings();
   }, []);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setStatusMessage(null);
+
+    try {
+      const res = await fetch(`${API_URL}/api/contact`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+
+      if (res.ok) {
+        setStatusMessage({ type: 'success', text: 'Votre message a été envoyé avec succès ! Nous vous répondrons dans les plus brefs délais.' });
+        setFormData({ name: '', email: '', subject: '', message: '' });
+        
+        // Disparition automatique après 5 secondes
+        setTimeout(() => {
+          setStatusMessage(null);
+        }, 5000);
+      } else {
+        const data = await res.json();
+        setStatusMessage({ type: 'error', text: data.message || 'Une erreur est survenue lors de l\'envoi.' });
+      }
+    } catch (error) {
+      setStatusMessage({ type: 'error', text: 'Impossible de se connecter au serveur.' });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <section id="contact" className="pt-12 md:pt-20 pb-24 md:pb-40 bg-page relative overflow-hidden">
@@ -59,7 +103,7 @@ export default function Contact() {
             <div className="space-y-6 pt-4">
               {[
                 { icon: Phone, label: "Téléphone", value: "06.27.09.47.17" },
-                { icon: Mail, label: "Email", value: email },
+                { icon: Mail, label: "Email", value: adminEmail },
                 { icon: Sparkles, label: "Ou bien", value: "Remplissez notre formulaire ci-dessous" }
               ].map((item, i) => (
                 <motion.div
@@ -87,15 +131,18 @@ export default function Contact() {
             whileInView={{ opacity: 1, scale: 1 }}
             className="bg-gold/5 border border-gold/[0.7] p-10 md:p-14 rounded-[3rem] shadow-xl relative"
           >
-            <form className="space-y-8" onSubmit={(e) => e.preventDefault()}>
+            <form className="space-y-8" onSubmit={handleSubmit}>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 {/* Name Input */}
                 <div className="relative group">
-                  <label className={`absolute left-0 transition-all duration-500 pointer-events-none text-[10px] uppercase tracking-widest font-black ${focused === 'name' ? '-top-6 text-gold opacity-100' : 'top-1 text-noir/90 opacity-60'}`}>
+                  <label className={`absolute left-0 transition-all duration-500 pointer-events-none text-[10px] uppercase tracking-widest font-black ${(focused === 'name' || formData.name) ? '-top-6 text-gold opacity-100' : 'top-1 text-noir/90 opacity-60'}`}>
                     Votre Nom <span className="text-gold">*</span>
                   </label>
                   <input
                     type="text"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleChange}
                     required
                     onFocus={() => setFocused('name')}
                     onBlur={(e) => setFocused(e.target.value ? 'name' : null)}
@@ -106,11 +153,14 @@ export default function Contact() {
 
                 {/* Email Input */}
                 <div className="relative group">
-                  <label className={`absolute left-0 transition-all duration-500 pointer-events-none text-[10px] uppercase tracking-widest font-black ${focused === 'email' ? '-top-6 text-gold opacity-100' : 'top-1 text-noir/90 opacity-60'}`}>
+                  <label className={`absolute left-0 transition-all duration-500 pointer-events-none text-[10px] uppercase tracking-widest font-black ${(focused === 'email' || formData.email) ? '-top-6 text-gold opacity-100' : 'top-1 text-noir/90 opacity-60'}`}>
                     Votre Email <span className="text-gold">*</span>
                   </label>
                   <input
                     type="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
                     required
                     onFocus={() => setFocused('email')}
                     onBlur={(e) => setFocused(e.target.value ? 'email' : null)}
@@ -122,11 +172,14 @@ export default function Contact() {
 
               {/* Subject Input */}
               <div className="relative group">
-                <label className={`absolute left-0 transition-all duration-500 pointer-events-none text-[10px] uppercase tracking-widest font-black ${focused === 'subject' ? '-top-6 text-gold opacity-100' : 'top-1 text-noir/90 opacity-60'}`}>
+                <label className={`absolute left-0 transition-all duration-500 pointer-events-none text-[10px] uppercase tracking-widest font-black ${(focused === 'subject' || formData.subject) ? '-top-6 text-gold opacity-100' : 'top-1 text-noir/90 opacity-60'}`}>
                   Objet de votre demande
                 </label>
                 <input
                   type="text"
+                  name="subject"
+                  value={formData.subject}
+                  onChange={handleChange}
                   onFocus={() => setFocused('subject')}
                   onBlur={(e) => setFocused(e.target.value ? 'subject' : null)}
                   className="w-full bg-transparent border-b border-noir/10 py-2 text-noir font-light focus:outline-none focus:border-gold transition-colors duration-500"
@@ -136,10 +189,13 @@ export default function Contact() {
 
               {/* Message Input */}
               <div className="relative group">
-                <label className={`absolute left-0 transition-all duration-500 pointer-events-none text-[10px] uppercase tracking-widest font-black ${focused === 'message' ? '-top-6 text-gold opacity-100' : 'top-1 text-noir/90 opacity-60'}`}>
+                <label className={`absolute left-0 transition-all duration-500 pointer-events-none text-[10px] uppercase tracking-widest font-black ${(focused === 'message' || formData.message) ? '-top-6 text-gold opacity-100' : 'top-1 text-noir/90 opacity-60'}`}>
                   Votre Message <span className="text-gold">*</span>
                 </label>
                 <textarea
+                  name="message"
+                  value={formData.message}
+                  onChange={handleChange}
                   rows={4}
                   required
                   onFocus={() => setFocused('message')}
@@ -152,12 +208,24 @@ export default function Contact() {
               {/* Submit Button */}
               <button
                 type="submit"
-                className="group w-full relative py-6 bg-gold text-noir text-[11px] font-bold uppercase tracking-[0.4em] rounded-full overflow-hidden transition-all duration-500 shadow-2xl hover:shadow-gold/20 hover:text-white flex items-center justify-center gap-4"
+                disabled={isSubmitting}
+                className="group w-full relative py-6 bg-gold text-noir text-[11px] font-bold uppercase tracking-[0.4em] rounded-full overflow-hidden transition-all duration-500 shadow-2xl hover:shadow-gold/20 hover:text-white flex items-center justify-center gap-4 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <div className="absolute inset-0 bg-noir translate-y-[101%] group-hover:translate-y-0 transition-transform duration-500" />
-                <span className="relative z-10">Envoyer</span>
-                <Send size={14} className="relative z-10 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform duration-500" />
+                <span className="relative z-10">{isSubmitting ? 'Envoi en cours...' : 'Envoyer'}</span>
+                {!isSubmitting && <Send size={14} className="relative z-10 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform duration-500" />}
               </button>
+
+              {/* Status Message */}
+              {statusMessage && (
+                <motion.div
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className={`p-4 rounded-xl text-sm font-medium text-center ${statusMessage.type === 'success' ? 'bg-emerald-500/10 text-emerald-600' : 'bg-rose-500/10 text-rose-600'}`}
+                >
+                  {statusMessage.text}
+                </motion.div>
+              )}
             </form>
           </motion.div>
         </div>

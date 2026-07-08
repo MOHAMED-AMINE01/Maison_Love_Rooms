@@ -18,6 +18,8 @@ import {
   ClipboardList,
   Type,
   HelpCircle,
+  Star,
+  ShoppingBag,
   X
 } from "lucide-react";
 import { Link, useLocation, Outlet, useNavigate } from "react-router-dom";
@@ -27,9 +29,10 @@ const SIDEBAR_ITEMS = [
   { icon: LayoutDashboard, label: "Dashboard", path: "/admin" },
   { icon: CalendarDays, label: "Réservations", path: "/admin/reservations" },
   { icon: BedDouble, label: "Chambres", path: "/admin/chambres" },
+  { icon: Star, label: "Formules", path: "/admin/formules" },
   { icon: Sparkles, label: "Disponibilités", path: "/admin/disponibilites" },
-  { icon: Sparkles, label: "Boutique & Options", path: "/admin/boutique" },
-  { icon: Package, label: "Stock & Produits", path: "/admin/stock" },
+  { icon: Package, label: "Prestations", path: "/admin/prestations" },
+  { icon: ShoppingBag, label: "Boutique", path: "/admin/stock" },
   { icon: ClipboardList, label: "Commandes", path: "/admin/commandes" },
   { icon: Gift, label: "Cartes Cadeaux", path: "/admin/cartes-cadeaux" },
   { icon: HelpCircle, label: "FAQ", path: "/admin/faq" },
@@ -41,6 +44,7 @@ export default function AdminLayout() {
   const location = useLocation();
   const navigate = useNavigate();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [notifications, setNotifications] = useState({ reservations: 0, orders: 0 });
 
   useEffect(() => {
     const token = localStorage.getItem('adminToken');
@@ -48,13 +52,34 @@ export default function AdminLayout() {
       navigate('/admin/login', { replace: true });
       return;
     }
-    // Vérifie la session via le token Bearer
-    fetch(`${API_URL}/api/admin/stats`, {
-      headers: { Authorization: `Bearer ${token}` },
-      credentials: 'include'
-    })
-      .then(res => { if (!res.ok) navigate('/admin/login', { replace: true }); })
-      .catch(() => navigate('/admin/login', { replace: true }));
+
+    const fetchStats = () => {
+      fetch(`${API_URL}/api/admin/stats`, {
+        headers: { Authorization: `Bearer ${token}` },
+        credentials: 'include'
+      })
+        .then(res => {
+          if (!res.ok) {
+            navigate('/admin/login', { replace: true });
+            throw new Error('Not authorized');
+          }
+          return res.json();
+        })
+        .then(data => {
+          if (data) {
+            setNotifications({
+              reservations: data.attenteReservations || 0,
+              orders: data.attenteOrders || 0
+            });
+          }
+        })
+        .catch(err => console.error("Error fetching stats", err));
+    };
+
+    fetchStats();
+    const interval = setInterval(fetchStats, 30000); // 30 seconds
+
+    return () => clearInterval(interval);
   }, [navigate]);
 
   const handleLogout = async () => {
@@ -118,9 +143,22 @@ export default function AdminLayout() {
                   }`}
               >
                 <Icon size={20} className={isActive ? 'text-gold' : 'text-white/40 group-hover:text-white transition-colors'} />
-                <span className="text-sm tracking-wide">{item.label}</span>
+                <span className="text-sm tracking-wide flex-1">{item.label}</span>
+                
+                {/* Badges de notifications */}
+                {item.label === 'Réservations' && notifications.reservations > 0 && (
+                  <span className="bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center justify-center min-w-[20px] h-[20px]">
+                    {notifications.reservations}
+                  </span>
+                )}
+                {item.label === 'Commandes' && notifications.orders > 0 && (
+                  <span className="bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center justify-center min-w-[20px] h-[20px]">
+                    {notifications.orders}
+                  </span>
+                )}
+
                 {isActive && (
-                  <motion.div layoutId="active-indicator" className="ml-auto">
+                  <motion.div layoutId="active-indicator" className="ml-2">
                     <ChevronRight size={16} className="text-gold" />
                   </motion.div>
                 )}

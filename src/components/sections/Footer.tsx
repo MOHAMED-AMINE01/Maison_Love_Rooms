@@ -60,8 +60,10 @@ export default function Footer() {
             <ul className="space-y-4">
               {[
                 { label: "Accueil", to: "/" },
-                { label: "Nos suites", to: "/#suites" },
-                { label: "Prestation & Boutique", to: "/experience" },
+                { label: "Nos chambres", to: "/#suites" },
+                { label: "Expérience", to: "/experience" },
+                { label: "Boutique", to: "/boutique" },
+                { label: "Cartes cadeaux", to: "/cartes-cadeaux" },
                 { label: "Foire aux questions", to: "/#faq" }
               ].map((item) => (
                 <li key={item.label}>

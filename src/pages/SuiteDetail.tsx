@@ -16,7 +16,7 @@ export default function SuiteDetail() {
    const [loading, setLoading] = useState(!staticSuite);
    const [formules, setFormules] = useState<any[]>([]);
    const nights = 1;
-   const [formula, setFormula] = useState<string>('essentielle');
+   const [formula, setFormula] = useState<string>('');
 
    useEffect(() => {
       if (id) {
@@ -45,20 +45,14 @@ export default function SuiteDetail() {
             .catch(err => console.log('Utilisation de la suite statique de secours'))
             .finally(() => setLoading(false));
 
-         fetch(`${API_URL}/api/services`)
+         fetch(`${API_URL}/api/formules`)
             .then(res => res.json())
             .then(data => {
                if (Array.isArray(data)) {
-                  const activeFormules = data.filter((s: any) => s.status === 'actif');
-                  setFormules(activeFormules);
-                  // Sélection par défaut : la formule recommandée, sinon la première
-                  if (activeFormules.length > 0) {
-                     const defaultFormule = activeFormules.find((f: any) => f.isPopular) || activeFormules[0];
-                     setFormula(defaultFormule.name);
-                  }
+                  setFormules(data);
                }
             })
-            .catch(() => console.log('Services non disponibles'));
+            .catch(() => console.log('Formules non disponibles'));
       }
    }, [id]);
 
@@ -93,9 +87,12 @@ export default function SuiteDetail() {
    ];
 
    const basePrice = Number(suite.price || 189);
-   const completePrice = basePrice + 110;
-   const selectedFormule = formules.find((f: any) => f.name === formula);
-   const currentPrice = selectedFormule ? Number(selectedFormule.price) : (formula === 'complete' ? completePrice : basePrice);
+   // Formules rattachées à CETTE suite (décision : formule liée à la suite)
+   const suiteFormules = formules.filter((f: any) => f.suiteName === suite.name);
+   const selectedFormule = suiteFormules.find((f: any) => f.name === formula)
+      || suiteFormules.find((f: any) => f.isPopular)
+      || suiteFormules[0];
+   const currentPrice = selectedFormule ? Number(selectedFormule.price) : basePrice;
 
    return (
       <div className="bg-[#050505] min-h-screen selection:bg-amber-500/30 text-white overflow-x-hidden">
@@ -279,9 +276,9 @@ export default function SuiteDetail() {
                            <div className="hidden sm:block w-px h-12 md:h-16 bg-white/10" />
                            <div className="space-y-2">
                               <span className="text-[7px] md:text-[8px] uppercase text-white/30 tracking-widest font-black block">Disponibilité</span>
-                              <p className={`text-sm md:text-base font-black uppercase flex items-center justify-center gap-2 tracking-widest ${suite.status === 'en_maintenance' ? 'text-amber-500' : 'text-green-500'}`}>
-                                 <span className={`w-2 h-2 rounded-full animate-pulse ${suite.status === 'en_maintenance' ? 'bg-amber-500' : 'bg-green-500'}`} />
-                                 {suite.status === 'en_maintenance' ? 'En Maintenance' : 'Disponible'}
+                              <p className={`text-sm md:text-base font-black uppercase flex items-center justify-center gap-2 tracking-widest ${suite.status !== 'disponible' ? 'text-amber-500' : 'text-green-500'}`}>
+                                 <span className={`w-2 h-2 rounded-full animate-pulse ${suite.status !== 'disponible' ? 'bg-amber-500' : 'bg-green-500'}`} />
+                                 {suite.status !== 'disponible' ? 'En Maintenance' : 'Disponible'}
                               </p>
                            </div>
                         </div>
@@ -292,10 +289,15 @@ export default function SuiteDetail() {
                         <div className="space-y-6">
                            <label className="text-[7px] md:text-[8px] uppercase tracking-[0.4em] font-black text-white/30 text-center block w-full">Choisir votre expérience</label>
 
-                           {/* Formulas in Grid - 4 items */}
-                           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
-                              {formules.length > 0 ? (
-                                 formules.map((formule: any, idx: number) => {
+                           {/* Grille adaptée au nombre de formules (max 4 par ligne) */}
+                           <div className={`grid gap-3 md:gap-4 ${
+                              suiteFormules.length <= 1 ? 'grid-cols-1 max-w-sm mx-auto' :
+                              suiteFormules.length === 2 ? 'grid-cols-1 sm:grid-cols-2 max-w-2xl mx-auto' :
+                              suiteFormules.length === 3 ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3' :
+                              'grid-cols-1 sm:grid-cols-2 lg:grid-cols-4'
+                           }`}>
+                              {suiteFormules.length > 0 ? (
+                                 suiteFormules.map((formule: any, idx: number) => {
                                     const isPopular = formule.isPopular;
                                     const price = `${formule.price}€`;
                                     const isSelected = formula === formule.name;
@@ -331,38 +333,11 @@ export default function SuiteDetail() {
                                     );
                                  })
                               ) : (
-                                 <>
-                                    {/* Fallback: Essentielle */}
-                                    <motion.button
-                                       whileHover={{ scale: 1.02 }}
-                                       whileTap={{ scale: 0.98 }}
-                                       onClick={() => setFormula('essentielle')}
-                                       className={`group p-4 md:p-5 rounded-lg md:rounded-xl border transition-all duration-400 text-center space-y-2.5 ${formula === 'essentielle' ? 'border-gold/50 bg-gold/8 shadow-lg' : 'border-white/10 bg-white/[0.02] hover:border-white/20'}`}
-                                    >
-                                       <div className="space-y-1">
-                                          <p className={`text-sm md:text-base font-serif ${formula === 'essentielle' ? 'text-gold' : 'text-white/80'}`}>Essentielle</p>
-                                          <p className={`text-2xl md:text-3xl font-serif ${formula === 'essentielle' ? 'text-gold' : 'text-white'}`}>{basePrice}€</p>
-                                       </div>
-                                    </motion.button>
-
-                                    {/* Fallback: Complète */}
-                                    <motion.button
-                                       whileHover={{ scale: 1.02 }}
-                                       whileTap={{ scale: 0.98 }}
-                                       onClick={() => setFormula('complete')}
-                                       className={`relative group p-4 md:p-5 rounded-lg md:rounded-xl border transition-all duration-400 text-center space-y-2.5 ${formula === 'complete' ? 'border-gold/50 bg-gold/8 shadow-lg' : 'border-white/10 bg-white/[0.02] hover:border-white/20'}`}
-                                    >
-                                       <div className="absolute -top-2 left-1/2 -translate-x-1/2">
-                                          <span className="bg-gold/20 text-gold text-[5px] px-2 py-0.5 rounded-full font-black uppercase tracking-tighter border border-gold/30 flex items-center gap-0.5">
-                                             <Star size={8} fill="currentColor" /> Recommandé
-                                          </span>
-                                       </div>
-                                       <div className="space-y-1 pt-3">
-                                          <p className={`text-sm md:text-base font-serif ${formula === 'complete' ? 'text-gold' : 'text-white/80'}`}>Complète</p>
-                                          <p className={`text-2xl md:text-3xl font-serif ${formula === 'complete' ? 'text-gold' : 'text-white'}`}>{completePrice}€</p>
-                                       </div>
-                                    </motion.button>
-                                 </>
+                                 <div className="col-span-full text-center py-8 text-white/40 italic text-sm">
+                                    {suite.status !== 'disponible'
+                                       ? 'Cette chambre est actuellement en maintenance.'
+                                       : 'Aucune formule disponible pour cette chambre pour le moment.'}
+                                 </div>
                               )}
                            </div>
                         </div>
@@ -370,24 +345,32 @@ export default function SuiteDetail() {
 
                      {/* CTA Button & Security */}
                      <div className="flex flex-col gap-4 max-w-2xl mx-auto w-full">
-                        <motion.button
-                           whileHover={{ scale: 1.01 }}
-                           whileTap={{ scale: 0.99 }}
-                           onClick={() => navigate('/checkout', {
-                              state: {
-                                 suiteId: suite._id || suite.id,
-                                 suiteName: suite.name,
-                                 suiteImage: suite.image,
-                                 nights: nights,
-                                 formula: formula,
-                                 price: currentPrice
-                              }
-                           })}
-                           className="relative w-full bg-gold text-[#0A0A0A] py-4 md:py-6 rounded-xl md:rounded-2xl text-[9px] md:text-[10px] uppercase tracking-[0.3em] md:tracking-[0.4em] font-black hover:bg-white transition-all duration-500 shadow-lg overflow-hidden group"
-                        >
-                           <div className="absolute inset-0 bg-white/20 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000" />
-                           <span className="relative z-10 block">Confirmer ({currentPrice * nights}€)</span>
-                        </motion.button>
+                        {suiteFormules.length > 0 ? (
+                           <motion.button
+                              whileHover={{ scale: 1.01 }}
+                              whileTap={{ scale: 0.99 }}
+                              onClick={() => navigate('/checkout', {
+                                 state: {
+                                    suiteId: suite._id || suite.id,
+                                    suiteName: suite.name,
+                                    suiteImage: suite.image,
+                                    nights: nights,
+                                    formuleId: selectedFormule?._id,
+                                    formuleName: selectedFormule?.name,
+                                    formula: selectedFormule?.name,
+                                    price: currentPrice
+                                 }
+                              })}
+                              className="relative w-full bg-gold text-[#0A0A0A] py-4 md:py-6 rounded-xl md:rounded-2xl text-[9px] md:text-[10px] uppercase tracking-[0.3em] md:tracking-[0.4em] font-black hover:bg-white transition-all duration-500 shadow-lg overflow-hidden group"
+                           >
+                              <div className="absolute inset-0 bg-white/20 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000" />
+                              <span className="relative z-10 block">Confirmer ({currentPrice * nights}€)</span>
+                           </motion.button>
+                        ) : (
+                           <button disabled className="w-full bg-white/5 text-white/30 py-4 md:py-6 rounded-xl md:rounded-2xl text-[9px] md:text-[10px] uppercase tracking-[0.3em] md:tracking-[0.4em] font-black cursor-not-allowed border border-white/10">
+                              {suite.status !== 'disponible' ? 'Chambre en maintenance' : 'Aucune formule disponible'}
+                           </button>
+                        )}
 
                         <div className="flex items-center justify-center gap-2 text-white/30">
                            <ShieldCheck size={14} />

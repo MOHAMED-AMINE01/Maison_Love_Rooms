@@ -13,6 +13,8 @@ import { applyFontTheme, getCachedFontTheme, DEFAULT_FONT_THEME } from "./fontTh
 const SuiteDetail = lazy(() => import("./pages/SuiteDetail"));
 const Checkout = lazy(() => import("./pages/Checkout"));
 const Experience = lazy(() => import("./pages/Experience"));
+const Boutique = lazy(() => import("./pages/Boutique"));
+const CartesCadeaux = lazy(() => import("./pages/CartesCadeaux"));
 const Confirmation = lazy(() => import("./pages/Confirmation"));
 const Legal = lazy(() => import("./pages/Legal"));
 
@@ -23,6 +25,7 @@ const AdminDashboard = lazy(() => import("./pages/admin/Dashboard"));
 const AdminReservations = lazy(() => import("./pages/admin/Reservations"));
 const AdminChambres = lazy(() => import("./pages/admin/Chambres"));
 const AdminDisponibilites = lazy(() => import("./pages/admin/Disponibilites"));
+const AdminFormules = lazy(() => import("./pages/admin/Formules"));
 const AdminBoutique = lazy(() => import("./pages/admin/Boutique"));
 const AdminStock = lazy(() => import("./pages/admin/Stock"));
 const AdminCommandes = lazy(() => import("./pages/admin/Commandes"));
@@ -96,8 +99,9 @@ function AppContent() {
               <Route path="/" element={<Home />} />
               <Route path="/suite/:id" element={<SuiteDetail />} />
               <Route path="/experience" element={<Experience />} />
-              {/* Ancienne page Cartes Cadeaux : désormais intégrée à « Boutique et Service » */}
-              <Route path="/cartes-cadeaux" element={<Navigate to="/experience" replace />} />
+              {/* Boutique et Cartes cadeaux : désormais des pages dédiées (onglets séparés) */}
+              <Route path="/boutique" element={<Boutique />} />
+              <Route path="/cartes-cadeaux" element={<CartesCadeaux />} />
               <Route path="/checkout" element={<Checkout />} />
               <Route path="/confirmation" element={<Confirmation />} />
               <Route path="/mentions-legales" element={<Legal />} />
@@ -115,6 +119,7 @@ function AppContent() {
                 <Route path="reservations" element={<AdminReservations />} />
                 <Route path="chambres" element={<AdminChambres />} />
                 <Route path="disponibilites" element={<AdminDisponibilites />} />
+                <Route path="formules" element={<AdminFormules />} />
                 <Route path="prestations" element={<AdminBoutique />} />
                 <Route path="boutique" element={<AdminBoutique />} />
                 <Route path="stock" element={<AdminStock />} />

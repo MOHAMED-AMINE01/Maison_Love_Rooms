@@ -19,7 +19,11 @@ import {
   CheckCircle,
   CalendarDays,
   ChevronDown,
-  CheckCircle2
+  CheckCircle2,
+  RefreshCw,
+  Link2,
+  Copy,
+  Check
 } from "lucide-react";
 
 interface BlockedDate {
@@ -34,6 +38,7 @@ interface SuiteData {
   name: string;
   imageUrl: string;
   blockedDates: BlockedDate[];
+  icalUrls?: { airbnb: string; booking: string };
 }
 
 interface ReservationData {
@@ -79,6 +84,55 @@ export default function AdminDisponibilites() {
   const [openSuiteDropdown, setOpenSuiteDropdown] = useState(false);
   const [openReasonDropdown, setOpenReasonDropdown] = useState(false);
 
+  // Synchronisation iCal (Airbnb / Booking)
+  const [icalDrafts, setIcalDrafts] = useState<Record<string, { airbnb: string; booking: string }>>({});
+  const [syncingId, setSyncingId] = useState<string | null>(null);
+  const [copiedId, setCopiedId] = useState<string | null>(null);
+
+  const saveIcalUrls = async (suiteId: string) => {
+    const draft = icalDrafts[suiteId] || { airbnb: '', booking: '' };
+    try {
+      const res = await adminFetch(`/api/admin/suites/${suiteId}/ical`, {
+        method: 'PATCH',
+        body: JSON.stringify({ icalUrls: draft }),
+      });
+      if (res.ok) {
+        const updated = await res.json();
+        setSuites(prev => prev.map(s => s._id === suiteId ? updated : s));
+        showToast('success', 'Liens iCal enregistrés.');
+      } else showToast('error', "Erreur lors de l'enregistrement des liens.");
+    } catch {
+      showToast('error', 'Erreur réseau.');
+    }
+  };
+
+  const runIcalSync = async (suiteId: string) => {
+    setSyncingId(suiteId);
+    try {
+      const res = await adminFetch(`/api/admin/suites/${suiteId}/sync-ical`, { method: 'POST' });
+      if (res.ok) {
+        const data = await res.json();
+        if (data.suite) setSuites(prev => prev.map(s => s._id === suiteId ? data.suite : s));
+        const parts = Object.entries(data.summary || {}).map(([k, v]) => `${k}: ${v}`).join(' · ');
+        showToast('success', `Synchronisation terminée. ${parts}`);
+      } else {
+        showToast('error', 'Erreur lors de la synchronisation.');
+      }
+    } catch {
+      showToast('error', 'Erreur réseau lors de la synchronisation.');
+    } finally {
+      setSyncingId(null);
+    }
+  };
+
+  const copyExportUrl = (suiteId: string) => {
+    const url = `${API_URL}/api/ical/${suiteId}`;
+    navigator.clipboard?.writeText(url).then(() => {
+      setCopiedId(suiteId);
+      setTimeout(() => setCopiedId(null), 2000);
+    }).catch(() => showToast('error', 'Copie impossible.'));
+  };
+
   const fetchData = async () => {
     setLoading(true);
     try {
@@ -95,6 +149,11 @@ export default function AdminDisponibilites() {
 
       setSuites(suitesData);
       setReservations(resData);
+      const drafts: Record<string, { airbnb: string; booking: string }> = {};
+      suitesData.forEach((s: SuiteData) => {
+        drafts[s._id] = { airbnb: s.icalUrls?.airbnb || '', booking: s.icalUrls?.booking || '' };
+      });
+      setIcalDrafts(drafts);
       if (suitesData.length > 0) {
         setBlockForm(prev => ({ ...prev, suiteId: suitesData[0]._id }));
       }
@@ -295,7 +354,7 @@ export default function AdminDisponibilites() {
               {/* Liste des prochains blocages */}
               <div className="admin-card p-6 space-y-4 shadow-xl">
                  <h4 className="text-xs uppercase tracking-widest text-gold font-bold flex items-center gap-2 border-b border-admin-border pb-4">
-                    <AlertCircle size={14} /> Périodes Bloquées Manuellement
+                    <AlertCircle size={14} /> Périodes Bloquées (manuelles + Airbnb / Booking)
                  </h4>
                  {allBlockedDates.length === 0 ? (
                    <p className="text-xs text-white/40 italic py-2">Aucune date bloquée actuellement.</p>
@@ -352,6 +411,52 @@ export default function AdminDisponibilites() {
                       >
                          <Lock size={12} /> Bloquer des dates
                       </button>
+                   </div>
+
+                   {/* Synchronisation iCal Airbnb / Booking */}
+                   <div className="mb-8 p-5 rounded-xl bg-white/[0.02] border border-white/[0.05] space-y-4">
+                      <div className="flex items-center gap-2 text-white/80">
+                         <Link2 size={14} className="text-gold" />
+                         <span className="text-xs uppercase tracking-widest font-bold">Synchronisation des calendriers</span>
+                      </div>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                         <div className="space-y-1">
+                            <label className="text-[10px] uppercase tracking-widest text-white/40 font-bold">Lien iCal Airbnb</label>
+                            <input type="text" value={icalDrafts[suite._id]?.airbnb || ''}
+                               onChange={(e) => setIcalDrafts(prev => ({ ...prev, [suite._id]: { airbnb: e.target.value, booking: prev[suite._id]?.booking || '' } }))}
+                               placeholder="https://www.airbnb.com/calendar/ical/..."
+                               className="w-full bg-[#0D0D0D] border border-white/10 focus:border-gold rounded-lg px-3 py-2.5 text-xs text-white placeholder:text-white/20 outline-none transition-all" />
+                         </div>
+                         <div className="space-y-1">
+                            <label className="text-[10px] uppercase tracking-widest text-white/40 font-bold">Lien iCal Booking</label>
+                            <input type="text" value={icalDrafts[suite._id]?.booking || ''}
+                               onChange={(e) => setIcalDrafts(prev => ({ ...prev, [suite._id]: { airbnb: prev[suite._id]?.airbnb || '', booking: e.target.value } }))}
+                               placeholder="https://ical.booking.com/v1/export?..."
+                               className="w-full bg-[#0D0D0D] border border-white/10 focus:border-gold rounded-lg px-3 py-2.5 text-xs text-white placeholder:text-white/20 outline-none transition-all" />
+                         </div>
+                      </div>
+                      <div className="flex flex-wrap items-center gap-3">
+                         <button onClick={() => saveIcalUrls(suite._id)}
+                            className="px-4 py-2 rounded-lg border border-white/10 text-white/70 hover:border-gold hover:text-gold text-[10px] uppercase tracking-widest font-bold transition-all">
+                            Enregistrer les liens
+                         </button>
+                         <button onClick={() => runIcalSync(suite._id)} disabled={syncingId === suite._id}
+                            className="flex items-center gap-2 px-4 py-2 rounded-lg bg-gold/10 border border-gold/20 text-gold hover:bg-gold/20 text-[10px] uppercase tracking-widest font-bold transition-all disabled:opacity-50">
+                            <RefreshCw size={12} className={syncingId === suite._id ? 'animate-spin' : ''} />
+                            {syncingId === suite._id ? 'Synchro…' : 'Synchroniser maintenant'}
+                         </button>
+                      </div>
+                      <div className="pt-3 border-t border-white/5 space-y-1.5">
+                         <label className="text-[10px] uppercase tracking-widest text-white/40 font-bold">Lien à coller dans Airbnb / Booking (export des réservations du site)</label>
+                         <div className="flex items-center gap-2">
+                            <input readOnly value={`${API_URL}/api/ical/${suite._id}`}
+                               className="flex-1 bg-[#0D0D0D] border border-white/10 rounded-lg px-3 py-2.5 text-xs text-white/60 outline-none" />
+                            <button onClick={() => copyExportUrl(suite._id)} title="Copier"
+                               className="p-2.5 rounded-lg bg-white/[0.03] border border-white/10 text-white/60 hover:text-gold hover:border-gold transition-all">
+                               {copiedId === suite._id ? <Check size={14} className="text-emerald-400" /> : <Copy size={14} />}
+                            </button>
+                         </div>
+                      </div>
                    </div>
 
                     {/* En-tête des jours de la semaine */}

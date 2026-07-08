@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
-import { ShoppingBag, Search, Check, Ban, BadgeEuro, Clock, User, Mail, Phone } from 'lucide-react';
+import { ShoppingBag, Search, Check, Ban, BadgeEuro, Clock, User, Mail, Phone, Trash2 } from 'lucide-react';
 import { AdminToast, AdminConfirmModal, useAdminToast, useAdminConfirm } from '../../components/admin/AdminModal';
 import { adminFetch } from '../../utils/apiClient';
 
 interface OrderItem {
-  product: string;
+  product?: string;
+  itemType?: 'product' | 'giftcard';
   name: string;
   price: number;
   quantity: number;
@@ -17,9 +18,17 @@ interface OrderData {
   customerName: string;
   customerEmail: string;
   customerPhone?: string;
+  customerAddress?: string;
+  customerPostalCode?: string;
+  customerCity?: string;
+  fulfillment?: 'retrait' | 'livraison';
+  recipientName?: string;
+  note?: string;
   total: number;
   status: 'en_attente' | 'confirmee' | 'annulee';
   paymentStatus: 'non_paye' | 'paye' | 'rembourse';
+  paymentProvider?: 'aucun' | 'stripe';
+  paymentRef?: string;
   createdAt: string;
 }
 
@@ -70,9 +79,15 @@ export default function AdminCommandes() {
         body: JSON.stringify(body),
       });
       if (res.ok) {
-        const updated = await res.json();
+        const data = await res.json();
+        // La réponse est maintenant { order, refund }
+        const updated = data.order ?? data;
         setOrders(prev => prev.map(o => (o._id === updated._id ? updated : o)));
-        showToast('success', successMsg);
+        if (data.refund) {
+          showToast('success', `Commande annulée & remboursée automatiquement sur Stripe (ID: ${data.refund.id}) ✓`);
+        } else {
+          showToast('success', successMsg);
+        }
       } else {
         showToast('error', 'Mise à jour impossible');
       }
@@ -83,11 +98,35 @@ export default function AdminCommandes() {
   };
 
   const cancelOrder = (order: OrderData) => {
+    const wasPaidByStripe = order.paymentStatus === 'paye' && order.paymentProvider === 'stripe';
     showConfirm({
       title: 'Annuler la commande',
-      message: `Annuler la commande de "${order.customerName}" ? Les quantités seront automatiquement remises en stock.`,
+      message: wasPaidByStripe
+        ? `Annuler la commande de "${order.customerName}" ? Les quantités seront remises en stock et le paiement Stripe sera remboursé automatiquement.`
+        : `Annuler la commande de "${order.customerName}" ? Les quantités seront automatiquement remises en stock.`,
       type: 'danger',
       onConfirm: () => patchOrder(order._id, { status: 'annulee' }, 'Commande annulée — stock réapprovisionné'),
+    });
+  };
+
+  const deleteOrder = (order: OrderData) => {
+    showConfirm({
+      title: 'Supprimer la commande',
+      message: `Supprimer définitivement la commande de "${order.customerName}" de l'historique ? Cette action est irréversible.`,
+      type: 'danger',
+      onConfirm: async () => {
+        try {
+          const res = await adminFetch(`/api/admin/orders/${order._id}`, { method: 'DELETE' });
+          if (res.ok) {
+            setOrders(prev => prev.filter(o => o._id !== order._id));
+            showToast('success', 'Commande supprimée de l\'historique');
+          } else {
+            showToast('error', 'Impossible de supprimer la commande');
+          }
+        } catch {
+          showToast('error', 'Erreur lors de la suppression');
+        }
+      },
     });
   };
 
@@ -111,7 +150,7 @@ export default function AdminCommandes() {
         title={confirm.title}
         message={confirm.message}
         type={confirm.type}
-        confirmLabel="Annuler la commande"
+        confirmLabel={confirm.title.includes('Supprimer') ? 'Supprimer' : 'Annuler la commande'}
         cancelLabel="Retour"
         onConfirm={() => {
           confirm.onConfirm();
@@ -201,6 +240,17 @@ export default function AdminCommandes() {
                     )}
                   </div>
 
+                  {/* Récupération / livraison / destinataire */}
+                  <div className="flex flex-wrap items-center gap-x-6 gap-y-1 text-xs text-white/50 pt-1">
+                    <span className={`px-2 py-0.5 rounded-full border text-[10px] uppercase tracking-widest font-bold ${order.fulfillment === 'livraison' ? 'bg-blue-500/10 text-blue-300 border-blue-500/20' : 'bg-white/5 text-white/50 border-white/10'}`}>
+                      {order.fulfillment === 'livraison' ? 'Livraison' : 'Retrait sur place'}
+                    </span>
+                    {order.recipientName && <span>🎁 Pour : <span className="text-white/70">{order.recipientName}</span></span>}
+                    {order.fulfillment === 'livraison' && (order.customerAddress || order.customerCity) && (
+                      <span>📍 {[order.customerAddress, order.customerPostalCode, order.customerCity].filter(Boolean).join(', ')}</span>
+                    )}
+                  </div>
+
                   {/* Articles */}
                   <div className="space-y-1.5 pt-2">
                     {order.items.map((item, i) => (
@@ -214,6 +264,14 @@ export default function AdminCommandes() {
                       <span className="text-xl font-serif text-gold">{order.total.toFixed(2)}€</span>
                     </div>
                   </div>
+
+                  {/* Message / dédicace du client */}
+                  {order.note && (
+                    <div className="mt-3 p-3 rounded-lg bg-white/[0.02] border border-white/5">
+                      <span className="text-[10px] uppercase tracking-widest text-white/30 font-bold block mb-1">Message du client</span>
+                      <p className="text-sm text-white/70 italic">{order.note}</p>
+                    </div>
+                  )}
                 </div>
 
                 {/* Actions */}
@@ -242,6 +300,13 @@ export default function AdminCommandes() {
                       <Ban size={16} /> Annuler
                     </button>
                   )}
+                  <button
+                    onClick={() => deleteOrder(order)}
+                    className="flex items-center justify-center gap-2 px-4 py-2.5 bg-white/5 text-white/40 rounded-lg hover:bg-rose-500/10 hover:text-rose-400 transition-all text-sm font-bold border border-white/10 hover:border-rose-500/20"
+                    title="Supprimer de l'historique"
+                  >
+                    <Trash2 size={16} /> Supprimer
+                  </button>
                 </div>
               </div>
             </motion.div>

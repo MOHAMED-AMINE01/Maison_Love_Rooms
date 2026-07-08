@@ -8,13 +8,30 @@ import { seedDatabase } from './seeder';
 // Routes
 import adminRoutes from './routes/adminRoutes';
 import publicRoutes from './routes/publicRoutes';
+import { stripeWebhook } from './controllers/adminController';
 
 // Configuration de l'environnement
 dotenv.config();
 
+import { syncAllSuitesIcal } from './controllers/adminController';
+
 // Connexion à la base de données MongoDB et peuplement des données statiques
 connectDB().then(() => {
   seedDatabase();
+
+  // Démarrer la synchronisation automatique iCal (Airbnb/Booking)
+  // Intervalle par défaut : 15 minutes
+  const intervalMinutes = parseInt(process.env.ICAL_SYNC_INTERVAL_MINUTES || '15', 10);
+  console.log(`[iCal Sync] Initialisation de la synchronisation automatique toutes les ${intervalMinutes} minutes.`);
+  
+  // Première exécution après 10 secondes pour laisser le serveur démarrer tranquillement
+  setTimeout(() => {
+    syncAllSuitesIcal();
+  }, 10000);
+
+  setInterval(() => {
+    syncAllSuitesIcal();
+  }, intervalMinutes * 60 * 1000);
 });
 
 const app = express();
@@ -42,6 +59,10 @@ app.use(cors({
   },
   credentials: true,
 }));
+
+// Webhook Stripe : doit recevoir le corps BRUT (avant express.json) pour vérifier la signature.
+app.post('/api/stripe/webhook', express.raw({ type: 'application/json' }), stripeWebhook);
+
 app.use(express.json());
 app.use(cookieParser());
 

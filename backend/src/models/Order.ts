@@ -1,7 +1,9 @@
 import mongoose, { Schema, Document } from 'mongoose';
 
 interface IOrderItem {
-  product: mongoose.Types.ObjectId;
+  // 'product' = article boutique (avec stock) ; 'giftcard' = carte cadeau (sans stock).
+  itemType?: 'product' | 'giftcard';
+  product?: mongoose.Types.ObjectId; // renseigné uniquement pour les produits
   name: string;
   price: number;
   quantity: number;
@@ -12,6 +14,14 @@ export interface IOrder extends Document {
   customerName: string;
   customerEmail: string;
   customerPhone?: string;
+  // Adresse (renseignée si livraison)
+  customerAddress?: string;
+  customerPostalCode?: string;
+  customerCity?: string;
+  // Mode de récupération de la commande
+  fulfillment?: 'retrait' | 'livraison';
+  // Destinataire du cadeau (cartes cadeaux uniquement)
+  recipientName?: string;
   total: number;
   // Statut de traitement de la commande côté boutique.
   status: 'en_attente' | 'confirmee' | 'annulee';
@@ -22,13 +32,16 @@ export interface IOrder extends Document {
   paymentProvider: 'aucun' | 'stripe';
   // Référence externe du paiement (ex: id de session Stripe). Vide pour l'instant.
   paymentRef?: string;
+  // Message / demande particulière (ex: dédicace d'une carte cadeau).
+  note?: string;
   createdAt: Date;
   updatedAt: Date;
 }
 
 const orderItemSchema = new Schema<IOrderItem>(
   {
-    product: { type: Schema.Types.ObjectId, ref: 'Product', required: true },
+    itemType: { type: String, enum: ['product', 'giftcard'], default: 'product' },
+    product: { type: Schema.Types.ObjectId, ref: 'Product' },
     name: { type: String, required: true },
     price: { type: Number, required: true, min: 0 },
     quantity: { type: Number, required: true, min: 1 },
@@ -42,6 +55,11 @@ const orderSchema = new Schema<IOrder>(
     customerName: { type: String, required: true },
     customerEmail: { type: String, required: true },
     customerPhone: { type: String },
+    customerAddress: { type: String },
+    customerPostalCode: { type: String },
+    customerCity: { type: String },
+    fulfillment: { type: String, enum: ['retrait', 'livraison'], default: 'retrait' },
+    recipientName: { type: String },
     total: { type: Number, required: true, min: 0 },
     status: {
       type: String,
@@ -59,6 +77,7 @@ const orderSchema = new Schema<IOrder>(
       default: 'aucun',
     },
     paymentRef: { type: String },
+    note: { type: String },
   },
   { timestamps: true }
 );

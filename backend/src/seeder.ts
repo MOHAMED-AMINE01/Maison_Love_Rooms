@@ -4,6 +4,7 @@ import Admin from './models/Admin';
 import Suite from './models/Suite';
 import Reservation from './models/Reservation';
 import Service from './models/Service';
+import Formule from './models/Formule';
 import Settings from './models/Settings';
 import Product from './models/Product';
 import Faq from './models/Faq';
@@ -169,52 +170,173 @@ export const seedDatabase = async () => {
       console.log(`${reservationCount} réservation(s) déjà existante(s). Conservation des données.`);
     }
 
-    // 4. Vérification et réinitialisation des Services additionnels pour correspondre exactement aux 2 packs officiels du site
-    console.log('Réinitialisation des Services/Packs dans MongoDB...');
-    await Service.deleteMany({});
-    const servicesData = [
-      {
-        name: "Formule Essentielle",
-        description: "Une parenthèse enchantée centrée sur l'essentiel du prestige et de l'intimité.",
-        price: 189,
-        imageUrl: "https://images.unsplash.com/photo-1578683010236-d716f9a3f461?q=80&w=2000&auto=format&fit=crop",
-        status: "actif",
-        category: "Formules",
-        billingType: "par_nuit",
-        features: [
-          "Arrivée 18h / Départ 11h",
-          "Accès Balnéo privatif illimité",
-          "Ambiance romantique (Bougies LED)",
-          "1 Bouteille de champagne offerte",
-          "Linge de lit & Serviettes épaisses",
-          "Café Nespresso & Thés à disposition",
-          "Produits de douche & Hygiène",
-          "Ménage premium inclus"
-        ]
-      },
-      {
-        name: "Formule Complète",
-        description: "L'immersion totale. Chaque détail est orchestré pour une nuit inoubliable.",
-        price: 299,
-        imageUrl: "https://images.unsplash.com/photo-1598928506311-c55ded91a20c?q=80&w=2000&auto=format&fit=crop",
-        status: "actif",
-        category: "Formules",
-        billingType: "par_nuit",
-        features: [
-          "Tout le contenu de l'Essentielle",
-          "1/2 Bouteille de soft / Eau pétillante",
-          "Plateau Repas (Salé & Sucré) pour 2",
-          "Petit-déjeuner complet (Pancakes...)",
-          "Décoration pétales de roses",
-          "Ambiance Musicale (Enceinte Bluetooth)",
-          "Boîtes de jeux & Accessoires",
-          "Peignoirs premium à disposition"
-        ]
-      }
-    ];
+    // 4. Prestations (options ajoutables du tunnel). Le modèle "Service" = Prestation.
+    // On nettoie les anciennes "formules-services" (Essentielle / Complète), désormais
+    // gérées par le modèle Formule, puis on seed des prestations d'exemple UNIQUEMENT si
+    // aucune prestation n'existe (pour ne pas écraser celles créées en back-office).
+    console.log('Nettoyage des anciennes formules-services et vérification des Prestations...');
+    await Service.deleteMany({ name: { $in: ['Formule Essentielle', 'Formule Complète'] } });
+    const prestationCount = await Service.countDocuments();
+    if (prestationCount === 0) {
+      const prestationsData = [
+        {
+          name: "Massage bien-être",
+          description: "Un massage relaxant dispensé dans l'intimité de votre suite. Choisissez la formule solo ou duo.",
+          price: 60,
+          imageUrl: "https://images.unsplash.com/photo-1600334129128-685c5582fd35?q=80&w=1200&auto=format&fit=crop",
+          status: "actif",
+          category: "Massage & Bien-être",
+          pricingUnit: "forfait",
+          allowQuantity: false,
+          maxQuantity: 1,
+          variants: [
+            { label: "Solo (1 personne)", price: 60 },
+            { label: "Duo (2 personnes)", price: 110 },
+          ],
+          order: 1,
+        },
+        {
+          name: "Petit-déjeuner pour 2",
+          description: "Pain, viennoiseries, céréales, compotes, boissons chaudes, jus de fruit… servi le premier matin.",
+          price: 19.8,
+          imageUrl: "https://images.unsplash.com/photo-1533089860892-a7c6f0a88666?q=80&w=1200&auto=format&fit=crop",
+          status: "actif",
+          category: "Restauration",
+          pricingUnit: "forfait",
+          allowQuantity: false,
+          maxQuantity: 1,
+          variants: [],
+          order: 2,
+        },
+        {
+          name: "Planche apéritive",
+          description: "Planche charcuterie / fromage à partager en amoureux.",
+          price: 30,
+          imageUrl: "https://images.unsplash.com/photo-1543007630-9710e4a00a20?q=80&w=1200&auto=format&fit=crop",
+          status: "actif",
+          category: "Restauration",
+          pricingUnit: "par_unite",
+          allowQuantity: true,
+          maxQuantity: 5,
+          variants: [],
+          order: 3,
+        },
+        {
+          name: "Départ tardif",
+          description: "Profitez de nos installations jusqu'à 12h30 et prolongez votre séjour.",
+          price: 30,
+          imageUrl: "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?q=80&w=1200&auto=format&fit=crop",
+          status: "actif",
+          category: "Confort",
+          pricingUnit: "forfait",
+          allowQuantity: false,
+          maxQuantity: 1,
+          variants: [],
+          order: 4,
+        },
+        {
+          name: "Décoration romantique",
+          description: "Pétales de roses et bougies LED disposés dans la suite avant votre arrivée.",
+          price: 25,
+          imageUrl: "https://images.unsplash.com/photo-1519671482749-fd09be7ccebf?q=80&w=1200&auto=format&fit=crop",
+          status: "actif",
+          category: "Décoration",
+          pricingUnit: "forfait",
+          allowQuantity: false,
+          maxQuantity: 1,
+          variants: [],
+          order: 5,
+        },
+        {
+          name: "Bouquet de roses",
+          description: "Un bouquet de roses fraîches préparé par notre fleuriste partenaire.",
+          price: 35,
+          imageUrl: "https://images.unsplash.com/photo-1561181286-d3fee7d55364?q=80&w=1200&auto=format&fit=crop",
+          status: "actif",
+          category: "Décoration",
+          pricingUnit: "par_unite",
+          allowQuantity: true,
+          maxQuantity: 3,
+          variants: [],
+          order: 6,
+        },
+      ];
+      await Service.insertMany(prestationsData);
+      console.log(`${prestationsData.length} prestations d'exemple insérées (massage, petit-déj, planche, etc.).`);
+    } else {
+      console.log(`${prestationCount} prestation(s) déjà existante(s). Conservation des données.`);
+    }
 
-    await Service.insertMany(servicesData);
-    console.log('Les 2 Packs officiels du site (Formule Essentielle et Formule Complète) ont été insérés dans MongoDB avec leurs features.');
+    // 4bis. Formules (offre principale du nouveau tunnel, rattachée à une suite).
+    // Non destructif : on ne seed que si la collection est vide. Création formule
+    // par formule (try/catch + prix de secours) pour qu'une suite mal formée ne
+    // bloque pas tout le lot.
+    console.log('Vérification des Formules dans MongoDB...');
+    const formuleCount = await Formule.countDocuments();
+    const suitesForFormules = await Suite.find();
+    console.log(`Formules existantes: ${formuleCount} · Suites trouvées: ${suitesForFormules.length}`);
+    if (formuleCount === 0 && suitesForFormules.length > 0) {
+      let created = 0;
+      for (const s of suitesForFormules) {
+        const base = Number(s.pricePerNight) || 189;
+        const defs = [
+          {
+            name: 'Nuit Essentielle',
+            price: base,
+            isPopular: false,
+            order: 1,
+            description: "Une parenthèse enchantée centrée sur l'essentiel du prestige et de l'intimité.",
+            features: [
+              "Arrivée 18h / Départ 11h",
+              "Accès bien-être privatif illimité",
+              "Ambiance romantique (Bougies LED)",
+              "1 Bouteille de champagne offerte",
+              "Linge de lit & Serviettes épaisses",
+              "Ménage premium inclus"
+            ],
+          },
+          {
+            name: 'Nuit Complète',
+            price: base + 110,
+            isPopular: true,
+            order: 2,
+            description: "L'immersion totale. Chaque détail est orchestré pour une nuit inoubliable.",
+            features: [
+              "Tout le contenu de l'Essentielle",
+              "Plateau Repas (Salé & Sucré) pour 2",
+              "Petit-déjeuner complet (Pancakes...)",
+              "Décoration pétales de roses",
+              "Ambiance Musicale (Enceinte Bluetooth)",
+              "Peignoirs premium à disposition"
+            ],
+          },
+        ];
+        for (const d of defs) {
+          try {
+            await Formule.create({
+              name: d.name,
+              suiteName: s.name,
+              description: d.description,
+              price: d.price,
+              billingType: 'nuit',
+              features: d.features,
+              imageUrl: s.imageUrl || '',
+              isPopular: d.isPopular,
+              status: 'actif',
+              order: d.order,
+            });
+            created++;
+          } catch (e: any) {
+            console.error(`Formule "${d.name}" pour "${s.name}" non créée: ${e.message}`);
+          }
+        }
+      }
+      console.log(`${created} formule(s) créée(s).`);
+    } else if (suitesForFormules.length === 0) {
+      console.log('Aucune suite en base → aucune formule créée. Ajoute au moins une chambre.');
+    } else {
+      console.log(`${formuleCount} formule(s) déjà existante(s). Conservation des données.`);
+    }
 
     // 5. Vérification et insertion des paramètres du tableau comparatif
     console.log('Vérification des paramètres (Tableau Comparatif) dans MongoDB...');

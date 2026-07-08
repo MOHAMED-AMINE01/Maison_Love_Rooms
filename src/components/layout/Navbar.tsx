@@ -5,7 +5,9 @@ import { ArrowRight, Menu, X } from 'lucide-react';
 
 const NAV_LINKS = [
   { name: 'Nos Chambres', to: '/#suites', isHash: true },
-  { name: 'Prestation & Boutique', to: '/experience' },
+  { name: 'Expérience', to: '/experience' },
+  { name: 'Boutique', to: '/boutique' },
+  { name: 'Cartes cadeaux', to: '/cartes-cadeaux' },
   { name: 'Contact', to: '/#contact', isHash: true },
 ];
 

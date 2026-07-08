@@ -48,7 +48,7 @@ export default function Hero() {
 
 
               <h1 className="text-5xl md:text-7xl lg:text-[5.5rem] leading-[1.1] tracking-tight text-white font-serif max-w-xl">
-                Érotisme <br />
+                Sensualité <br />
                 <span className="italic text-white/40">et plaisir.</span>
               </h1>
 

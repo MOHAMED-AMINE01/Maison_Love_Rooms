@@ -5,6 +5,15 @@ export interface IBlockedDate {
   startDate: Date;
   endDate: Date;
   reason: string;
+  // Provenance : 'manuel' (blocage admin) ou 'airbnb' / 'booking' (import iCal).
+  source?: 'manuel' | 'airbnb' | 'booking';
+  // UID de l'évènement iCal importé, pour éviter les doublons lors des re-synchros.
+  uid?: string;
+}
+
+export interface IIcalUrls {
+  airbnb: string;
+  booking: string;
 }
 
 export interface ISuite extends Document {
@@ -17,16 +26,19 @@ export interface ISuite extends Document {
   callToAction: string;
   pricePerNight: number;
   features: string[];
-  status: 'disponible' | 'en_maintenance';
+  status: 'disponible' | 'maintenance';
   imageUrl: string;
   images: string[];
   blockedDates: IBlockedDate[];
+  icalUrls: IIcalUrls;
 }
 
 const blockedDateSchema = new Schema<IBlockedDate>({
   startDate: { type: Date, required: true },
   endDate: { type: Date, required: true },
-  reason: { type: String, required: true }
+  reason: { type: String, required: true },
+  source: { type: String, enum: ['manuel', 'airbnb', 'booking'], default: 'manuel' },
+  uid: { type: String }
 });
 
 const suiteSchema = new Schema<ISuite>(
@@ -42,12 +54,16 @@ const suiteSchema = new Schema<ISuite>(
     features: [{ type: String }],
     status: {
       type: String,
-      enum: ['disponible', 'en_maintenance'],
+      enum: ['disponible', 'maintenance', 'en_maintenance'],
       default: 'disponible',
     },
     imageUrl: { type: String, default: '/images/suites/suite-1.jpg' },
     images: [{ type: String }],
     blockedDates: [blockedDateSchema],
+    icalUrls: {
+      airbnb: { type: String, default: '' },
+      booking: { type: String, default: '' },
+    },
   },
   {
     timestamps: true,

@@ -15,8 +15,14 @@ import {
   createService,
   updateService,
   deleteService,
+  getFormules,
+  createFormule,
+  updateFormule,
+  deleteFormule,
   addBlockedDate,
   removeBlockedDate,
+  syncSuiteIcal,
+  updateSuiteIcalUrls,
   getSettings,
   updateSettings,
   getGiftCards,
@@ -30,6 +36,7 @@ import {
   deleteProduct,
   getOrders,
   updateOrder,
+  deleteOrder,
   getFaqs,
   createFaq,
   updateFaq,
@@ -69,6 +76,10 @@ router.route('/suites/:id')
 router.post('/suites/:id/block-dates', protect, addBlockedDate);
 router.delete('/suites/:id/block-dates/:blockId', protect, removeBlockedDate);
 
+// Synchronisation iCal (import Airbnb / Booking) pour une suite
+router.patch('/suites/:id/ical', protect, updateSuiteIcalUrls);
+router.post('/suites/:id/sync-ical', protect, syncSuiteIcal);
+
 // Routes pour les services additionnels (Boutique / Options)
 router.route('/services')
   .get(getServices) // Public pour le checkout du site
@@ -77,6 +88,15 @@ router.route('/services')
 router.route('/services/:id')
   .put(protect, updateService)
   .delete(protect, deleteService);
+
+// Routes pour les formules (offre principale, rattachée à une suite)
+router.route('/formules')
+  .get(protect, getFormules)
+  .post(protect, createFormule);
+
+router.route('/formules/:id')
+  .put(protect, updateFormule)
+  .delete(protect, deleteFormule);
 
 // Routes pour les cartes cadeaux
 router.route('/gift-cards')
@@ -102,6 +122,7 @@ router.patch('/products/:id/stock', protect, adjustProductStock);
 // Liste des commandes passées en ligne + mise à jour (statut / paiement)
 router.get('/orders', protect, getOrders);
 router.patch('/orders/:id', protect, updateOrder);
+router.delete('/orders/:id', protect, deleteOrder);
 
 // Routes pour la FAQ (foire aux questions éditable depuis le BO)
 router.route('/faqs')

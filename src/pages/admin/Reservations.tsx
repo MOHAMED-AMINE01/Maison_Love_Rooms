@@ -31,7 +31,8 @@ import {
   ChevronLeft,
   ChevronRight,
   Plus,
-  Minus
+  Minus,
+  Star
 } from "lucide-react";
 
 interface Reservation {
@@ -46,6 +47,9 @@ interface Reservation {
   arrivalTime?: string;
   numberOfPersons: number;
   services: string[];
+  formuleName?: string;
+  formulePrice?: number;
+  prestations?: { name: string; unitPrice: number; quantity: number; variant?: string; lineTotal: number }[];
   occasion?: string;
   specialRequest?: string;
   internalNote?: string;
@@ -202,10 +206,16 @@ export default function AdminReservations() {
         })
       });
       if (!res.ok) throw new Error('Erreur lors de la mise à jour');
-      const updated = await res.json();
+      const data = await res.json();
+      // La réponse est maintenant { reservation, refund } 
+      const updated = data.reservation ?? data;
       setReservations(reservations.map(r => r._id === updated._id ? updated : r));
       setSelectedRes(updated);
-      showToast('success', 'Réservation mise à jour avec succès !');
+      if (data.refund) {
+        showToast('success', `Réservation annulée & remboursée automatiquement sur Stripe (ID: ${data.refund.id}) ✓`);
+      } else {
+        showToast('success', 'Réservation mise à jour avec succès !');
+      }
     } catch (err: any) {
       showToast('error', err.message);
     } finally {
@@ -1168,11 +1178,37 @@ export default function AdminReservations() {
                       </div>
                    </div>
 
-                   {/* Services Additionnels */}
+                   {/* Formule choisie */}
+                   {selectedRes.formuleName && (
+                     <div className="space-y-4">
+                        <h4 className="text-[10px] uppercase tracking-widest text-white/20 font-bold pl-2">Formule</h4>
+                        <div className="admin-card p-6 flex items-center justify-between">
+                           <div className="flex items-center gap-2 text-white/90 font-semibold">
+                              <Star size={14} className="text-gold fill-gold" />
+                              <span>{selectedRes.formuleName}</span>
+                           </div>
+                           {selectedRes.formulePrice != null && (
+                              <span className="font-serif text-gold">{selectedRes.formulePrice}€</span>
+                           )}
+                        </div>
+                     </div>
+                   )}
+
+                   {/* Prestations choisies */}
                    <div className="space-y-4">
-                      <h4 className="text-[10px] uppercase tracking-widest text-white/20 font-bold pl-2">Options & Prestations choisies</h4>
-                      <div className="admin-card p-6 space-y-4">
-                         {selectedRes.services && selectedRes.services.length > 0 ? (
+                      <h4 className="text-[10px] uppercase tracking-widest text-white/20 font-bold pl-2">Prestations choisies</h4>
+                      <div className="admin-card p-6 space-y-3">
+                         {selectedRes.prestations && selectedRes.prestations.length > 0 ? (
+                           selectedRes.prestations.map((p, idx) => (
+                             <div key={idx} className="flex items-center justify-between gap-3 text-sm border-b border-white/5 last:border-0 pb-2 last:pb-0">
+                               <span className="flex items-center gap-2 text-white/80">
+                                 <Sparkles size={14} className="text-gold" />
+                                 {p.name}{p.quantity > 1 ? ` × ${p.quantity}` : ''}
+                               </span>
+                               <span className="font-serif text-gold">{p.lineTotal}€</span>
+                             </div>
+                           ))
+                         ) : selectedRes.services && selectedRes.services.length > 0 ? (
                            <div className="flex flex-wrap gap-2">
                              {selectedRes.services.map((srv, idx) => (
                                <div key={idx} className="flex items-center gap-2 bg-gold/10 border border-gold/20 rounded-xl px-4 py-2 text-gold text-xs font-semibold">
@@ -1182,7 +1218,7 @@ export default function AdminReservations() {
                              ))}
                            </div>
                          ) : (
-                           <p className="text-xs text-white/40 italic">Aucun service additionnel sélectionné par le client.</p>
+                           <p className="text-xs text-white/40 italic">Aucune prestation sélectionnée par le client.</p>
                          )}
                       </div>
                    </div>
