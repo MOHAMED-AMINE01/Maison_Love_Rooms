@@ -26,7 +26,9 @@ const ALLOWED_ORIGINS = [
   'http://localhost:4173',
   'https://maisonloverooms.vercel.app',
   'https://maisonloverooms.netlify.app',
-  ...(process.env.FRONTEND_URL ? [process.env.FRONTEND_URL] : []),
+  ...(process.env.FRONTEND_URL
+    ? process.env.FRONTEND_URL.split(',').map((o) => o.trim()).filter(Boolean)
+    : []),
 ];
 
 app.use(cors({
