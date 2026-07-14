@@ -7,7 +7,8 @@ import { API_URL } from '../constants';
 const FORMULES = [
   {
     name: "Formule Essentielle",
-    price: "189€",
+    price: "189 €",
+    billingType: "nuit",
     description: "Une parenthèse enchantée centrée sur l'essentiel du prestige et de l'intimité.",
     features: [
       "Arrivée 18h / Départ 11h",
@@ -24,7 +25,8 @@ const FORMULES = [
   },
   {
     name: "Formule Complète",
-    price: "299€",
+    price: "299 €",
+    billingType: "nuit",
     description: "L'immersion totale. Chaque détail est orchestré pour une nuit inoubliable.",
     features: [
       "Tout le contenu de l'Essentielle",
@@ -43,8 +45,8 @@ const FORMULES = [
 
 export default function Experience() {
   const [formulesList, setFormulesList] = useState(FORMULES);
-  const [checkInTime, setCheckInTime] = useState("18h");
-  const [checkOutTime, setCheckOutTime] = useState("11h");
+  const [checkInTime, setCheckInTime] = useState("18 h");
+  const [checkOutTime, setCheckOutTime] = useState("11 h");
 
   useEffect(() => {
     // Formules (offre principale) — dédoublonnées par nom pour l'aperçu marketing.
@@ -60,7 +62,8 @@ export default function Experience() {
           });
           const mapped = unique.map((f: any, idx: number) => ({
             name: f.name,
-            price: `${f.price}€`,
+            price: `${f.price} €`,
+            billingType: f.billingType || 'nuit',
             description: f.description,
             features: f.features && f.features.length > 0 ? f.features : (FORMULES[idx]?.features || FORMULES[0].features),
             cta: /complè?te/i.test(f.name) ? "Réserver l'expérience complète" : "Réserver cette formule",
@@ -75,8 +78,8 @@ export default function Experience() {
       .then(res => res.json())
       .then(data => {
         if (data) {
-          if (data.checkInTime) setCheckInTime(data.checkInTime.replace(':', 'h'));
-          if (data.checkOutTime) setCheckOutTime(data.checkOutTime.replace(':', 'h'));
+          if (data.checkInTime) setCheckInTime(data.checkInTime.replace(':', ' h'));
+          if (data.checkOutTime) setCheckOutTime(data.checkOutTime.replace(':', ' h'));
         }
       })
       .catch(() => console.log('Paramètres non disponibles'));
@@ -181,7 +184,11 @@ export default function Experience() {
                 <div className="mb-8 flex justify-center md:justify-start">
                   <div className="flex items-baseline gap-2">
                     <span className="text-5xl md:text-6xl font-serif text-noir">{formule.price}</span>
-                    <span className="text-noir/70 text-sm font-serif italic">/ nuit</span>
+                    {formule.billingType === 'nuit' ? (
+                      <span className="text-noir/70 text-sm font-serif italic">/ nuit</span>
+                    ) : formule.billingType === 'apres_midi' ? (
+                      <span className="text-noir/70 text-sm font-serif italic">/ après-midi</span>
+                    ) : null}
                   </div>
                 </div>
 

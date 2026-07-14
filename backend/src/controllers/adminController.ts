@@ -398,6 +398,14 @@ export const updateSuite = async (req: Request, res: Response) => {
     const { name, tagline, description, longDescription, presentationTitle, atouts, callToAction, pricePerNight, features, status, imageUrl, images, icalUrls } = req.body;
     const updateFields: any = { name, tagline, description, longDescription, presentationTitle, atouts, callToAction, pricePerNight, features, status, imageUrl, images: images || [] };
     if (icalUrls !== undefined) updateFields.icalUrls = icalUrls;
+
+    // Nom actuel avant modification (pour détecter un renommage).
+    const existing = await Suite.findById(req.params.id);
+    if (!existing) {
+      return res.status(404).json({ message: 'Suite non trouvée' });
+    }
+    const oldName = existing.name;
+
     const suite = await Suite.findByIdAndUpdate(
       req.params.id,
       updateFields,
@@ -406,6 +414,18 @@ export const updateSuite = async (req: Request, res: Response) => {
     if (!suite) {
       return res.status(404).json({ message: 'Suite non trouvée' });
     }
+
+    // Cascade de renommage : les formules et réservations référencent la chambre
+    // par son nom. Si le nom change, on réaligne pour ne pas casser le lien
+    // (formules « détachées ») ni le blocage des disponibilités (réservations).
+    if (name && name !== oldName) {
+      const [f, r] = await Promise.all([
+        Formule.updateMany({ suiteName: oldName }, { $set: { suiteName: name } }),
+        Reservation.updateMany({ suiteName: oldName }, { $set: { suiteName: name } }),
+      ]);
+      console.log(`Renommage chambre "${oldName}" → "${name}" : ${f.modifiedCount} formule(s), ${r.modifiedCount} réservation(s) réalignée(s).`);
+    }
+
     res.json(suite);
   } catch (error: any) {
     res.status(500).json({ message: error.message });
@@ -1603,7 +1623,7 @@ export const submitContactForm = async (req: Request, res: Response) => {
         </div>
         
         <div style="text-align: center; margin-top: 40px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1);">
-          <p style="color: #888; font-size: 11px;">Cet email a été envoyé depuis le formulaire de contact de Maison Love Room.</p>
+          <p style="color: #888; font-size: 11px;">Cet email a été envoyé depuis le formulaire de contact de Maison Love Rooms.</p>
         </div>
       </div>
     `;

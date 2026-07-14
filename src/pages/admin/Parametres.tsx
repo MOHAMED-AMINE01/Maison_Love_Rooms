@@ -93,7 +93,7 @@ export default function AdminSettings() {
             <div className="admin-card p-10 space-y-10">
                <div className="space-y-2 border-b border-admin-border pb-6">
                   <h3 className="text-xl font-serif">Informations de contact</h3>
-                  <p className="text-xs text-white/40 uppercase tracking-widest font-bold">Identité publique de Maison Love Room</p>
+                  <p className="text-xs text-white/40 uppercase tracking-widest font-bold">Identité publique de Maison Love Rooms</p>
                </div>
 
                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">

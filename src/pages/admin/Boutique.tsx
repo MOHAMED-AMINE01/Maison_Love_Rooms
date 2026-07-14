@@ -341,7 +341,7 @@ export default function AdminBoutique() {
         {[
           { label: "Prestations Totales", value: services.length.toString(), icon: Package },
           { label: "Services Actifs", value: activeCount.toString(), icon: CheckCircle2 },
-          { label: "Prix Moyen", value: `${avgPrice}€`, icon: DollarSign },
+          { label: "Prix Moyen", value: `${avgPrice} €`, icon: DollarSign },
         ].map((stat, i) => (
           <div key={i} className={`admin-card p-3 sm:p-6 flex flex-col items-center text-center gap-4 shadow-xl ${i === 2 ? 'col-span-2 sm:col-span-1' : ''}`}>
             <div className="p-3 w-fit rounded-xl bg-gold/10 text-gold">
@@ -423,7 +423,7 @@ export default function AdminBoutique() {
                         {prod.status}
                       </span>
                     </td>
-                    <td className="py-6 font-serif text-lg text-gold pr-4">{prod.price}€</td>
+                    <td className="py-6 font-serif text-lg text-gold pr-4">{prod.price} €</td>
                     <td className="py-6 text-right space-x-2">
                       <button
                         onClick={() => handleOpenEdit(prod)}

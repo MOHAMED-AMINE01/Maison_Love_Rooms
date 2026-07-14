@@ -37,7 +37,7 @@ interface Prestation {
 }
 interface SelState { quantity: number; variantLabel?: string; }
 
-const ARRIVAL_TIMES = ["18h - 19h", "19h - 20h", "Après 20h"];
+const ARRIVAL_TIMES = ["18 h - 19 h", "19 h - 20 h", "Après 20 h"];
 const OCCASIONS = ["Anniversaire", "Demande en mariage", "Saint-Valentin", "Nuit romantique"];
 
 const CONDITIONS = [
@@ -455,7 +455,7 @@ export default function Checkout() {
                                                 </div>
                                                 <p className="text-white/50 text-xs leading-relaxed mb-4 line-clamp-2">{f.description}</p>
                                                 <div className="flex items-baseline gap-2">
-                                                   <span className="text-3xl font-serif text-gold">{f.price}€</span>
+                                                   <span className="text-3xl font-serif text-gold">{f.price} €</span>
                                                    <span className="text-white/30 text-[10px] uppercase tracking-widest font-bold">{f.billingType === 'nuit' ? '/ nuit' : f.billingType === 'apres_midi' ? '/ après-midi' : 'forfait'}</span>
                                                 </div>
                                              </button>
@@ -563,8 +563,8 @@ export default function Checkout() {
                                                       <span className="block text-white/50 text-xs leading-relaxed">{p.description}</span>
                                                       <span className="block text-gold text-sm font-serif pt-1">
                                                          {p.variants.length > 0
-                                                            ? `${Math.min(...p.variants.map(v => v.price))}€ – ${Math.max(...p.variants.map(v => v.price))}€`
-                                                            : `${p.price}€`} <span className="text-white/30 text-[10px] uppercase tracking-widest">{unitLabel(p.pricingUnit)}</span>
+                                                            ? `${Math.min(...p.variants.map(v => v.price))} € – ${Math.max(...p.variants.map(v => v.price))} €`
+                                                            : `${p.price} €`} <span className="text-white/30 text-[10px] uppercase tracking-widest">{unitLabel(p.pricingUnit)}</span>
                                                       </span>
                                                    </div>
                                                    <button type="button" onClick={() => togglePrestation(p)}
@@ -581,7 +581,7 @@ export default function Checkout() {
                                                             {p.variants.map(v => (
                                                                <button type="button" key={v.label} onClick={() => setVariant(p._id, v.label)}
                                                                   className={`px-4 py-2 rounded-xl border text-xs transition-all ${sel.variantLabel === v.label ? 'border-gold bg-gold/10 text-gold' : 'border-white/10 text-white/60 hover:border-gold/30'}`}>
-                                                                  {v.label} · {v.price}€
+                                                                  {v.label} · {v.price} €
                                                                </button>
                                                             ))}
                                                          </div>
@@ -597,7 +597,7 @@ export default function Checkout() {
                                                             </div>
                                                          </div>
                                                       )}
-                                                      <span className="ml-auto font-serif text-lg text-gold">{line?.total}€</span>
+                                                      <span className="ml-auto font-serif text-lg text-gold">{line?.total} €</span>
                                                    </div>
                                                 )}
                                              </div>
@@ -685,16 +685,16 @@ export default function Checkout() {
                               <div className="space-y-3 bg-white/[0.02] border border-white/10 rounded-2xl p-6">
                                  <div className="flex justify-between text-sm">
                                     <span className="text-white/70">{selectedFormule?.name} {isNightly && billedNights > 1 ? `× ${billedNights} nuits` : ''}</span>
-                                    <span className="text-white font-serif">{formuleTotal}€</span>
+                                    <span className="text-white font-serif">{formuleTotal} €</span>
                                  </div>
                                  {prestationLines.map(l => (
                                     <div key={l.p._id} className="flex justify-between text-sm">
                                        <span className="text-white/70">{l.p.name}{l.variantLabel ? ` (${l.variantLabel})` : ''}{l.qty > 1 ? ` × ${l.qty}` : ''}{l.mult > 1 ? ` × ${l.mult} nuits` : ''}</span>
-                                       <span className="text-white font-serif">{l.total}€</span>
+                                       <span className="text-white font-serif">{l.total} €</span>
                                     </div>
                                  ))}
                                  <div className="flex justify-between items-center pt-4 border-t border-white/10 text-2xl font-serif">
-                                    <span className="text-white">Total</span><span className="text-gold">{grandTotal}€</span>
+                                    <span className="text-white">Total</span><span className="text-gold">{grandTotal} €</span>
                                  </div>
                               </div>
 
@@ -750,19 +750,19 @@ export default function Checkout() {
                               {selectedFormule && (
                                  <div className="flex justify-between text-xs italic text-white/40">
                                     <span>{selectedFormule.name}{isNightly && billedNights > 1 ? ` × ${billedNights} nuits` : ''}</span>
-                                    <span className="font-serif text-white/80">{formuleTotal}€</span>
+                                    <span className="font-serif text-white/80">{formuleTotal} €</span>
                                  </div>
                               )}
                               {prestationLines.map(l => (
                                  <div key={l.p._id} className="flex justify-between text-xs italic text-white/40">
                                     <span>{l.p.name}{l.variantLabel ? ` (${l.variantLabel})` : ''}{l.qty > 1 ? ` ×${l.qty}` : ''}</span>
-                                    <span className="font-serif text-white/80">{l.total}€</span>
+                                    <span className="font-serif text-white/80">{l.total} €</span>
                                  </div>
                               ))}
                               <div className="flex justify-between items-center pt-4 border-t border-white/10 text-2xl font-serif">
-                                 <span className="text-white">Total</span><span className="text-gold">{grandTotal}€</span>
+                                 <span className="text-white">Total</span><span className="text-gold">{grandTotal} €</span>
                               </div>
-                              <p className="text-[10px] italic text-white/30 leading-relaxed">Le montant définitif vous est confirmé par notre équipe.</p>
+                              <p className="text-[10px] italic text-white/30 leading-relaxed">Le montant définitif vous sera confirmé par notre équipe.</p>
                            </div>
                         </div>
                      </div>

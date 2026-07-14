@@ -293,7 +293,7 @@ export default function AdminStock() {
                   <p className="text-white/60 text-sm mb-4 line-clamp-2">{product.description}</p>
 
                   <div className="mb-4 flex items-center justify-between">
-                    <span className="text-2xl font-bold text-gold">{product.price}€</span>
+                    <span className="text-2xl font-bold text-gold">{product.price} €</span>
                     <span className="text-white/40 text-sm">
                       {product.status === 'actif' ? '• Actif' : '• Inactif'}
                     </span>

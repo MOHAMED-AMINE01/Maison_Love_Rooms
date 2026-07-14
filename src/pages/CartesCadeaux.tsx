@@ -117,7 +117,7 @@ export default function CartesCadeaux() {
         <img src="https://images.unsplash.com/photo-1549465220-1a8b9238cd48?q=80&w=2670&auto=format&fit=crop" className="absolute inset-0 w-full h-full object-cover brightness-[0.35]" alt="Cartes cadeaux" />
         <div className="container-wide relative z-10 px-6 md:px-12 text-center">
           <h1 className="text-4xl md:text-7xl font-serif text-gold leading-tight tracking-tighter mb-4">Cartes cadeaux</h1>
-          <p className="text-white/70 max-w-2xl mx-auto font-serif italic">Offrez du temps, pas un objet. La carte cadeau s'adapte à l'envie : accès love room, séjour, massage ou attention sur place.</p>
+          <p className="text-white/70 max-w-2xl mx-auto font-serif italic">Offrez du temps, pas un objet. La carte cadeau s'adapte à l'envie : accès à une love room, séjour, massage ou attention sur place.</p>
         </div>
       </section>
 
@@ -147,7 +147,7 @@ export default function CartesCadeaux() {
                     </div>
                     <div className="mt-14 w-full text-center space-y-3 mb-8 flex-1">
                       <h3 className="text-xl lg:text-2xl font-serif font-bold text-noir group-hover:text-gold transition-colors">{card.name}</h3>
-                      <div className="text-3xl font-serif text-gold">{card.price}€</div>
+                      <div className="text-3xl font-serif text-gold">{card.price} €</div>
                       <p className="text-noir/70 text-sm leading-relaxed px-2">{card.description}</p>
                     </div>
                     <div className="w-full space-y-3 mb-10">
@@ -208,7 +208,7 @@ export default function CartesCadeaux() {
                 <form onSubmit={submitOrder} className="space-y-5">
                   <div className="flex items-center gap-4 pb-5 border-b border-noir/10">
                     <img src={orderCard.imageUrl} alt={orderCard.name} className="w-16 h-16 rounded-xl object-cover" />
-                    <div><h3 className="text-lg font-serif text-noir leading-tight">{orderCard.name}</h3><span className="text-gold font-serif text-xl">{orderCard.price}€</span></div>
+                    <div><h3 className="text-lg font-serif text-noir leading-tight">{orderCard.name}</h3><span className="text-gold font-serif text-xl">{orderCard.price} €</span></div>
                   </div>
                   <p className="text-noir/50 text-xs leading-relaxed">Renseignez vos coordonnées, puis vous serez redirigé vers le paiement sécurisé (Stripe).</p>
                   <div className="space-y-3">

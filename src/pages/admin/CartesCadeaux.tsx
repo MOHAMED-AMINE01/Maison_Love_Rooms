@@ -310,7 +310,7 @@ export default function AdminCartesCadeaux() {
                 <p className="text-white/60 text-sm mb-4">{card.description}</p>
 
                 <div className="mb-4">
-                  <span className="text-2xl font-bold text-gold">{card.price}€</span>
+                  <span className="text-2xl font-bold text-gold">{card.price} €</span>
                   <span className="text-white/40 ml-2">
                     {card.status === 'actif' ? '• Actif' : '• Inactif'}
                   </span>

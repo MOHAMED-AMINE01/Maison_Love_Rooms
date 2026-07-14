@@ -78,7 +78,7 @@ export default function AdminLogin() {
             <ShieldCheck size={32} className="text-black" />
           </div>
           <h1 className="text-2xl font-serif font-bold text-white tracking-wide uppercase">
-            Maison Love Room
+            Maison Love Rooms
           </h1>
           <p className="text-xs uppercase tracking-[0.3em] text-gold font-bold">
             Espace d'Administration

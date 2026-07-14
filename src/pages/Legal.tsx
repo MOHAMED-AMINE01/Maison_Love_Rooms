@@ -178,7 +178,7 @@ export default function Legal() {
                            <p className="text-gold font-semibold">
                               Maison Love Rooms<br />
                               Email : <a href="mailto:conciergerie@maisonloveroom.fr" className="text-gold hover:text-gold/80 underline">conciergerie@maisonloveroom.fr</a><br />
-                              Le directeur de publication du site est Maison Love Room
+                              Le directeur de publication du site est Maison Love Rooms
                            </p>
                         </section>
 

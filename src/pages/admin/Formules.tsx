@@ -160,7 +160,7 @@ export default function AdminFormules() {
         {[
           { label: "Formules Totales", value: formules.length.toString(), icon: Package },
           { label: "Formules Actives", value: activeCount.toString(), icon: CheckCircle2 },
-          { label: "Prix Moyen", value: `${avgPrice}€`, icon: DollarSign },
+          { label: "Prix Moyen", value: `${avgPrice} €`, icon: DollarSign },
         ].map((stat, i) => (
           <div key={i} className={`admin-card p-3 sm:p-6 flex flex-col items-center text-center gap-4 shadow-xl ${i === 2 ? 'col-span-2 sm:col-span-1' : ''}`}>
             <div className="p-3 w-fit rounded-xl bg-gold/10 text-gold"><stat.icon size={18} /></div>
@@ -216,7 +216,7 @@ export default function AdminFormules() {
                     <td className="py-6 pr-4">
                       <span className={`text-[10px] uppercase tracking-widest font-bold px-3 py-1 rounded-full border ${f.status === 'actif' ? 'bg-emerald-400/10 text-emerald-400 border-emerald-400/20' : 'bg-rose-400/10 text-rose-400 border-rose-400/20'}`}>{f.status}</span>
                     </td>
-                    <td className="py-6 font-serif text-lg text-gold pr-4">{f.price}€</td>
+                    <td className="py-6 font-serif text-lg text-gold pr-4">{f.price} €</td>
                     <td className="py-6 text-right space-x-2">
                       <button onClick={() => handleOpenEdit(f)} className="p-2.5 rounded-lg bg-white/[0.02] border border-white/[0.05] hover:bg-gold hover:text-black hover:border-gold transition-all text-white/60"><Edit3 size={14} /></button>
                       <button onClick={() => handleDelete(f._id)} className="p-2.5 rounded-lg bg-white/[0.02] border border-white/[0.05] hover:bg-rose-500/20 hover:text-rose-400 hover:border-rose-500/30 transition-all text-white/60"><Trash2 size={14} /></button>

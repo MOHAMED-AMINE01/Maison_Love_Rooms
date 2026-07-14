@@ -258,12 +258,12 @@ export default function AdminCommandes() {
                     {order.items.map((item, i) => (
                       <div key={i} className="flex items-center justify-between text-sm border-b border-white/5 pb-1.5">
                         <span className="text-white/70">{item.name} <span className="text-white/40">× {item.quantity}</span></span>
-                        <span className="text-white/50">{(item.price * item.quantity).toFixed(2)}€</span>
+                        <span className="text-white/50">{(item.price * item.quantity).toFixed(2)} €</span>
                       </div>
                     ))}
                     <div className="flex items-center justify-between pt-2">
                       <span className="text-xs uppercase tracking-widest text-white/40 font-bold">Total</span>
-                      <span className="text-xl font-serif text-gold">{order.total.toFixed(2)}€</span>
+                      <span className="text-xl font-serif text-gold">{order.total.toFixed(2)} €</span>
                     </div>
                   </div>
 

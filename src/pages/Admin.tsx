@@ -59,9 +59,9 @@ export default function Admin() {
                     </thead>
                     <tbody className="text-sm">
                       {[
-                        { client: "Jean D.", suite: "Obsidienne", dates: "05/05 - 06/05", total: "280€", status: "Confirmé" },
-                        { client: "Mélanie L.", suite: "Éden Suspendu", dates: "07/05 - 08/05", total: "365€", status: "En attente" },
-                        { client: "Marc A.", suite: "Mosaïque d'Or", dates: "12/05 - 14/05", total: "700€", status: "Confirmé" }
+                        { client: "Jean D.", suite: "Obsidienne", dates: "05/05 - 06/05", total: "280 €", status: "Confirmé" },
+                        { client: "Mélanie L.", suite: "Éden Suspendu", dates: "07/05 - 08/05", total: "365 €", status: "En attente" },
+                        { client: "Marc A.", suite: "Mosaïque d'Or", dates: "12/05 - 14/05", total: "700 €", status: "Confirmé" }
                       ].map((b, i) => (
                         <tr key={i} className="border-b border-white/5 hover:bg-white/[0.01] transition-colors">
                           <td className="py-6 px-4 font-medium">{b.client}</td>
@@ -93,7 +93,7 @@ export default function Admin() {
                       </div>
                       <div>
                         <h3 className="font-serif text-xl">{suite.name}</h3>
-                        <p className="text-[10px] text-white/40 uppercase tracking-widest">{suite.price}€ / nuit</p>
+                        <p className="text-[10px] text-white/40 uppercase tracking-widest">{suite.price} € / nuit</p>
                       </div>
                     </div>
                     <div className="flex gap-4">

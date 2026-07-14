@@ -3,14 +3,14 @@ import { motion } from 'motion/react';
 import { useNavigate } from 'react-router-dom';
 import { API_URL } from '../../constants';
 import { adminFetch } from '../../utils/apiClient';
-import { 
-  BedDouble, 
-  CheckCircle, 
-  Clock, 
-  XCircle, 
-  CalendarDays, 
-  Plus, 
-  Users, 
+import {
+  BedDouble,
+  CheckCircle,
+  Clock,
+  XCircle,
+  CalendarDays,
+  Plus,
+  Users,
   ArrowRight,
   TrendingUp,
   CreditCard,
@@ -97,46 +97,46 @@ export default function AdminDashboard() {
     fetchDashboardData();
   }, []);
 
-  // Cartes de statistiques aux couleurs Maison Love Room
+  // Cartes de statistiques aux couleurs Maison Love Rooms
   const STAT_CARDS = [
-    { 
-      label: "Chambres totales", 
-      value: suitesCount.toString(), 
-      pill: "Total", 
-      icon: BedDouble, 
+    {
+      label: "Chambres totales",
+      value: suitesCount.toString(),
+      pill: "Total",
+      icon: BedDouble,
       iconBg: "bg-gold/20 text-gold border border-gold/30",
       pillBg: "bg-white/[0.05] text-white/60"
     },
-    { 
-      label: "Chambres actives", 
-      value: suitesActiveCount.toString(), 
-      pill: "En ligne", 
-      icon: CheckCircle, 
+    {
+      label: "Chambres actives",
+      value: suitesActiveCount.toString(),
+      pill: "En ligne",
+      icon: CheckCircle,
       iconBg: "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30",
       pillBg: "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"
     },
 
-    { 
-      label: "En attente", 
-      value: stats.attenteReservations.toString(), 
-      pill: "Cautions", 
-      icon: Clock, 
+    {
+      label: "En attente",
+      value: stats.attenteReservations.toString(),
+      pill: "Cautions",
+      icon: Clock,
       iconBg: "bg-white/10 text-white/60 border border-white/20",
       pillBg: "bg-white/[0.05] text-white/60"
     },
-    { 
-      label: "Annulées", 
-      value: stats.annuleeReservations.toString(), 
-      pill: "Archivées", 
-      icon: XCircle, 
+    {
+      label: "Annulées",
+      value: stats.annuleeReservations.toString(),
+      pill: "Archivées",
+      icon: XCircle,
       iconBg: "bg-amber-500/20 text-amber-400 border border-amber-500/30",
       pillBg: "bg-amber-500/10 text-amber-400 border border-amber-500/20"
     },
-    { 
-      label: "Réservations reçues", 
-      value: stats.totalReservations.toString(), 
-      pill: "Clients", 
-      icon: CalendarDays, 
+    {
+      label: "Réservations reçues",
+      value: stats.totalReservations.toString(),
+      pill: "Clients",
+      icon: CalendarDays,
       iconBg: "bg-gold-light/20 text-gold-light border border-gold-light/30",
       pillBg: "bg-gold-light/10 text-gold-light border border-gold-light/20"
     },
@@ -179,13 +179,13 @@ export default function AdminDashboard() {
         ))}
       </div>
 
-      {/* Section Actions Rapides aux couleurs Maison Love Room */}
+      {/* Section Actions Rapides aux couleurs Maison Love Rooms */}
       <div className="space-y-6">
         <h2 className="text-xl font-serif tracking-wide text-white">Actions rapides</h2>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {/* Carte Or/Bronze : Créer une réservation */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.3 }}
@@ -214,7 +214,7 @@ export default function AdminDashboard() {
           </motion.div>
 
           {/* Carte Velours Violet : Boutique & Extras */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.4 }}
@@ -253,7 +253,7 @@ export default function AdminDashboard() {
               <h3 className="text-xl font-serif font-bold text-white tracking-wide">Dernières Réservations</h3>
               <p className="text-white/40 text-xs tracking-wide mt-1">Activité récente de vos suites</p>
             </div>
-            <button 
+            <button
               onClick={() => navigate('/admin/reservations')}
               className="text-xs uppercase tracking-widest text-gold hover:text-white transition-colors font-bold bg-gold/10 px-4 py-2 rounded-xl border border-gold/20 cursor-pointer"
             >
@@ -279,18 +279,17 @@ export default function AdminDashboard() {
                     <td className="py-5 text-sm font-medium text-white">{res.clientName}</td>
                     <td className="py-5 text-sm text-white/60">{res.suiteName}</td>
                     <td className="py-5">
-                      <span className={`text-[10px] uppercase tracking-wider px-3 py-1 rounded-full font-bold border ${
-                        (res.status === 'validee' || res.status === 'confirmee') ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' : 
-                        res.status === 'en_attente' ? 'bg-amber-500/10 text-amber-400 border-amber-500/20' :
-                        res.status === 'terminee' ? 'bg-blue-500/10 text-blue-400 border-blue-500/20' :
-                        'bg-rose-500/10 text-rose-400 border-rose-500/20'
-                      }`}>
-                        {(res.status === 'validee' || res.status === 'confirmee') ? 'Confirmé' : 
-                         res.status === 'en_attente' ? 'En attente' : 
-                         res.status === 'terminee' ? 'Terminé' : 'Annulé'}
+                      <span className={`text-[10px] uppercase tracking-wider px-3 py-1 rounded-full font-bold border ${(res.status === 'validee' || res.status === 'confirmee') ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' :
+                          res.status === 'en_attente' ? 'bg-amber-500/10 text-amber-400 border-amber-500/20' :
+                            res.status === 'terminee' ? 'bg-blue-500/10 text-blue-400 border-blue-500/20' :
+                              'bg-rose-500/10 text-rose-400 border-rose-500/20'
+                        }`}>
+                        {(res.status === 'validee' || res.status === 'confirmee') ? 'Confirmé' :
+                          res.status === 'en_attente' ? 'En attente' :
+                            res.status === 'terminee' ? 'Terminé' : 'Annulé'}
                       </span>
                     </td>
-                    <td className="py-5 text-right font-serif text-lg font-bold text-white">{res.totalPrice}€</td>
+                    <td className="py-5 text-right font-serif text-lg font-bold text-white">{res.totalPrice} €</td>
                   </tr>
                 ))}
               </tbody>
@@ -305,21 +304,20 @@ export default function AdminDashboard() {
               <div className="p-3 rounded-xl bg-white/[0.05] text-gold border border-white/10">
                 <CreditCard size={22} />
               </div>
-              <span className={`text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1 border ${
-                stats.revenueGrowth >= 0 
-                  ? 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20' 
+              <span className={`text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1 border ${stats.revenueGrowth >= 0
+                  ? 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20'
                   : 'text-rose-400 bg-rose-500/10 border-rose-500/20'
-              }`}>
-                <TrendingUp size={12} className={stats.revenueGrowth < 0 ? 'rotate-180 text-rose-400' : 'text-emerald-400'} /> 
+                }`}>
+                <TrendingUp size={12} className={stats.revenueGrowth < 0 ? 'rotate-180 text-rose-400' : 'text-emerald-400'} />
                 {stats.revenueGrowth >= 0 ? '+' : ''}{stats.revenueGrowth}%
               </span>
             </div>
 
             <div className="space-y-1">
               <p className="text-white/40 text-xs uppercase tracking-widest font-bold">Chiffre d'Affaires</p>
-              <h3 className="text-4xl font-serif font-bold text-white tracking-wide">{stats.totalRevenue.toLocaleString()}€</h3>
+              <h3 className="text-4xl font-serif font-bold text-white tracking-wide">{stats.totalRevenue.toLocaleString()} €</h3>
               <p className="text-white/40 text-xs tracking-wide pt-2">
-                Objectif de {monthlyObjective.toLocaleString()}€ atteint à {objectivePercentage}%
+                Objectif de {monthlyObjective.toLocaleString()} € atteint à {objectivePercentage}%
               </p>
             </div>
 
@@ -343,9 +341,9 @@ export default function AdminDashboard() {
                 <span className="text-gold">{stats.tauxOccupation}%</span>
               </div>
               <div className="w-full h-2 bg-white/[0.05] rounded-full overflow-hidden p-[1px] border border-white/[0.05]">
-                <div 
-                  className="h-full bg-gradient-to-r from-gold to-gold-light rounded-full shadow-lg shadow-gold/50" 
-                  style={{ width: `${stats.tauxOccupation}%` }} 
+                <div
+                  className="h-full bg-gradient-to-r from-gold to-gold-light rounded-full shadow-lg shadow-gold/50"
+                  style={{ width: `${stats.tauxOccupation}%` }}
                 />
               </div>
             </div>

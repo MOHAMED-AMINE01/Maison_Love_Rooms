@@ -14,7 +14,7 @@ const FAQS = [
   },
   {
     question: "Quels sont les tarifs et formules proposés ?",
-    answer: "Nos tarifs débutent à 189€ la nuit avec une bouteille de champagne offerte. Nous proposons également une formule complète à 299€ incluant champagne, softs, décoration romantique, plateau repas et petit-déjeuner gourmand."
+    answer: "Nos tarifs débutent à 189 € la nuit avec une bouteille de champagne offerte. Nous proposons également une formule complète à 299 € incluant champagne, softs, décoration romantique, plateau repas et petit-déjeuner gourmand."
   },
   {
     question: "Quels sont les équipements inclus dans les chambres ?",

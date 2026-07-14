@@ -93,7 +93,7 @@ export default function Confirmation() {
       const row = (label: string, value: string) =>
          `<tr><td class="label">${esc(label)}</td><td class="value">${esc(value)}</td></tr>`;
       const optionsRows = prestations.length > 0
-         ? prestations.map(p => row(`${p.name}${p.quantity > 1 ? ` × ${p.quantity}` : ''}`, `${p.lineTotal}€`)).join('')
+         ? prestations.map(p => row(`${p.name}${p.quantity > 1 ? ` × ${p.quantity}` : ''}`, `${p.lineTotal} €`)).join('')
          : services.map(s => row('Option', s)).join('');
 
       const noteText = data.isPaid
@@ -146,7 +146,7 @@ export default function Confirmation() {
       </table>
       <div class="total">
         <span class="lbl">${data.isPaid ? 'Total Payé' : 'Estimation'}${data.nights ? ` (${data.nights} nuit${data.nights > 1 ? 's' : ''})` : ''}</span>
-        <span class="amt">${data.total != null ? esc(data.total) + '€' : '—'}</span>
+        <span class="amt">${data.total != null ? esc(data.total) + ' €' : '—'}</span>
       </div>
       <p class="note">${esc(noteText)}</p>
     </div>

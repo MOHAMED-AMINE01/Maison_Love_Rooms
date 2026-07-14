@@ -271,7 +271,7 @@ export default function SuiteDetail() {
                         <div className="flex flex-col sm:flex-row items-center justify-center gap-6 md:gap-10 pt-2 md:pt-4">
                            <div className="space-y-2">
                               <span className="text-[7px] md:text-[8px] uppercase text-white/30 tracking-widest font-black block">À partir de</span>
-                              <p className="text-3xl md:text-4xl font-serif text-amber-500">{basePrice}€</p>
+                              <p className="text-3xl md:text-4xl font-serif text-amber-500">{basePrice} €</p>
                            </div>
                            <div className="hidden sm:block w-px h-12 md:h-16 bg-white/10" />
                            <div className="space-y-2">
@@ -299,7 +299,7 @@ export default function SuiteDetail() {
                               {suiteFormules.length > 0 ? (
                                  suiteFormules.map((formule: any, idx: number) => {
                                     const isPopular = formule.isPopular;
-                                    const price = `${formule.price}€`;
+                                    const price = `${formule.price} €`;
                                     const isSelected = formula === formule.name;
 
                                     return (
@@ -364,7 +364,7 @@ export default function SuiteDetail() {
                               className="relative w-full bg-gold text-[#0A0A0A] py-4 md:py-6 rounded-xl md:rounded-2xl text-[9px] md:text-[10px] uppercase tracking-[0.3em] md:tracking-[0.4em] font-black hover:bg-white transition-all duration-500 shadow-lg overflow-hidden group"
                            >
                               <div className="absolute inset-0 bg-white/20 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000" />
-                              <span className="relative z-10 block">Confirmer ({currentPrice * nights}€)</span>
+                              <span className="relative z-10 block">Confirmer ({currentPrice * nights} €)</span>
                            </motion.button>
                         ) : (
                            <button disabled className="w-full bg-white/5 text-white/30 py-4 md:py-6 rounded-xl md:rounded-2xl text-[9px] md:text-[10px] uppercase tracking-[0.3em] md:tracking-[0.4em] font-black cursor-not-allowed border border-white/10">

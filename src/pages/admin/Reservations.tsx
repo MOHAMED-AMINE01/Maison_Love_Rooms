@@ -491,7 +491,7 @@ export default function AdminReservations() {
                         {getStatusBadge(res.status)}
                       </td>
                       <td className="py-6 pr-4">
-                        <p className="text-base font-serif text-gold">{res.totalPrice}€</p>
+                        <p className="text-base font-serif text-gold">{res.totalPrice} €</p>
                       </td>
                       <td className="py-6 text-right" onClick={e => e.stopPropagation()}>
                         <div className="flex items-center justify-end gap-2">
@@ -544,7 +544,7 @@ export default function AdminReservations() {
                     </div>
                     <div className="text-right space-y-1">
                       <span className="text-[9px] uppercase tracking-widest text-white/30 font-bold block">Total</span>
-                      <span className="text-base font-serif text-gold font-bold">{res.totalPrice}€</span>
+                      <span className="text-base font-serif text-gold font-bold">{res.totalPrice} €</span>
                     </div>
                   </div>
 
@@ -761,7 +761,7 @@ export default function AdminReservations() {
                                   newResData.suiteName === s.name ? 'text-gold' : 'text-white/70'
                                 }`}
                               >
-                                <span>{s.name} ({s.pricePerNight}€/nuit)</span>
+                                <span>{s.name} ({s.pricePerNight} €/nuit)</span>
                                 {newResData.suiteName === s.name && <CheckCircle2 size={14} className="text-gold" />}
                               </button>
                             ))}
@@ -779,7 +779,7 @@ export default function AdminReservations() {
                         className="w-full bg-white/[0.03] border border-white/[0.05] rounded-xl px-4 py-3 text-sm focus:border-gold/30 transition-all text-white outline-none flex items-center justify-between cursor-pointer"
                       >
                         <span className="font-semibold text-white">
-                          {selectedFormula === 'complete' ? 'Formule Complète (+110€/nuit)' : 'Formule Essentielle'}
+                          {selectedFormula === 'complete' ? 'Formule Complète (+110 €/nuit)' : 'Formule Essentielle'}
                         </span>
                         <ChevronDown size={14} className={`text-white/40 transition-transform ${openFormulaDropdown ? 'rotate-180' : ''}`} />
                       </button>
@@ -793,7 +793,7 @@ export default function AdminReservations() {
                           >
                             {[
                               { value: 'essentielle', label: 'Formule Essentielle' },
-                              { value: 'complete', label: 'Formule Complète (+110€/nuit)' }
+                              { value: 'complete', label: 'Formule Complète (+110 €/nuit)' }
                             ].map(f => (
                               <button
                                 key={f.value}
@@ -1191,7 +1191,7 @@ export default function AdminReservations() {
                               <span>{selectedRes.formuleName}</span>
                            </div>
                            {selectedRes.formulePrice != null && (
-                              <span className="font-serif text-gold">{selectedRes.formulePrice}€</span>
+                              <span className="font-serif text-gold">{selectedRes.formulePrice} €</span>
                            )}
                         </div>
                      </div>
@@ -1208,7 +1208,7 @@ export default function AdminReservations() {
                                  <Sparkles size={14} className="text-gold" />
                                  {p.name}{p.quantity > 1 ? ` × ${p.quantity}` : ''}
                                </span>
-                               <span className="font-serif text-gold">{p.lineTotal}€</span>
+                               <span className="font-serif text-gold">{p.lineTotal} €</span>
                              </div>
                            ))
                          ) : selectedRes.services && selectedRes.services.length > 0 ? (
@@ -1267,7 +1267,7 @@ export default function AdminReservations() {
                       <div className="admin-card p-6 space-y-6 bg-gold/[0.02] border-gold/10">
                          <div className="flex justify-between items-center">
                             <span className="text-sm text-white/60 font-medium">Montant total</span>
-                            <span className="text-3xl font-serif text-gold">{selectedRes.totalPrice}€</span>
+                            <span className="text-3xl font-serif text-gold">{selectedRes.totalPrice} €</span>
                          </div>
                       </div>
                    </div>

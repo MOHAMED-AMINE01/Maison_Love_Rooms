@@ -311,11 +311,11 @@ export default function AdminChambres() {
    };
 
    const AVAILABLE_FEATURES = [
-      { icon: Wifi, label: "Fibre Wifi" },
+      { icon: Wifi, label: "Fibre Wi-Fi" },
       { icon: Projector, label: "Rétroprojecteur" },
       { icon: Coffee, label: "Nespresso" },
       { icon: Wind, label: "Spa Privatif" },
-      { icon: Dices, label: "Jeux Société Adulte" },
+      { icon: Dices, label: "Jeux de société pour adultes" },
       { icon: Wind, label: "Balnéo Privative" },
       { icon: Coffee, label: "Champagne Inclus" },
       { icon: Sparkles, label: "Décoration Jungle" },
@@ -402,7 +402,7 @@ export default function AdminChambres() {
                         <div className="p-6 space-y-4 flex-1 flex flex-col justify-between">
                            <div>
                               <div className="space-y-1">
-                                 <span className="text-[10px] text-gold font-bold uppercase tracking-widest">À partir de {suite.pricePerNight}€</span>
+                                 <span className="text-[10px] text-gold font-bold uppercase tracking-widest">À partir de {suite.pricePerNight} €</span>
                                  <h4 className="text-xl font-serif">{suite.name}</h4>
                               </div>
                               <p className="text-xs text-white/60 line-clamp-2 mt-2 font-serif italic">{suite.description}</p>

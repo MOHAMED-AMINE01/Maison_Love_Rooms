@@ -16,7 +16,7 @@ const shell = (subtitle: string, bodyHtml: string): string => `
     </div>
     ${bodyHtml}
     <div style="text-align: center; margin-top: 40px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1);">
-      <p style="color: #888; font-size: 11px;">Maison Love Room · Cet email vous a été envoyé automatiquement.</p>
+      <p style="color: #888; font-size: 11px;">Maison Love Rooms · Cet email vous a été envoyé automatiquement.</p>
     </div>
   </div>`;
 
@@ -62,16 +62,16 @@ export function reservationClientEmail(r: any) {
   const body = `
     <p style="font-size:15px; color:#e0e0e0; line-height:1.6;">Bonjour ${esc(r.clientName)},<br/>Nous avons le plaisir de vous confirmer votre réservation.</p>
     ${card(
-      row('Référence', ref) +
-      row('Chambre', esc(r.suiteName)) +
-      (r.formuleName ? row('Formule', esc(r.formuleName)) : '') +
-      row('Dates', `${fmtDate(r.checkIn)} → ${fmtDate(r.checkOut)}`) +
-      (r.arrivalTime ? row('Arrivée estimée', esc(r.arrivalTime)) : '')
-    )}
+    row('Référence', ref) +
+    row('Chambre', esc(r.suiteName)) +
+    (r.formuleName ? row('Formule', esc(r.formuleName)) : '') +
+    row('Dates', `${fmtDate(r.checkIn)} → ${fmtDate(r.checkOut)}`) +
+    (r.arrivalTime ? row('Arrivée estimée', esc(r.arrivalTime)) : '')
+  )}
     ${prestationsBlock}
     ${totalBox(r.totalPrice)}
     <p style="font-size:14px; color:#b0b0b0; line-height:1.6;">Vous recevrez vos codes d'accès et les informations pratiques par email avant votre arrivée. Pour toute question, répondez simplement à cet email.</p>`;
-  return { subject: `Votre réservation à Maison Love Room est confirmée ✨ (${ref})`, html: shell('Réservation confirmée', body) };
+  return { subject: `Votre réservation à Maison Love Rooms est confirmée ✨ (${ref})`, html: shell('Réservation confirmée', body) };
 }
 
 export function reservationOwnerEmail(r: any) {
@@ -79,13 +79,13 @@ export function reservationOwnerEmail(r: any) {
   const prestations = (r.prestations || []).map((p: any) => `${esc(p.name)}${p.quantity > 1 ? ` × ${p.quantity}` : ''}`).join(', ') || '—';
   const body = `
     ${card(
-      row('Client', `${esc(r.clientName)}<br/>${esc(r.clientEmail)}${r.clientPhone ? ` · ${esc(r.clientPhone)}` : ''}`) +
-      row('Chambre / Formule', `${esc(r.suiteName)} / ${esc(r.formuleName || '—')}`) +
-      row('Dates', `${fmtDate(r.checkIn)} → ${fmtDate(r.checkOut)}`) +
-      row('Prestations', prestations) +
-      row('Total', `${r.totalPrice} €`) +
-      row('Référence', ref)
-    )}
+    row('Client', `${esc(r.clientName)}<br/>${esc(r.clientEmail)}${r.clientPhone ? ` · ${esc(r.clientPhone)}` : ''}`) +
+    row('Chambre / Formule', `${esc(r.suiteName)} / ${esc(r.formuleName || '—')}`) +
+    row('Dates', `${fmtDate(r.checkIn)} → ${fmtDate(r.checkOut)}`) +
+    row('Prestations', prestations) +
+    row('Total', `${r.totalPrice} €`) +
+    row('Référence', ref)
+  )}
     <p style="font-size:13px; color:#888;">La date a été bloquée automatiquement sur le calendrier.</p>`;
   return { subject: `🔔 Nouvelle réservation — ${esc(r.suiteName)} (${ref})`, html: shell('Nouvelle réservation', body) };
 }
@@ -95,12 +95,12 @@ export function reservationCancelledEmail(r: any, refunded: boolean) {
   const body = `
     <p style="font-size:15px; color:#e0e0e0; line-height:1.6;">Bonjour ${esc(r.clientName)},<br/>Votre réservation a été annulée.</p>
     ${card(
-      row('Référence', ref) +
-      row('Chambre', esc(r.suiteName)) +
-      row('Dates', `${fmtDate(r.checkIn)} → ${fmtDate(r.checkOut)}`)
-    )}
+    row('Référence', ref) +
+    row('Chambre', esc(r.suiteName)) +
+    row('Dates', `${fmtDate(r.checkIn)} → ${fmtDate(r.checkOut)}`)
+  )}
     ${refunded ? refundBox(r.totalPrice) : questionsLine}`;
-  return { subject: `Annulation de votre réservation Maison Love Room (${ref})`, html: shell('Réservation annulée', body) };
+  return { subject: `Annulation de votre réservation Maison Love Rooms (${ref})`, html: shell('Réservation annulée', body) };
 }
 
 // ----- COMMANDE (Boutique / Carte cadeau) -----
@@ -117,26 +117,26 @@ export function orderClientEmail(o: any) {
     <p style="font-size:15px; color:#e0e0e0; line-height:1.6;">Bonjour ${esc(o.customerName)},<br/>Merci pour votre commande, bien reçue et payée.</p>
     ${card(lineTable(items))}
     ${card(
-      row('Récupération', fulfillmentText(o)) +
-      (isGift && o.recipientName ? row('Destinataire', esc(o.recipientName)) : '') +
-      (o.note ? row('Message', esc(o.note)) : '')
-    )}
+    row('Récupération', fulfillmentText(o)) +
+    (isGift && o.recipientName ? row('Destinataire', esc(o.recipientName)) : '') +
+    (o.note ? row('Message', esc(o.note)) : '')
+  )}
     ${totalBox(o.total)}
     <p style="font-size:14px; color:#b0b0b0; line-height:1.6;">Nous vous recontactons rapidement pour la remise / l'envoi. Pour toute question, répondez à cet email.</p>`;
-  return { subject: `Votre commande Maison Love Room est confirmée`, html: shell(isGift ? 'Carte cadeau confirmée' : 'Commande confirmée', body) };
+  return { subject: `Votre commande Maison Love Rooms est confirmée`, html: shell(isGift ? 'Carte cadeau confirmée' : 'Commande confirmée', body) };
 }
 
 export function orderOwnerEmail(o: any) {
   const items = (o.items || []).map((i: any) => `${esc(i.name)}${i.quantity > 1 ? ` × ${i.quantity}` : ''}`).join(', ');
   const body = `
     ${card(
-      row('Client', `${esc(o.customerName)}<br/>${esc(o.customerEmail)}${o.customerPhone ? ` · ${esc(o.customerPhone)}` : ''}`) +
-      row('Article(s)', items) +
-      row('Récupération', fulfillmentText(o)) +
-      (o.recipientName ? row('Destinataire', esc(o.recipientName)) : '') +
-      (o.note ? row('Message', esc(o.note)) : '') +
-      row('Total', `${o.total} €`)
-    )}`;
+    row('Client', `${esc(o.customerName)}<br/>${esc(o.customerEmail)}${o.customerPhone ? ` · ${esc(o.customerPhone)}` : ''}`) +
+    row('Article(s)', items) +
+    row('Récupération', fulfillmentText(o)) +
+    (o.recipientName ? row('Destinataire', esc(o.recipientName)) : '') +
+    (o.note ? row('Message', esc(o.note)) : '') +
+    row('Total', `${o.total} €`)
+  )}`;
   return { subject: `🔔 Nouvelle commande — ${o.total} €`, html: shell('Nouvelle commande', body) };
 }
 
@@ -146,5 +146,5 @@ export function orderCancelledEmail(o: any, refunded: boolean) {
     <p style="font-size:15px; color:#e0e0e0; line-height:1.6;">Bonjour ${esc(o.customerName)},<br/>Votre commande a été annulée.</p>
     ${card(row('Article(s)', items) + row('Total', `${o.total} €`))}
     ${refunded ? refundBox(o.total) : questionsLine}`;
-  return { subject: `Annulation de votre commande Maison Love Room`, html: shell('Commande annulée', body) };
+  return { subject: `Annulation de votre commande Maison Love Rooms`, html: shell('Commande annulée', body) };
 }

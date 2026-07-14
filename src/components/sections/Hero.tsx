@@ -53,7 +53,7 @@ export default function Hero() {
               </h1>
 
               <p className="max-w-md text-lg md:text-xl font-light text-white/70 leading-relaxed font-sans border-l border-white/10 pl-8">
-                Maison Love Rooms vous propose deux love room imaginées pour les amoureux qui veulent s'évader le temps d'une soirée dans un cocon de douceur et d'exotisme.
+                Maison Love Rooms vous propose deux love rooms imaginées pour les amoureux qui veulent s'évader le temps d'une soirée dans un cocon de douceur et d'exotisme.
               </p>
             </motion.div>
 

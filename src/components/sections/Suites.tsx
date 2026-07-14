@@ -67,7 +67,7 @@ export default function Suites() {
                 {/* Floating Price Tag */}
                 <div className="absolute -bottom-6 right-8 md:right-16 bg-white px-8 py-4 rounded-full shadow-2xl border border-gold/10">
                   <p className="text-xl md:text-2xl font-serif text-noir">
-                    À partir de <span className="text-2xl md:text-3xl text-gold">{suite.price}€</span>
+                    À partir de <span className="text-2xl md:text-3xl text-gold">{suite.price} €</span>
                   </p>
                 </div>
               </div>

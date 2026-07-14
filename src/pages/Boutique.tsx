@@ -136,14 +136,14 @@ export default function Boutique() {
                       {soldOut ? (
                         <div className="absolute top-4 right-4 bg-noir/80 text-white text-[10px] uppercase tracking-widest font-bold px-3 py-1.5 rounded-full">Rupture de stock</div>
                       ) : product.stock <= 3 ? (
-                        <div className="absolute top-4 right-4 bg-gold text-noir text-[10px] uppercase tracking-widest font-bold px-3 py-1.5 rounded-full">Plus que {product.stock}</div>
+                        <div className="absolute top-4 right-4 bg-gold text-noir text-[10px] uppercase tracking-widest font-bold px-3 py-1.5 rounded-full">Plus que {product.stock} en stock</div>
                       ) : null}
                     </div>
                     <div className="p-7 flex flex-col flex-1">
                       <h3 className="text-xl font-serif font-bold text-noir mb-2">{product.name}</h3>
                       <p className="text-noir/50 text-sm leading-relaxed mb-6 flex-1">{product.description}</p>
                       <div className="flex items-center justify-between gap-4">
-                        <span className="text-2xl font-serif text-gold">{product.price}€</span>
+                        <span className="text-2xl font-serif text-gold">{product.price} €</span>
                         <button onClick={() => openOrderModal(product)} disabled={soldOut}
                           className={`px-6 py-3 rounded-full text-[11px] tracking-[0.3em] font-bold transition-all duration-500 ${soldOut ? 'bg-noir/5 text-noir/30 cursor-not-allowed' : 'bg-noir text-white hover:bg-gold hover:text-noir'}`}>
                           {soldOut ? 'Indisponible' : 'Commander'}
@@ -197,7 +197,7 @@ export default function Boutique() {
                 <form onSubmit={submitOrder} className="space-y-5">
                   <div className="flex items-center gap-4 pb-5 border-b border-noir/10">
                     <img src={orderProduct.imageUrl} alt={orderProduct.name} className="w-16 h-16 rounded-xl object-cover" />
-                    <div><h3 className="text-lg font-serif text-noir leading-tight">{orderProduct.name}</h3><span className="text-gold font-serif text-xl">{orderProduct.price}€</span></div>
+                    <div><h3 className="text-lg font-serif text-noir leading-tight">{orderProduct.name}</h3><span className="text-gold font-serif text-xl">{orderProduct.price} €</span></div>
                   </div>
                   <p className="text-noir/50 text-xs leading-relaxed">Renseignez vos coordonnées, puis vous serez redirigé vers le paiement sécurisé (Stripe).</p>
                   <div className="space-y-3">
