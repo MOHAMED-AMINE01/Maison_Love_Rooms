@@ -715,12 +715,12 @@ export default function Checkout() {
 
                               <div className="flex items-start gap-4 p-6 bg-gold/5 border border-gold/20 rounded-2xl">
                                  <CheckCircle2 size={20} className="text-gold shrink-0 mt-0.5" />
-                                 <p className="text-sm italic text-white/60 leading-relaxed">Aucun paiement en ligne : votre demande est envoyée à notre conciergerie, qui vous recontacte rapidement pour confirmer et finaliser votre réservation.</p>
+                                 <p className="text-sm italic text-white/60 leading-relaxed">Vous allez être redirigé vers le paiement sécurisé (Stripe). Une fois le paiement effectué, votre réservation est <span className="text-gold">confirmée immédiatement</span> et vos dates sont bloquées.</p>
                               </div>
 
                               {error && <p className="text-rose-400 text-sm bg-rose-500/5 border border-rose-500/20 rounded-2xl py-3 px-5">{error}</p>}
                               <button onClick={handleSubmit} disabled={submitting} className="px-10 py-6 w-full bg-white text-[#0A0A0A] text-[12px] uppercase tracking-[0.4em] font-bold hover:bg-gold transition-all duration-700 flex items-center justify-center gap-4 rounded-full disabled:opacity-50">
-                                 {submitting ? <Loader className="animate-spin" size={18} /> : <span>Envoyer ma demande de réservation</span>}
+                                 {submitting ? <Loader className="animate-spin" size={18} /> : <span>Procéder au paiement</span>}
                               </button>
                            </motion.div>
                         )}

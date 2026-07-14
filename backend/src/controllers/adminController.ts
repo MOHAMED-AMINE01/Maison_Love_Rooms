@@ -10,6 +10,51 @@ import Formule from '../models/Formule';
 import { fetchIcalBlocks, buildIcalFeed } from '../utils/ical';
 import { stripe } from '../utils/stripe';
 import { sendEmail } from '../utils/email';
+import { reservationClientEmail, reservationOwnerEmail, orderClientEmail, orderOwnerEmail, reservationCancelledEmail, orderCancelledEmail } from '../utils/emailTemplates';
+
+// Email d'annulation de réservation au client (avec info remboursement).
+const sendReservationCancelledEmail = async (reservation: any, refunded: boolean) => {
+  try {
+    const c = reservationCancelledEmail(reservation, refunded);
+    await sendEmail({ to: reservation.clientEmail, subject: c.subject, html: c.html });
+  } catch (e) { console.error('Email annulation réservation non envoyé:', e); }
+};
+
+// Email d'annulation de commande au client (avec info remboursement).
+const sendOrderCancelledEmail = async (order: any, refunded: boolean) => {
+  try {
+    const c = orderCancelledEmail(order, refunded);
+    await sendEmail({ to: order.customerEmail, subject: c.subject, html: c.html });
+  } catch (e) { console.error('Email annulation commande non envoyé:', e); }
+};
+
+// Envoie (sans bloquer le flux) les emails de confirmation d'une réservation payée.
+const sendReservationEmails = async (reservation: any) => {
+  try {
+    const c = reservationClientEmail(reservation);
+    await sendEmail({ to: reservation.clientEmail, subject: c.subject, html: c.html });
+  } catch (e) { console.error('Email client réservation non envoyé:', e); }
+  try {
+    if (process.env.EMAIL_USER) {
+      const o = reservationOwnerEmail(reservation);
+      await sendEmail({ to: process.env.EMAIL_USER, subject: o.subject, html: o.html, replyTo: reservation.clientEmail });
+    }
+  } catch (e) { console.error('Email propriétaire réservation non envoyé:', e); }
+};
+
+// Envoie (sans bloquer le flux) les emails de confirmation d'une commande payée.
+const sendOrderEmails = async (order: any) => {
+  try {
+    const c = orderClientEmail(order);
+    await sendEmail({ to: order.customerEmail, subject: c.subject, html: c.html });
+  } catch (e) { console.error('Email client commande non envoyé:', e); }
+  try {
+    if (process.env.EMAIL_USER) {
+      const o = orderOwnerEmail(order);
+      await sendEmail({ to: process.env.EMAIL_USER, subject: o.subject, html: o.html, replyTo: order.customerEmail });
+    }
+  } catch (e) { console.error('Email propriétaire commande non envoyé:', e); }
+};
 import Settings from '../models/Settings';
 import GiftCard from '../models/GiftCard';
 import Product from '../models/Product';
@@ -256,6 +301,11 @@ export const updateReservation = async (req: Request, res: Response) => {
       fields,
       { new: true }
     );
+
+    // Email d'annulation au client (avec info remboursement) si passage à "annulee".
+    if (status === 'annulee' && existing.status !== 'annulee' && reservation) {
+      sendReservationCancelledEmail(reservation, !!refundResult).catch(() => {});
+    }
 
     res.json({ reservation, refund: refundResult });
   } catch (error: any) {
@@ -1187,6 +1237,7 @@ const markOrderPaid = async (orderId: string, sessionId: string) => {
     order.paymentProvider = 'stripe';
     order.paymentRef = sessionId;
     await order.save();
+    sendOrderEmails(order).catch(() => {});
   }
   return order;
 };
@@ -1267,6 +1318,7 @@ const markReservationPaid = async (reservationId: string, sessionId: string) => 
     reservation.paymentProvider = 'stripe';
     reservation.paymentRef = sessionId;
     await reservation.save();
+    sendReservationEmails(reservation).catch(() => {});
   }
   return reservation;
 };
@@ -1344,6 +1396,9 @@ export const updateOrder = async (req: Request, res: Response) => {
       return res.status(404).json({ message: 'Commande non trouvée' });
     }
 
+    // Capturé avant mutation : est-ce un passage à "annulee" ?
+    const isCancelling = status === 'annulee' && order.status !== 'annulee';
+
     // Réassort automatique si l'on annule une commande qui ne l'était pas déjà.
     if (status === 'annulee' && order.status !== 'annulee') {
       for (const item of order.items) {
@@ -1390,6 +1445,12 @@ export const updateOrder = async (req: Request, res: Response) => {
     // Ne pas écraser 'rembourse' si on vient de le définir via Stripe
     if (paymentStatus && order.paymentStatus !== 'rembourse') order.paymentStatus = paymentStatus;
     await order.save();
+
+    // Email d'annulation au client (avec info remboursement) si passage à "annulee".
+    if (isCancelling) {
+      sendOrderCancelledEmail(order, !!refundResult).catch(() => {});
+    }
+
     res.json({ order, refund: refundResult });
   } catch (error: any) {
     res.status(500).json({ message: error.message });

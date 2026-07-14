@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
-import { ShoppingBag, Search, Check, Ban, BadgeEuro, Clock, User, Mail, Phone, Trash2 } from 'lucide-react';
+import { ShoppingBag, Search, Ban, Clock, User, Mail, Phone, Trash2 } from 'lucide-react';
 import { AdminToast, AdminConfirmModal, useAdminToast, useAdminConfirm } from '../../components/admin/AdminModal';
 import { adminFetch } from '../../utils/apiClient';
 
@@ -135,7 +135,9 @@ export default function AdminCommandes() {
       o.customerName.toLowerCase().includes(searchTerm.toLowerCase()) ||
       o.customerEmail.toLowerCase().includes(searchTerm.toLowerCase()) ||
       o.items.some(i => i.name.toLowerCase().includes(searchTerm.toLowerCase()));
-    const matchesFilter = filter === 'tous' || o.status === filter;
+    // Vue « Tous » : on masque les commandes abandonnées (en attente = paiement non finalisé).
+    // Elles restent accessibles via le filtre « En attente ».
+    const matchesFilter = filter === 'tous' ? o.status !== 'en_attente' : o.status === filter;
     return matchesSearch && matchesFilter;
   });
 
@@ -274,24 +276,9 @@ export default function AdminCommandes() {
                   )}
                 </div>
 
-                {/* Actions */}
+                {/* Actions — le paiement Stripe confirme automatiquement la commande.
+                    L'admin ne peut donc que l'annuler (remboursement auto) ou la supprimer. */}
                 <div className="flex flex-row lg:flex-col gap-3 lg:w-52 shrink-0">
-                  {order.status !== 'confirmee' && order.status !== 'annulee' && (
-                    <button
-                      onClick={() => patchOrder(order._id, { status: 'confirmee' }, 'Commande confirmée')}
-                      className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-emerald-500/20 text-emerald-300 rounded-lg hover:bg-emerald-500/30 transition-all text-sm font-bold"
-                    >
-                      <Check size={16} /> Confirmer
-                    </button>
-                  )}
-                  {order.paymentStatus !== 'paye' && (
-                    <button
-                      onClick={() => patchOrder(order._id, { paymentStatus: 'paye' }, 'Commande marquée comme payée')}
-                      className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-gold/20 text-gold rounded-lg hover:bg-gold/30 transition-all text-sm font-bold"
-                    >
-                      <BadgeEuro size={16} /> Marquer payé
-                    </button>
-                  )}
                   {order.status !== 'annulee' && (
                     <button
                       onClick={() => cancelOrder(order)}

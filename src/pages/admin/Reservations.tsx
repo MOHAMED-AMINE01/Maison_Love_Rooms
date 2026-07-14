@@ -303,7 +303,11 @@ export default function AdminReservations() {
     const matchSearch = res.clientName.toLowerCase().includes(searchTerm.toLowerCase()) ||
                         res.suiteName.toLowerCase().includes(searchTerm.toLowerCase()) ||
                         res._id.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchStatus = statusFilter === 'tous' || res.status === statusFilter || (statusFilter === 'confirmee' && res.status === 'validee');
+    // Vue « Tous » : on masque les demandes abandonnées (en attente = paiement non finalisé).
+    // Elles restent accessibles via le filtre « En attente » pour le nettoyage.
+    const matchStatus = statusFilter === 'tous'
+      ? res.status !== 'en_attente'
+      : (res.status === statusFilter || (statusFilter === 'confirmee' && res.status === 'validee'));
     return matchSearch && matchStatus;
   });
 
@@ -929,8 +933,8 @@ export default function AdminReservations() {
                         className="w-full bg-white/[0.03] border border-white/[0.05] rounded-xl px-4 py-3 text-sm focus:border-gold/30 transition-all text-white outline-none flex items-center justify-between cursor-pointer"
                       >
                         <span className="flex items-center gap-2">
-                          <span className={`w-2 h-2 rounded-full ${newResData.status === 'confirmee' ? 'bg-emerald-400' : 'bg-amber-400'}`} />
-                          {newResData.status === 'confirmee' ? 'Confirmée' : 'En attente'}
+                          <span className={`w-2 h-2 rounded-full ${newResData.status === 'terminee' ? 'bg-blue-400' : 'bg-emerald-400'}`} />
+                          {newResData.status === 'terminee' ? 'Terminée' : 'Confirmée'}
                         </span>
                         <ChevronDown size={14} className={`text-white/40 transition-transform ${openAddStatusDropdown ? 'rotate-180' : ''}`} />
                       </button>
@@ -944,7 +948,7 @@ export default function AdminReservations() {
                           >
                             {[
                               { value: 'confirmee', label: 'Confirmée', color: 'bg-emerald-400' },
-                              { value: 'en_attente', label: 'En attente', color: 'bg-amber-400' }
+                              { value: 'terminee', label: 'Terminée', color: 'bg-blue-400' }
                             ].map(opt => (
                               <button
                                 key={opt.value}
@@ -1080,7 +1084,6 @@ export default function AdminReservations() {
                               className="absolute z-[99] top-full left-0 right-0 mt-2 bg-[#0D121E] border border-white/10 rounded-xl overflow-hidden shadow-2xl shadow-black/60"
                             >
                               {[
-                                { value: 'en_attente', label: 'En attente', color: 'bg-amber-400' },
                                 { value: 'confirmee', label: 'Confirmée', color: 'bg-emerald-400' },
                                 { value: 'annulee', label: 'Annulée', color: 'bg-rose-400' },
                                 { value: 'terminee', label: 'Terminée', color: 'bg-blue-400' },
