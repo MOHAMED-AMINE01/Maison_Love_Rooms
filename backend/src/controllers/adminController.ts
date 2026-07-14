@@ -1369,13 +1369,16 @@ export const stripeWebhook = async (req: Request, res: Response) => {
   const sig = req.headers['stripe-signature'] as string;
   const whSecret = process.env.STRIPE_WEBHOOK_SECRET;
   let event: any;
+
+  // Sécurité : sans secret configuré, on REFUSE (ne jamais accepter d'events non
+  // signés, sinon n'importe qui pourrait marquer une commande « payée »).
+  // Tant qu'aucun webhook n'est branché, la confirmation passe par verify-on-return.
+  if (!whSecret) {
+    return res.status(400).send('Webhook non configuré (STRIPE_WEBHOOK_SECRET manquant).');
+  }
+
   try {
-    if (whSecret) {
-      event = stripe.webhooks.constructEvent(req.body, sig, whSecret);
-    } else {
-      // Pas de secret configuré (dev) : on parse sans vérifier la signature.
-      event = JSON.parse(req.body.toString());
-    }
+    event = stripe.webhooks.constructEvent(req.body, sig, whSecret);
   } catch (err: any) {
     return res.status(400).send(`Webhook Error: ${err.message}`);
   }
