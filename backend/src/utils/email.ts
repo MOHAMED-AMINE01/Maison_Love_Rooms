@@ -22,7 +22,7 @@ interface SendEmailOptions {
 
 export const sendEmail = async (options: SendEmailOptions) => {
   const mailOptions = {
-    from: `Maison Love Rooms <${process.env.EMAIL_USER}>`,
+    from: `Site web Maison Love Rooms <${process.env.EMAIL_USER}>`,
     to: options.to,
     subject: options.subject,
     text: options.text,
