@@ -3,14 +3,28 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-// Configuration du transporteur d'email
-const transporter = nodemailer.createTransport({
-  service: 'gmail',
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
-  },
-});
+// Configuration du transporteur d'email.
+// Si EMAIL_HOST est défini (ex. smtp.ionos.fr), on l'utilise ; sinon on retombe
+// sur le service Gmail (compatibilité). Le port 465 = SSL, 587 = STARTTLS.
+const transporter = nodemailer.createTransport(
+  process.env.EMAIL_HOST
+    ? {
+        host: process.env.EMAIL_HOST,
+        port: Number(process.env.EMAIL_PORT) || 587,
+        secure: process.env.EMAIL_SECURE === 'true' || Number(process.env.EMAIL_PORT) === 465,
+        auth: {
+          user: process.env.EMAIL_USER,
+          pass: process.env.EMAIL_PASS,
+        },
+      }
+    : {
+        service: 'gmail',
+        auth: {
+          user: process.env.EMAIL_USER,
+          pass: process.env.EMAIL_PASS,
+        },
+      }
+);
 
 interface SendEmailOptions {
   to: string;
