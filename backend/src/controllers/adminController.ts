@@ -774,6 +774,7 @@ export async function syncSingleSuite(suite: any): Promise<Record<string, number
   }
 
   suite.blockedDates = kept as any;
+  suite.lastIcalSyncAt = new Date();
   await suite.save();
   return summary;
 }
@@ -840,12 +841,97 @@ export const exportSuiteIcal = async (req: Request, res: Response) => {
       suiteName: suite.name,
       status: { $in: ['confirmee', 'validee'] },
     }).select('_id checkIn checkOut');
-    const feed = buildIcalFeed(suite.name, reservations as any);
+    // On inclut aussi les blocages (manuels + importés) pour que ce flux ferme
+    // toutes les dates occupées, quelle que soit leur origine, chez Airbnb/Booking.
+    const feed = buildIcalFeed(suite.name, reservations as any, suite.blockedDates as any);
     res.setHeader('Content-Type', 'text/calendar; charset=utf-8');
     res.setHeader('Content-Disposition', `inline; filename="${suite.name.replace(/\s+/g, '-').toLowerCase()}.ics"`);
     res.send(feed);
   } catch (error: any) {
     res.status(500).send(error.message);
+  }
+};
+
+// @desc    Lister les réservations importées d'Airbnb / Booking (vue back-office)
+// @route   GET /api/admin/external-reservations
+// @access  Private
+// Les flux iCal ne transmettent que des dates + une source (pas les coordonnées
+// client). On expose donc ces blocages importés comme des réservations en lecture
+// seule, pour qu'ils apparaissent dans l'onglet Réservations à côté des résas du site.
+export const getExternalReservations = async (_req: Request, res: Response) => {
+  try {
+    const suites = await Suite.find().select('name blockedDates');
+    const out: any[] = [];
+    for (const suite of suites) {
+      for (const bd of suite.blockedDates as any[]) {
+        const source = bd.source;
+        if (source !== 'booking' && source !== 'airbnb') continue;
+        out.push({
+          _id: `ext:${suite._id}:${bd._id}`,
+          source,
+          clientName: source === 'booking' ? 'Réservation Booking.com' : 'Réservation Airbnb',
+          clientEmail: '',
+          suiteName: suite.name,
+          checkIn: bd.startDate,
+          checkOut: bd.endDate,
+          numberOfPersons: 2,
+          services: [],
+          totalPrice: 0,
+          status: 'confirmee',
+          note: bd.reason,
+          readOnly: true,
+          createdAt: bd.startDate,
+        });
+      }
+    }
+    res.json(out);
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// @desc    Rafraîchir l'import iCal des suites « périmées » (lazy-sync à l'ouverture du BO)
+// @route   POST /api/admin/ical/refresh
+// @access  Private
+// Appelé au chargement de l'admin : ne resynchronise que les suites dont la dernière
+// synchro dépasse le seuil (throttle), pour que le BO soit à jour sans marteler
+// Airbnb/Booking à chaque navigation.
+export const refreshStaleIcal = async (_req: Request, res: Response) => {
+  try {
+    const throttleMin = parseInt(process.env.ICAL_LAZY_THROTTLE_MINUTES || '5', 10);
+    const cutoff = Date.now() - throttleMin * 60 * 1000;
+    const suites = await Suite.find();
+    let refreshed = 0;
+    for (const suite of suites) {
+      if (!(suite.icalUrls?.airbnb || suite.icalUrls?.booking)) continue;
+      const last = suite.lastIcalSyncAt ? new Date(suite.lastIcalSyncAt).getTime() : 0;
+      if (last > cutoff) continue; // synchro récente : on saute
+      await syncSingleSuite(suite);
+      refreshed++;
+    }
+    res.json({ refreshed });
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// @desc    Déclencheur de synchro iCal pour un cron externe (Vercel Cron / cron-job.org)
+// @route   GET /api/cron/sync-ical
+// @access  Public mais protégé par un secret (CRON_SECRET)
+// Remplace le setInterval qui ne tourne pas en environnement serverless.
+export const runIcalCron = async (req: Request, res: Response) => {
+  try {
+    const secret = process.env.CRON_SECRET;
+    const auth = String(req.headers.authorization || '');
+    const provided = auth.startsWith('Bearer ') ? auth.slice(7) : String(req.query.key || '');
+    // Fail-closed : sans secret configuré, on refuse (évite un endpoint ouvert).
+    if (!secret || provided !== secret) {
+      return res.status(401).json({ message: 'Non autorisé' });
+    }
+    await syncAllSuitesIcal();
+    res.json({ message: 'Synchronisation cron terminée', at: new Date().toISOString() });
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
   }
 };
 

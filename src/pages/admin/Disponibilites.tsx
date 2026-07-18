@@ -31,6 +31,8 @@ interface BlockedDate {
   startDate: string;
   endDate: string;
   reason: string;
+  // Provenance : 'manuel' (fin inclusive) ou 'airbnb'/'booking' (fin exclusive, norme iCal).
+  source?: 'manuel' | 'airbnb' | 'booking';
 }
 
 interface SuiteData {
@@ -248,16 +250,28 @@ export default function AdminDisponibilites() {
     const checkDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
     checkDate.setHours(0, 0, 0, 0);
 
-    // 1. Vérifier les blocages manuels (Maintenance)
+    // 1. Vérifier les blocages (manuels + importés Airbnb / Booking)
     const suite = suites.find(s => s._id === suiteId);
     if (suite && suite.blockedDates) {
       for (const b of suite.blockedDates) {
         const start = new Date(b.startDate);
         start.setHours(0, 0, 0, 0);
         const end = new Date(b.endDate);
-        end.setHours(23, 59, 59, 999);
 
-        if (checkDate >= start && checkDate <= end) {
+        // Airbnb / Booking : la date de fin = jour de départ, la chambre est de nouveau
+        // LIBRE ce jour-là → fin EXCLUSIVE. Un blocage manuel est saisi de façon
+        // INCLUSIVE (« du 15 au 17 » bloque aussi le 17).
+        const isImported = b.source === 'airbnb' || b.source === 'booking';
+        let isBlocked: boolean;
+        if (isImported) {
+          end.setHours(0, 0, 0, 0);
+          isBlocked = checkDate >= start && checkDate < end;
+        } else {
+          end.setHours(23, 59, 59, 999);
+          isBlocked = checkDate >= start && checkDate <= end;
+        }
+
+        if (isBlocked) {
           return { status: 'maintenance', reason: b.reason, blockId: b._id };
         }
       }
@@ -277,6 +291,28 @@ export default function AdminDisponibilites() {
     }
 
     return { status: 'libre' };
+  };
+
+  // Clic sur une case du calendrier :
+  //  - jour libre  → ouvre le tiroir de blocage prérempli (chambre + date du jour cliqué)
+  //  - jour bloqué → propose de débloquer la période
+  //  - jour réservé → aucune action (géré depuis l'onglet Réservations)
+  const handleDayClick = (
+    suiteId: string,
+    dayNum: number,
+    statusInfo: { status: string; blockId?: string }
+  ) => {
+    if (statusInfo.status === 'occupe') return;
+    if (statusInfo.status === 'maintenance') {
+      if (statusInfo.blockId) handleUnblockDate(suiteId, statusInfo.blockId);
+      return;
+    }
+    const y = currentDate.getFullYear();
+    const m = String(currentDate.getMonth() + 1).padStart(2, '0');
+    const d = String(dayNum).padStart(2, '0');
+    const dateStr = `${y}-${m}-${d}`;
+    setBlockForm({ suiteId, startDate: dateStr, endDate: dateStr, reason: 'Maintenance / Nettoyage' });
+    setIsBlocking(true);
   };
 
   // Rassembler tous les prochains blocages pour la liste latérale
@@ -402,15 +438,31 @@ export default function AdminDisponibilites() {
                             <p className="text-xs text-white/40 tracking-wider uppercase mt-0.5">Planning mensuel</p>
                          </div>
                       </div>
-                      <button 
-                        onClick={() => {
-                          setBlockForm(prev => ({ ...prev, suiteId: suite._id }));
-                          setIsBlocking(true);
-                        }}
-                        className="text-xs uppercase font-bold tracking-widest text-gold hover:text-gold-light transition-colors flex items-center gap-2 self-start sm:self-auto bg-gold/10 px-4 py-2 rounded-lg border border-gold/20"
-                      >
-                         <Lock size={12} /> Bloquer des dates
-                      </button>
+                      <div className="flex flex-wrap items-center gap-3 self-start sm:self-auto">
+                         {/* Navigation du mois affiché (synchronisée pour toutes les chambres) */}
+                         <div className="flex items-center gap-1 bg-white/[0.02] border border-white/[0.05] rounded-lg p-1">
+                            <button type="button" onClick={handlePrevMonth} title="Mois précédent"
+                               className="p-1.5 rounded-md hover:bg-white/10 text-white/60 hover:text-white transition-all">
+                               <ChevronLeft size={15} />
+                            </button>
+                            <span className="text-[11px] font-bold uppercase tracking-widest text-gold capitalize min-w-[104px] text-center select-none">
+                               {monthNames[currentDate.getMonth()]} {currentDate.getFullYear()}
+                            </span>
+                            <button type="button" onClick={handleNextMonth} title="Mois suivant"
+                               className="p-1.5 rounded-md hover:bg-white/10 text-white/60 hover:text-white transition-all">
+                               <ChevronRight size={15} />
+                            </button>
+                         </div>
+                         <button
+                           onClick={() => {
+                             setBlockForm(prev => ({ ...prev, suiteId: suite._id }));
+                             setIsBlocking(true);
+                           }}
+                           className="text-xs uppercase font-bold tracking-widest text-gold hover:text-gold-light transition-colors flex items-center gap-2 bg-gold/10 px-4 py-2 rounded-lg border border-gold/20"
+                         >
+                            <Lock size={12} /> Bloquer
+                         </button>
+                      </div>
                    </div>
 
                    {/* Synchronisation iCal Airbnb / Booking */}
@@ -486,12 +538,13 @@ export default function AdminDisponibilites() {
                                          new Date().getFullYear() === currentDate.getFullYear();
                          
                          return (
-                           <div 
-                             key={dayNum} 
+                           <div
+                             key={dayNum}
+                             onClick={() => handleDayClick(suite._id, dayNum, statusInfo)}
                              title={
                                statusInfo.status === 'occupe' ? `Réservé par ${statusInfo.reservation?.clientName}` :
-                               statusInfo.status === 'maintenance' ? `Bloqué: ${statusInfo.reason}` :
-                               `Disponible`
+                               statusInfo.status === 'maintenance' ? `Bloqué : ${statusInfo.reason} — cliquer pour débloquer` :
+                               `Disponible — cliquer pour bloquer`
                              }
                              className={`aspect-square relative rounded-xl border flex flex-col items-center justify-center gap-1 transition-all cursor-pointer hover:scale-[1.05] active:scale-[0.98] p-1.5 ${
                                statusInfo.status === 'occupe' 

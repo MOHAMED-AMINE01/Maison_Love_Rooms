@@ -23,6 +23,8 @@ import {
   removeBlockedDate,
   syncSuiteIcal,
   updateSuiteIcalUrls,
+  getExternalReservations,
+  refreshStaleIcal,
   getSettings,
   updateSettings,
   getGiftCards,
@@ -56,6 +58,9 @@ router.route('/reservations')
   .get(protect, getReservations)
   .post(protect, createReservation);
 
+// Réservations importées d'Airbnb / Booking (lecture seule, affichées dans le BO)
+router.get('/external-reservations', protect, getExternalReservations);
+
 router.route('/reservations/:id')
   .put(protect, updateReservation)
   .delete(protect, deleteReservation);
@@ -79,6 +84,8 @@ router.delete('/suites/:id/block-dates/:blockId', protect, removeBlockedDate);
 // Synchronisation iCal (import Airbnb / Booking) pour une suite
 router.patch('/suites/:id/ical', protect, updateSuiteIcalUrls);
 router.post('/suites/:id/sync-ical', protect, syncSuiteIcal);
+// Lazy-sync : rafraîchit les suites périmées à l'ouverture du BO (throttlé)
+router.post('/ical/refresh', protect, refreshStaleIcal);
 
 // Routes pour les services additionnels (Boutique / Options)
 router.route('/services')

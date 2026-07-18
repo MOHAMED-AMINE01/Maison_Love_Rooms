@@ -31,6 +31,8 @@ export interface ISuite extends Document {
   images: string[];
   blockedDates: IBlockedDate[];
   icalUrls: IIcalUrls;
+  // Dernière synchro iCal réussie pour cette suite (throttle du lazy-sync à l'ouverture du BO).
+  lastIcalSyncAt?: Date;
 }
 
 const blockedDateSchema = new Schema<IBlockedDate>({
@@ -64,6 +66,7 @@ const suiteSchema = new Schema<ISuite>(
       airbnb: { type: String, default: '' },
       booking: { type: String, default: '' },
     },
+    lastIcalSyncAt: { type: Date },
   },
   {
     timestamps: true,

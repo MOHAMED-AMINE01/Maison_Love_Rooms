@@ -57,6 +57,10 @@ interface Reservation {
   consentGiven?: boolean;
   status: 'en_attente' | 'confirmee' | 'validee' | 'annulee' | 'terminee';
   createdAt: string;
+  // Réservations importées d'Airbnb / Booking (lecture seule, pas de fiche client via iCal)
+  source?: 'site' | 'booking' | 'airbnb';
+  readOnly?: boolean;
+  note?: string;
 }
 
 interface Suite {
@@ -117,18 +121,39 @@ export default function AdminReservations() {
   const [openFilterDropdown, setOpenFilterDropdown] = useState(false);
   const [openStatusDropdown, setOpenStatusDropdown] = useState(false);
 
+  // Charge et fusionne les réservations du site + les résas importées Airbnb/Booking.
+  const loadReservations = async () => {
+    const [resReservations, resExternal] = await Promise.all([
+      adminFetch('/api/admin/reservations'),
+      adminFetch('/api/admin/external-reservations'),
+    ]);
+    const siteRes: Reservation[] = resReservations.ok ? await resReservations.json() : [];
+    const externalRes: Reservation[] = resExternal.ok ? await resExternal.json() : [];
+    // Fusion triée par date d'arrivée (les plus récentes en tête), site + plateformes.
+    const merged = [...siteRes, ...externalRes].sort(
+      (a, b) => new Date(b.checkIn).getTime() - new Date(a.checkIn).getTime()
+    );
+    setReservations(merged);
+  };
+
+  // Lazy-sync iCal en arrière-plan : ne bloque PAS l'affichage du BO (une plateforme
+  // lente ne doit pas geler la page). Si la synchro ramène de nouvelles résas
+  // Airbnb/Booking, on recharge la liste discrètement. Throttlé côté serveur.
+  const backgroundSyncIcal = async () => {
+    try {
+      const res = await adminFetch('/api/admin/ical/refresh', { method: 'POST' });
+      if (!res.ok) return;
+      const data = await res.json().catch(() => ({ refreshed: 0 }));
+      if (data?.refreshed > 0) await loadReservations();
+    } catch { /* le cron de fond prend le relais, on n'affiche pas d'erreur */ }
+  };
+
   // Charger les réservations & suites
   const fetchData = async () => {
     setLoading(true);
     try {
-      
-      
-      // 1. Fetch Reservations
-      const resReservations = await adminFetch('/api/admin/reservations');
-      if (resReservations.ok) {
-        const dataRes = await resReservations.json();
-        setReservations(dataRes);
-      }
+      // 1. Affichage immédiat depuis la base (résas site + imports déjà synchronisés).
+      await loadReservations();
 
       // 2. Fetch Suites
       const resSuites = await adminFetch('/api/admin/suites');
@@ -153,6 +178,9 @@ export default function AdminReservations() {
     } finally {
       setLoading(false);
     }
+
+    // 4. Synchro iCal en arrière-plan (n'affecte pas l'affichage ci-dessus).
+    backgroundSyncIcal();
   };
 
   useEffect(() => {
@@ -334,6 +362,17 @@ export default function AdminReservations() {
     });
   };
 
+  // Badge de provenance : distingue les résas importées d'Airbnb / Booking de celles du site.
+  const getSourceBadge = (source?: string) => {
+    if (source === 'booking') {
+      return <span className="bg-[#003580]/20 text-[#4d8bff] border border-[#4d8bff]/30 text-[9px] px-2 py-0.5 rounded font-bold uppercase tracking-widest">Booking.com</span>;
+    }
+    if (source === 'airbnb') {
+      return <span className="bg-[#FF5A5F]/10 text-[#ff7a7e] border border-[#FF5A5F]/30 text-[9px] px-2 py-0.5 rounded font-bold uppercase tracking-widest">Airbnb</span>;
+    }
+    return null;
+  };
+
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'confirmee':
@@ -454,12 +493,16 @@ export default function AdminReservations() {
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: i * 0.05 }}
-                      className="group border-b border-admin-border/50 hover:bg-white/[0.02] transition-all cursor-pointer"
-                      onClick={() => handleOpenDrawer(res)}
+                      className={`group border-b border-admin-border/50 hover:bg-white/[0.02] transition-all ${res.readOnly ? 'cursor-default' : 'cursor-pointer'}`}
+                      onClick={() => { if (!res.readOnly) handleOpenDrawer(res); }}
                     >
                       <td className="py-6 pr-4">
                         <p className="text-sm font-semibold group-hover:text-gold transition-colors">{res.clientName}</p>
-                        <p className="text-[10px] font-mono text-white/20 mt-1">#{res._id.slice(-6).toUpperCase()}</p>
+                        {res.readOnly ? (
+                          <div className="mt-1.5">{getSourceBadge(res.source)}</div>
+                        ) : (
+                          <p className="text-[10px] font-mono text-white/20 mt-1">#{res._id.slice(-6).toUpperCase()}</p>
+                        )}
                       </td>
                       <td className="py-6 pr-4">
                         <div className="flex items-center gap-2">
@@ -491,24 +534,30 @@ export default function AdminReservations() {
                         {getStatusBadge(res.status)}
                       </td>
                       <td className="py-6 pr-4">
-                        <p className="text-base font-serif text-gold">{res.totalPrice} €</p>
+                        <p className="text-base font-serif text-gold">{res.readOnly ? '—' : `${res.totalPrice} €`}</p>
                       </td>
                       <td className="py-6 text-right" onClick={e => e.stopPropagation()}>
-                        <div className="flex items-center justify-end gap-2">
-                          <button 
-                            onClick={(e) => handleDelete(res._id, e)}
-                            className="p-2 rounded-lg bg-white/[0.02] border border-white/[0.05] hover:bg-rose-500/20 hover:text-rose-400 hover:border-rose-500/30 transition-all text-white/40 cursor-pointer"
-                            title="Supprimer"
-                          >
-                            <Trash2 size={14} />
-                          </button>
-                          <button 
-                            onClick={() => handleOpenDrawer(res)}
-                            className="p-2 rounded-lg bg-white/[0.03] border border-white/[0.05] hover:bg-gold hover:text-black transition-all cursor-pointer"
-                          >
-                            <ArrowRight size={14} />
-                          </button>
-                        </div>
+                        {res.readOnly ? (
+                          <span className="text-[10px] text-white/25 italic pr-2" title="Réservation importée depuis la plateforme — gérée sur Booking/Airbnb, non modifiable ici">
+                            Importée
+                          </span>
+                        ) : (
+                          <div className="flex items-center justify-end gap-2">
+                            <button
+                              onClick={(e) => handleDelete(res._id, e)}
+                              className="p-2 rounded-lg bg-white/[0.02] border border-white/[0.05] hover:bg-rose-500/20 hover:text-rose-400 hover:border-rose-500/30 transition-all text-white/40 cursor-pointer"
+                              title="Supprimer"
+                            >
+                              <Trash2 size={14} />
+                            </button>
+                            <button
+                              onClick={() => handleOpenDrawer(res)}
+                              className="p-2 rounded-lg bg-white/[0.03] border border-white/[0.05] hover:bg-gold hover:text-black transition-all cursor-pointer"
+                            >
+                              <ArrowRight size={14} />
+                            </button>
+                          </div>
+                        )}
                       </td>
                     </motion.tr>
                   ))}
@@ -524,14 +573,18 @@ export default function AdminReservations() {
                   initial={{ opacity: 0, y: 12 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: i * 0.05 }}
-                  onClick={() => handleOpenDrawer(res)}
-                  className="bg-white/[0.02] border border-white/[0.05] rounded-2xl p-5 hover:border-gold/30 transition-all cursor-pointer space-y-4 relative group"
+                  onClick={() => { if (!res.readOnly) handleOpenDrawer(res); }}
+                  className={`bg-white/[0.02] border border-white/[0.05] rounded-2xl p-5 hover:border-gold/30 transition-all space-y-4 relative group ${res.readOnly ? 'cursor-default' : 'cursor-pointer'}`}
                 >
                   {/* Header Row */}
                   <div className="flex justify-between items-start">
                     <div>
                       <h4 className="text-sm font-semibold group-hover:text-gold transition-colors text-white">{res.clientName}</h4>
-                      <p className="text-[10px] font-mono text-white/30 mt-0.5">#{res._id.slice(-6).toUpperCase()}</p>
+                      {res.readOnly ? (
+                        <div className="mt-1">{getSourceBadge(res.source)}</div>
+                      ) : (
+                        <p className="text-[10px] font-mono text-white/30 mt-0.5">#{res._id.slice(-6).toUpperCase()}</p>
+                      )}
                     </div>
                     {getStatusBadge(res.status)}
                   </div>
@@ -544,7 +597,7 @@ export default function AdminReservations() {
                     </div>
                     <div className="text-right space-y-1">
                       <span className="text-[9px] uppercase tracking-widest text-white/30 font-bold block">Total</span>
-                      <span className="text-base font-serif text-gold font-bold">{res.totalPrice} €</span>
+                      <span className="text-base font-serif text-gold font-bold">{res.readOnly ? '—' : `${res.totalPrice} €`}</span>
                     </div>
                   </div>
 
@@ -579,20 +632,26 @@ export default function AdminReservations() {
                       )}
                     </div>
 
-                    <div className="flex gap-2" onClick={e => e.stopPropagation()}>
-                      <button 
-                        onClick={(e) => handleDelete(res._id, e)}
-                        className="p-2.5 rounded-xl bg-white/[0.02] border border-white/[0.05] hover:bg-rose-500/20 hover:text-rose-400 hover:border-rose-500/30 transition-all text-white/30 cursor-pointer"
-                      >
-                        <Trash2 size={13} />
-                      </button>
-                      <button 
-                        onClick={() => handleOpenDrawer(res)}
-                        className="p-2.5 rounded-xl bg-white/[0.03] border border-white/[0.05] hover:bg-gold hover:text-black transition-all cursor-pointer flex items-center justify-center"
-                      >
-                        <ArrowRight size={13} />
-                      </button>
-                    </div>
+                    {res.readOnly ? (
+                      <span className="text-[9px] text-white/25 italic" title="Réservation importée depuis la plateforme — gérée sur Booking/Airbnb, non modifiable ici">
+                        Importée
+                      </span>
+                    ) : (
+                      <div className="flex gap-2" onClick={e => e.stopPropagation()}>
+                        <button
+                          onClick={(e) => handleDelete(res._id, e)}
+                          className="p-2.5 rounded-xl bg-white/[0.02] border border-white/[0.05] hover:bg-rose-500/20 hover:text-rose-400 hover:border-rose-500/30 transition-all text-white/30 cursor-pointer"
+                        >
+                          <Trash2 size={13} />
+                        </button>
+                        <button
+                          onClick={() => handleOpenDrawer(res)}
+                          className="p-2.5 rounded-xl bg-white/[0.03] border border-white/[0.05] hover:bg-gold hover:text-black transition-all cursor-pointer flex items-center justify-center"
+                        >
+                          <ArrowRight size={13} />
+                        </button>
+                      </div>
+                    )}
                   </div>
                 </motion.div>
               ))}

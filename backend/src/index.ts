@@ -19,19 +19,25 @@ import { syncAllSuitesIcal } from './controllers/adminController';
 connectDB().then(() => {
   seedDatabase();
 
-  // Démarrer la synchronisation automatique iCal (Airbnb/Booking)
-  // Intervalle par défaut : 15 minutes
-  const intervalMinutes = parseInt(process.env.ICAL_SYNC_INTERVAL_MINUTES || '15', 10);
-  console.log(`[iCal Sync] Initialisation de la synchronisation automatique toutes les ${intervalMinutes} minutes.`);
-  
-  // Première exécution après 10 secondes pour laisser le serveur démarrer tranquillement
-  setTimeout(() => {
-    syncAllSuitesIcal();
-  }, 10000);
+  // Synchronisation automatique iCal (Airbnb/Booking).
+  // ATTENTION : en serverless (Vercel), le process est gelé entre deux requêtes,
+  // donc setInterval ne se déclenche jamais en production. Le vrai planificateur
+  // en prod est le cron externe qui appelle GET /api/cron/sync-ical (voir SYNC_ICAL.md),
+  // complété par le lazy-sync à l'ouverture du back-office.
+  // On ne garde donc l'intervalle que pour le développement local (serveur long-running).
+  if (!process.env.VERCEL) {
+    const intervalMinutes = parseInt(process.env.ICAL_SYNC_INTERVAL_MINUTES || '15', 10);
+    console.log(`[iCal Sync] (dev local) Synchronisation automatique toutes les ${intervalMinutes} minutes.`);
 
-  setInterval(() => {
-    syncAllSuitesIcal();
-  }, intervalMinutes * 60 * 1000);
+    // Première exécution après 10 secondes pour laisser le serveur démarrer tranquillement
+    setTimeout(() => {
+      syncAllSuitesIcal();
+    }, 10000);
+
+    setInterval(() => {
+      syncAllSuitesIcal();
+    }, intervalMinutes * 60 * 1000);
+  }
 });
 
 const app = express();

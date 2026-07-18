@@ -16,7 +16,8 @@ import {
   createReservationCheckoutSession,
   verifyReservationSession,
   getPublicFaqs,
-  submitContactForm
+  submitContactForm,
+  runIcalCron
 } from '../controllers/adminController';
 
 const router = express.Router();
@@ -35,6 +36,9 @@ router.get('/availability', getAvailability);
 
 // Export iCal des réservations d'une suite (à coller dans Airbnb / Booking)
 router.get('/ical/:id', exportSuiteIcal);
+
+// Déclencheur de synchro iCal pour un cron externe (protégé par CRON_SECRET)
+router.get('/cron/sync-ical', runIcalCron);
 
 // Route publique pour créer une réservation
 router.post('/reservations', createReservation);

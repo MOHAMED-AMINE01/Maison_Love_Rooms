@@ -38,9 +38,14 @@ function fmtICSDate(d: Date): string {
 
 // Génère un flux iCal (.ics) à partir des réservations d'une suite, à coller dans
 // Airbnb / Booking pour bloquer ces dates chez eux (synchro sortante).
+// On exporte TOUTE l'occupation de la suite pour éviter les doublons :
+//   - les réservations du site,
+//   - les blocages (manuels ET importés d'Airbnb/Booking), afin qu'une résa reçue
+//     sur une plateforme ferme aussi les dates sur les autres.
 export function buildIcalFeed(
   suiteName: string,
-  reservations: { _id: any; checkIn: Date; checkOut: Date }[]
+  reservations: { _id: any; checkIn: Date; checkOut: Date }[],
+  blocks: { _id?: any; startDate: Date; endDate: Date; reason?: string }[] = []
 ): string {
   const dtstamp = `${fmtICSDate(new Date())}T000000Z`;
   const lines: string[] = [
@@ -57,6 +62,15 @@ export function buildIcalFeed(
     lines.push(`DTSTART;VALUE=DATE:${fmtICSDate(new Date(r.checkIn))}`);
     lines.push(`DTEND;VALUE=DATE:${fmtICSDate(new Date(r.checkOut))}`);
     lines.push(`SUMMARY:Réservé — ${suiteName}`);
+    lines.push('END:VEVENT');
+  }
+  for (const b of blocks) {
+    lines.push('BEGIN:VEVENT');
+    lines.push(`UID:block-${String(b._id ?? `${fmtICSDate(new Date(b.startDate))}-${fmtICSDate(new Date(b.endDate))}`)}@maisonloverooms`);
+    lines.push(`DTSTAMP:${dtstamp}`);
+    lines.push(`DTSTART;VALUE=DATE:${fmtICSDate(new Date(b.startDate))}`);
+    lines.push(`DTEND;VALUE=DATE:${fmtICSDate(new Date(b.endDate))}`);
+    lines.push(`SUMMARY:${b.reason ? String(b.reason) : `Indisponible — ${suiteName}`}`);
     lines.push('END:VEVENT');
   }
   lines.push('END:VCALENDAR');
