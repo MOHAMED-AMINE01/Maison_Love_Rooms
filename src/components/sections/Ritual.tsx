@@ -87,7 +87,7 @@ export default function Ritual() {
               className="absolute left-0 md:left-4 w-[55%] md:w-[50%] aspect-square rounded-full overflow-hidden border border-gold/20 shadow-[0_30px_60px_rgba(0,0,0,0.8)] z-20 group -translate-y-6 md:-translate-y-12"
             >
               <img
-                src="/IMG_6309.jpeg"
+                src="https://res.cloudinary.com/djks8n2nh/image/upload/v1785509983/suites/love-decor.jpg"
                 alt="L'Évasion"
                 loading="lazy"
                 decoding="async"
@@ -104,11 +104,11 @@ export default function Ritual() {
               className="absolute right-0 md:right-4 w-[55%] md:w-[50%] aspect-square rounded-full overflow-hidden border border-gold/10 shadow-[0_30px_60px_rgba(0,0,0,0.8)] z-30 group translate-y-6 md:translate-y-12"
             >
               <img
-                src="/IMG_6409.jpeg"
+                src="https://res.cloudinary.com/djks8n2nh/image/upload/v1785510046/suites/baguerra-couple-bath.jpg"
                 alt="Le Secret"
                 loading="lazy"
                 decoding="async"
-                className="w-full h-full object-cover grayscale brightness-75 group-hover:grayscale-0 group-hover:brightness-100 transition-all duration-1000"
+                className="w-full h-full object-cover brightness-90 group-hover:grayscale-0 group-hover:brightness-100 transition-all duration-1000"
               />
               {/* Internal Glow */}
               <div className="absolute inset-0 bg-gradient-to-bl from-gold/5 to-transparent opacity-30" />

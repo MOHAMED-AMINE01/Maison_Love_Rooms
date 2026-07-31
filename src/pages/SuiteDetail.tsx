@@ -79,10 +79,10 @@ export default function SuiteDetail() {
    const gallery = [
       suite.image,
       ...(suite.images && suite.images.length > 0 ? suite.images : [
-         "https://images.unsplash.com/photo-1590073844006-33379778ae09?q=80&w=2645&auto=format&fit=crop",
-         "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?q=80&w=2600&auto=format&fit=crop",
-         "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?q=80&w=2600&auto=format&fit=crop",
-         "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?q=80&w=2670&auto=format&fit=crop"
+         "https://res.cloudinary.com/djks8n2nh/image/upload/v1785509986/suites/love-champagne.jpg",
+         "https://res.cloudinary.com/djks8n2nh/image/upload/v1785510021/suites/love-embrace.jpg",
+         "https://res.cloudinary.com/djks8n2nh/image/upload/v1785510002/suites/love-blindfold.jpg",
+         "https://res.cloudinary.com/djks8n2nh/image/upload/v1785509995/suites/love-heels.jpg"
       ])
    ];
 

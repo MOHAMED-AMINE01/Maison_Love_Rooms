@@ -61,7 +61,7 @@ export default function Footer() {
               {[
                 { label: "Accueil", to: "/" },
                 { label: "Nos chambres", to: "/#suites" },
-                { label: "Expérience", to: "/experience" },
+                { label: "Nos offres", to: "/experience" },
                 { label: "Boutique", to: "/boutique" },
                 { label: "Cartes cadeaux", to: "/cartes-cadeaux" },
                 { label: "Foire aux questions", to: "/#faq" }

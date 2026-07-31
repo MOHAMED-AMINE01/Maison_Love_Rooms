@@ -13,12 +13,16 @@ export const SUITES: Suite[] = [
     atouts: "Balnéo privative\nAmbiance inspirée des Années Folles\nÉclairage tamisé et atmosphère romantique\nSalon cosy et intimiste\nFauteuil tantra\nDécoration glamour et élégante\nCadre idéal pour les couples et les occasions spéciales",
     callToAction: "Laissez-vous transporter dans un univers où le luxe, la passion et l'élégance se mêlent pour créer des souvenirs inoubliables.",
     price: 189,
-    image: "https://images.unsplash.com/photo-1578683010236-d716f9a3f461?q=80&w=2000&auto=format&fit=crop",
+    image: "https://res.cloudinary.com/djks8n2nh/image/upload/v1785509983/suites/love-decor.jpg",
     images: [
-      "https://images.unsplash.com/photo-1590073844006-33379778ae09?q=80&w=2645&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?q=80&w=2600&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?q=80&w=2600&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?q=80&w=2670&auto=format&fit=crop"
+      "https://res.cloudinary.com/djks8n2nh/image/upload/v1785509986/suites/love-champagne.jpg",
+      "https://res.cloudinary.com/djks8n2nh/image/upload/v1785509989/suites/love-hands.jpg",
+      "https://res.cloudinary.com/djks8n2nh/image/upload/v1785509991/suites/love-couple-red.jpg",
+      "https://res.cloudinary.com/djks8n2nh/image/upload/v1785509995/suites/love-heels.jpg",
+      "https://res.cloudinary.com/djks8n2nh/image/upload/v1785510002/suites/love-blindfold.jpg",
+      "https://res.cloudinary.com/djks8n2nh/image/upload/v1785510007/suites/love-cocktail.jpg",
+      "https://res.cloudinary.com/djks8n2nh/image/upload/v1785510021/suites/love-embrace.jpg",
+      "https://res.cloudinary.com/djks8n2nh/image/upload/v1785510027/suites/love-embrace-2.jpg"
     ],
     features: ["Balnéo Privative", "Douche en duo", "Décoration Chic", "Kitchenette", "Champagne Inclus"],
   },
@@ -32,12 +36,15 @@ export const SUITES: Suite[] = [
     atouts: "Spa privatif\nDécoration jungle luxuriante\nCuisine indépendante équipée\nAmbiance immersive et musicale\nLumières tamisées sophistiquées\nMatières nobles et finitions haut de gamme\nÉquipements premium pour couples en quête d'aventure",
     callToAction: "Laissez-vous transporter dans une jungle d'élégance où chaque moment invite à la détente, la complicité et la redécouverte.",
     price: 189,
-    image: "https://images.unsplash.com/photo-1598928506311-c55ded91a20c?q=80&w=2000&auto=format&fit=crop",
+    image: "https://res.cloudinary.com/djks8n2nh/image/upload/v1785510041/suites/baguerra-shower.jpg",
     images: [
-      "https://images.unsplash.com/photo-1590073844006-33379778ae09?q=80&w=2645&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?q=80&w=2600&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?q=80&w=2600&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?q=80&w=2670&auto=format&fit=crop"
+      "https://res.cloudinary.com/djks8n2nh/image/upload/v1785510045/suites/baguerra-bath.jpg",
+      "https://res.cloudinary.com/djks8n2nh/image/upload/v1785510046/suites/baguerra-couple-bath.jpg",
+      "https://res.cloudinary.com/djks8n2nh/image/upload/v1785510048/suites/baguerra-swing.jpg",
+      "https://res.cloudinary.com/djks8n2nh/image/upload/v1785510049/suites/baguerra-hands.jpg",
+      "https://res.cloudinary.com/djks8n2nh/image/upload/v1785510050/suites/baguerra-handcuffs.jpg",
+      "https://res.cloudinary.com/djks8n2nh/image/upload/v1785510052/suites/baguerra-feather.jpg",
+      "https://res.cloudinary.com/djks8n2nh/image/upload/v1785510053/suites/baguerra-blindfold.jpg"
     ],
     features: ["Spa Privatif", "Décoration Jungle", "Cuisine Indépendante", "Ambiance Immersive", "Champagne Inclus"],
   }

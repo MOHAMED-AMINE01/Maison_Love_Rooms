@@ -96,7 +96,7 @@ export default function Experience() {
       <section className="relative h-[55vh] md:h-[50vh] flex items-center overflow-hidden">
         <motion.div initial={{ scale: 1.1 }} animate={{ scale: 1 }} transition={{ duration: 2 }} className="absolute inset-0">
           <img
-            src="https://images.unsplash.com/photo-1544161515-4ab6ce6db874?q=80&w=2670&auto=format&fit=crop"
+            src="https://res.cloudinary.com/djks8n2nh/image/upload/v1785510007/suites/love-cocktail.jpg"
             className="w-full h-full object-cover brightness-[0.35]"
             alt="Experience background"
           />
