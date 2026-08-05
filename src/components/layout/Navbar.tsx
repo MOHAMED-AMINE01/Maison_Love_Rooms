@@ -31,14 +31,14 @@ export default function Navbar() {
   return (
     <>
 
-      <nav className={`fixed top-8 left-1/2 -translate-x-1/2 w-[95%] max-w-[1400px] z-[110] transition-all duration-700 ${scrolled ? 'bg-gold/30 backdrop-blur-3xl py-0 shadow-[0_20px_50px_-15px_rgba(0,0,0,0.05)] rounded-full border border-noir/5' : 'bg-transparent py-2'}`}>
-        <div className="container-wide flex items-center justify-between px-10">
+      <nav className={`fixed top-6 md:top-8 left-1/2 -translate-x-1/2 w-[95%] max-w-[1400px] z-[110] transition-all duration-700 ${scrolled ? 'bg-gold/30 backdrop-blur-3xl py-3.5 md:py-4 shadow-[0_20px_50px_-15px_rgba(0,0,0,0.05)] rounded-full border border-noir/5' : 'bg-transparent py-4 md:py-5'}`}>
+        <div className="container-wide flex items-center justify-between px-6 md:px-10">
           {/* Logo */}
-          <Link to="/" className="relative z-[110] group">
+          <Link to="/" className="relative z-[110] group flex items-center justify-center shrink-0 my-auto">
             <img
               src="/logo.png"
               alt="Maison Love Rooms"
-              className={`h-18 scale-150 md:h-24 md:scale-130 w-auto transition-all duration-700 scale-110 md:scale-125 ${scrolled ? 'brightness-0' : (isOpen ? 'bg-transparent' : '')}`}
+              className={`h-14 md:h-18 scale-140 md:scale-160 translate-y-[2px] transform origin-center w-auto object-contain transition-all duration-700 ${scrolled ? 'brightness-0' : (isOpen ? 'bg-transparent' : '')}`}
             />
           </Link>
 
@@ -79,7 +79,7 @@ export default function Navbar() {
                 <img
                   src="/logo.png"
                   alt="Logo"
-                  className="h-20 scale-150 md:h-24 w-auto"
+                  className="h-14 md:h-18 w-auto object-contain"
                 />
               </Link>
               <button
