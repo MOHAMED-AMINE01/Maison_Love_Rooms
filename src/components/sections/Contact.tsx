@@ -5,7 +5,7 @@ import { API_URL } from '../../constants';
 
 export default function Contact() {
   const [focused, setFocused] = useState<string | null>(null);
-  const [adminEmail, setAdminEmail] = useState("privilege@maisonloveroom.fr");
+  const [adminEmail, setAdminEmail] = useState("conciergerie@maisonloveroom.fr");
 
   const [formData, setFormData] = useState({
     name: '',

@@ -1,11 +1,31 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { useLocation } from 'react-router-dom';
+import { API_URL } from '../constants';
 
 export default function Legal() {
    const location = useLocation();
    const isPrivacy = location.pathname.includes('confidentialite');
    const isCookies = location.pathname.includes('cookies');
+
+   const [email, setEmail] = useState("conciergerie@maisonloveroom.fr");
+
+   useEffect(() => {
+      const getSettings = async () => {
+         try {
+            const res = await fetch(`${API_URL}/api/settings`);
+            if (res.ok) {
+               const data = await res.json();
+               if (data.email) {
+                  setEmail(data.email);
+               }
+            }
+         } catch (err) {
+            console.error("Failed to load settings in Legal", err);
+         }
+      };
+      getSettings();
+   }, []);
 
    let title = "Mentions Légales.";
    let subtitle = "Transparence";
@@ -78,7 +98,7 @@ export default function Legal() {
                         <section className="space-y-3 pt-4 border-t border-white/10">
                            <h2 className="text-lg md:text-2xl font-serif text-white not-italic">Contact</h2>
                            <p>
-                              Pour toute question concernant notre politique de cookies, vous pouvez nous contacter à : <span className="text-gold"><a href="mailto:conciergerie@maisonloveroom.fr" className="text-gold hover:text-gold/80 underline">conciergerie@maisonloveroom.fr</a></span>
+                              Pour toute question concernant notre politique de cookies, vous pouvez nous contacter à : <span className="text-gold"><a href={`mailto:${email}`} className="text-gold hover:text-gold/80 underline">{email}</a></span>
                            </p>
                         </section>
                      </>
@@ -101,7 +121,7 @@ export default function Legal() {
                            </p>
                            <p className="text-gold font-semibold">
                               Maison Love Rooms<br />
-                              Email : <a href="mailto:conciergerie@maisonloveroom.fr" className="text-gold hover:text-gold/80 underline">conciergerie@maisonloveroom.fr</a>
+                              Email : <a href={`mailto:${email}`} className="text-gold hover:text-gold/80 underline">{email}</a>
                            </p>
                         </section>
 
@@ -164,7 +184,7 @@ export default function Legal() {
                               <li>Droit à la portabilité des données</li>
                            </ul>
                            <p className="pt-3">
-                              Vous pouvez exercer ces droits en envoyant un e-mail à : <span className="text-gold"><a href="mailto:conciergerie@maisonloveroom.fr" className="text-gold hover:text-gold/80 underline">conciergerie@maisonloveroom.fr</a></span>
+                              Vous pouvez exercer ces droits en envoyant un e-mail à : <span className="text-gold"><a href={`mailto:${email}`} className="text-gold hover:text-gold/80 underline">{email}</a></span>
                            </p>
                         </section>
                      </>
@@ -177,7 +197,7 @@ export default function Legal() {
                            </p>
                            <p className="text-gold font-semibold">
                               Maison Love Rooms<br />
-                              Email : <a href="mailto:conciergerie@maisonloveroom.fr" className="text-gold hover:text-gold/80 underline">conciergerie@maisonloveroom.fr</a><br />
+                              Email : <a href={`mailto:${email}`} className="text-gold hover:text-gold/80 underline">{email}</a><br />
                               Le directeur de publication du site est Maison Love Rooms
                            </p>
                         </section>
@@ -211,14 +231,14 @@ export default function Legal() {
                            </p>
                            <p>
                               Le responsable du traitement est :<br />
-                              <span className="text-gold">Maison Love Rooms — <a href="mailto:conciergerie@maisonloveroom.fr" className="text-gold hover:text-gold/80 underline">conciergerie@maisonloveroom.fr</a></span>
+                              <span className="text-gold">Maison Love Rooms — <a href={`mailto:${email}`} className="text-gold hover:text-gold/80 underline">{email}</a></span>
                            </p>
                            <p>
                               Le traitement des données est conforme au RGPD et à la législation française. Pour plus de détails, consultez la <a href="/confidentialite" className="text-gold hover:text-gold/80">Politique de confidentialité</a> du site.
                            </p>
                            <p>
                               Les utilisateurs disposent des droits suivants : accès, rectification, suppression, opposition, portabilité, limitation du traitement.<br />
-                              Pour exercer vos droits : <span className="text-gold"><a href="mailto:conciergerie@maisonloveroom.fr" className="text-gold hover:text-gold/80 underline">conciergerie@maisonloveroom.fr</a></span>
+                              Pour exercer vos droits : <span className="text-gold"><a href={`mailto:${email}`} className="text-gold hover:text-gold/80 underline">{email}</a></span>
                            </p>
                         </section>
 
