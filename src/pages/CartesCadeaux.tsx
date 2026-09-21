@@ -114,7 +114,7 @@ export default function CartesCadeaux() {
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="bg-page min-h-screen font-sans selection:bg-gold/30">
       {/* Hero */}
       <section className="relative h-[45vh] md:h-[42vh] flex items-center overflow-hidden">
-        <img src="https://images.unsplash.com/photo-1549465220-1a8b9238cd48?q=80&w=2670&auto=format&fit=crop" className="absolute inset-0 w-full h-full object-cover brightness-[0.35]" alt="Cartes cadeaux" />
+        <img src="https://res.cloudinary.com/djks8n2nh/image/upload/v1785509986/suites/love-champagne.jpg" className="absolute inset-0 w-full h-full object-cover brightness-[0.35]" alt="Cartes cadeaux" />
         <div className="container-wide relative z-10 px-6 md:px-12 text-center">
           <h1 className="text-4xl md:text-7xl font-serif text-gold leading-tight tracking-tighter mb-4">Cartes cadeaux</h1>
           <p className="text-white/70 max-w-2xl mx-auto font-serif italic">Offrez du temps, pas un objet. La carte cadeau s'adapte à l'envie : accès à une love room, séjour, massage ou attention sur place.</p>

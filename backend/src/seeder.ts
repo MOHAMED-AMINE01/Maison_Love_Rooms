@@ -52,16 +52,13 @@ export const seedDatabase = async () => {
           pricePerNight: 189,
           features: ["Balnéo Privative", "Douche en duo", "Décoration Chic", "Kitchenette", "Champagne Inclus"],
           status: "disponible",
-          imageUrl: "https://res.cloudinary.com/djks8n2nh/image/upload/v1785509983/suites/love-decor.jpg",
+          imageUrl: "/photos/love-story-1.jpeg",
           images: [
-            "https://res.cloudinary.com/djks8n2nh/image/upload/v1785509986/suites/love-champagne.jpg",
-            "https://res.cloudinary.com/djks8n2nh/image/upload/v1785509989/suites/love-hands.jpg",
-            "https://res.cloudinary.com/djks8n2nh/image/upload/v1785509991/suites/love-couple-red.jpg",
-            "https://res.cloudinary.com/djks8n2nh/image/upload/v1785509995/suites/love-heels.jpg",
-            "https://res.cloudinary.com/djks8n2nh/image/upload/v1785510002/suites/love-blindfold.jpg",
-            "https://res.cloudinary.com/djks8n2nh/image/upload/v1785510007/suites/love-cocktail.jpg",
-            "https://res.cloudinary.com/djks8n2nh/image/upload/v1785510021/suites/love-embrace.jpg",
-            "https://res.cloudinary.com/djks8n2nh/image/upload/v1785510027/suites/love-embrace-2.jpg"
+            "/photos/love-story-6.jpeg",
+            "/photos/love-story-2.jpeg",
+            "/photos/love-story-3.jpeg",
+            "/photos/love-story-5.jpeg",
+            "/photos/love-story-4.jpeg"
           ]
         },
         {
@@ -74,15 +71,12 @@ export const seedDatabase = async () => {
           pricePerNight: 189,
           features: ["Spa Privatif", "Décoration Jungle", "Cuisine Indépendante", "Ambiance Immersive", "Champagne Inclus"],
           status: "disponible",
-          imageUrl: "https://res.cloudinary.com/djks8n2nh/image/upload/v1785510041/suites/baguerra-shower.jpg",
+          imageUrl: "/photos/baguerra-1.jpeg",
           images: [
-            "https://res.cloudinary.com/djks8n2nh/image/upload/v1785510045/suites/baguerra-bath.jpg",
-            "https://res.cloudinary.com/djks8n2nh/image/upload/v1785510046/suites/baguerra-couple-bath.jpg",
-            "https://res.cloudinary.com/djks8n2nh/image/upload/v1785510048/suites/baguerra-swing.jpg",
-            "https://res.cloudinary.com/djks8n2nh/image/upload/v1785510049/suites/baguerra-hands.jpg",
-            "https://res.cloudinary.com/djks8n2nh/image/upload/v1785510050/suites/baguerra-handcuffs.jpg",
-            "https://res.cloudinary.com/djks8n2nh/image/upload/v1785510052/suites/baguerra-feather.jpg",
-            "https://res.cloudinary.com/djks8n2nh/image/upload/v1785510053/suites/baguerra-blindfold.jpg"
+            "/photos/baguerra-3.jpeg",
+            "/photos/baguerra-2.jpeg",
+            "/photos/baguerra-4.jpeg",
+            "/photos/maison-3.jpeg"
           ]
         }
       ];

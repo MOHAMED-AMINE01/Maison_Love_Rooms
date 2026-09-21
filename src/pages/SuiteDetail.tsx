@@ -35,7 +35,7 @@ export default function SuiteDetail() {
                      atouts: data.atouts || staticSuite?.atouts || '',
                      callToAction: data.callToAction || staticSuite?.callToAction || '',
                      price: data.pricePerNight,
-                     image: data.imageUrl || staticSuite?.image || '/images/suites/suite-1.jpg',
+                     image: data.imageUrl || staticSuite?.image || '/photos/love-story-1.jpeg',
                      images: data.images || staticSuite?.images || [],
                      features: data.features || staticSuite?.features || [],
                      status: data.status || 'disponible'

@@ -109,7 +109,7 @@ export default function Boutique() {
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="bg-page min-h-screen font-sans selection:bg-gold/30">
       {/* Hero */}
       <section className="relative h-[45vh] md:h-[42vh] flex items-center overflow-hidden">
-        <img src="https://images.unsplash.com/photo-1607083206869-4c7672e72a8a?q=80&w=2670&auto=format&fit=crop" className="absolute inset-0 w-full h-full object-cover brightness-[0.35]" alt="Boutique" />
+        <img src="https://res.cloudinary.com/djks8n2nh/image/upload/v1785509995/suites/love-heels.jpg" className="absolute inset-0 w-full h-full object-cover brightness-[0.35]" alt="Boutique" />
         <div className="container-wide relative z-10 px-6 md:px-12 text-center">
           <h1 className="text-4xl md:text-7xl font-serif text-gold leading-tight tracking-tighter mb-4">Notre boutique</h1>
           <p className="text-white/70 max-w-2xl mx-auto font-serif italic">Des attentions choisies pour prolonger le moment chez vous ou offrir une touche personnelle à votre parenthèse à deux.</p>

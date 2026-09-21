@@ -59,7 +59,7 @@ const suiteSchema = new Schema<ISuite>(
       enum: ['disponible', 'maintenance', 'en_maintenance'],
       default: 'disponible',
     },
-    imageUrl: { type: String, default: '/images/suites/suite-1.jpg' },
+    imageUrl: { type: String, default: '/photos/love-story-1.jpeg' },
     images: [{ type: String }],
     blockedDates: [blockedDateSchema],
     icalUrls: {

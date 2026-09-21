@@ -378,7 +378,7 @@ export default function AdminChambres() {
                      >
                         <div className={`relative overflow-hidden ${view === 'list' ? 'w-full sm:w-64 h-48 sm:h-auto sm:aspect-video flex-shrink-0' : 'aspect-video w-full'}`}>
                            <img
-                              src={suite.imageUrl || "https://images.unsplash.com/photo-1578683010236-d716f9a3f461?q=80&w=2000&auto=format&fit=crop"}
+                              src={suite.imageUrl || "/photos/love-story-1.jpeg"}
                               alt={suite.name}
                               className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 opacity-70"
                            />

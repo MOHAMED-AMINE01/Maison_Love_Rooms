@@ -18,7 +18,7 @@ export default function Suites() {
             name: s.name,
             description: s.description,
             price: s.pricePerNight.toString(),
-            image: s.imageUrl || '/images/suites/suite-1.jpg',
+            image: s.imageUrl || '/photos/love-story-1.jpeg',
             features: s.features || [],
             tagline: s.tagline || ''
           })));
