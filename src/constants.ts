@@ -13,7 +13,7 @@ export const SUITES: Suite[] = [
     atouts: "Balnéo privative\nAmbiance inspirée des Années Folles\nÉclairage tamisé et atmosphère romantique\nSalon cosy et intimiste\nFauteuil tantra\nDécoration glamour et élégante\nCadre idéal pour les couples et les occasions spéciales",
     callToAction: "Laissez-vous transporter dans un univers où le luxe, la passion et l'élégance se mêlent pour créer des souvenirs inoubliables.",
     price: 189,
-    image: "/photos/love-story-1.jpeg",
+    image: "/modifs/top.png",
     images: [
       "/photos/love-story-6.jpeg",
       "/photos/love-story-2.jpeg",

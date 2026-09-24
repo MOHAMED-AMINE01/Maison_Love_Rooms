@@ -113,7 +113,7 @@ export default function Hero() {
               className="absolute top-1/2 right-0 -translate-y-1/2 w-[55%] aspect-square z-20"
             >
               <div className="w-full h-full rounded-full overflow-hidden border-4 border-[#121212] shadow-[0_30px_60px_-15px_rgba(0,0,0,0.5)]">
-                <img src="/new_pics/heropic2.jpeg" className="w-full h-full object-cover" alt="Baguerra - Shower" decoding="async" />
+                <img src="/modifs/Accueil.png" className="w-full h-full object-cover" alt="Baguerra - Shower" decoding="async" />
               </div>
               {/* Subtle Gold Ring on the Middle Circle */}
               <div className="absolute inset-0 rounded-full border border-gold/30 pointer-events-none" />
@@ -128,7 +128,7 @@ export default function Hero() {
               className="absolute bottom-0 left-0 w-[55%] aspect-square z-10"
             >
               <div className="w-full h-full rounded-full overflow-hidden border-2 border-white/10 shadow-2xl">
-                <img src="/new_pics/heropic3.jpeg" className="w-full h-full object-cover" alt="Love Story - Embrace" decoding="async" />
+                <img src="/modifs/image.png" className="w-full h-full object-cover" alt="Love Story - Embrace" decoding="async" />
               </div>
             </motion.div>
 

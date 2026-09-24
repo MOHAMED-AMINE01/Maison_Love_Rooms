@@ -17,7 +17,7 @@ dotenv.config({ path: path.join(__dirname, '../../.env') });
 
 const MONGO_URI = process.env.MONGO_URI;
 
-const LOVE_STORY_MAIN = '/photos/love-story-1.jpeg';
+const LOVE_STORY_MAIN = '/modifs/top.png';
 const LOVE_STORY_GALLERY = [
   '/photos/love-story-6.jpeg',
   '/photos/love-story-2.jpeg',
